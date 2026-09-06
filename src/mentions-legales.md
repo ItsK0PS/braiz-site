@@ -12,9 +12,9 @@ Directeur de la publication : Maël MERCIER
 
 ## Hébergement du site
 
-**Vercel Inc.**
-440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis
-https://vercel.com
+**Vercel Inc.**  
+440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis  
+[vercel.com](https://vercel.com)
 
 ## Hébergement des données de l'application
 
