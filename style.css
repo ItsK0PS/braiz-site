@@ -1,0 +1,254 @@
+/* ------------------------------------------------------------------
+   Braiz - feuille de style du site
+   Charte : near-black #08070A, cream #FAF7F4, gradient ember.
+   Dark mode uniquement, comme l'application.
+
+   POLICE : Codec Pro est la police de la marque, mais c'est une police
+   sous licence qui n'existe pas en web font gratuite. Si tu as la
+   licence web, dépose les fichiers dans /fonts et décommente le bloc
+   @font-face ci-dessous. Sinon la pile de secours prend le relais.
+------------------------------------------------------------------ */
+
+/*
+@font-face {
+  font-family: "Codec Pro";
+  src: url("/fonts/CodecPro-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Codec Pro";
+  src: url("/fonts/CodecPro-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+*/
+
+:root {
+  --ink:        #08070A;
+  --ink-raised: #131117;
+  --cream:      #FAF7F4;
+  --muted:      #9A959F;
+  --hairline:   #232028;
+
+  --ember-start: #FF6A1A;
+  --ember-end:   #E11D2E;
+  --lime:        #B6F03C;
+
+  --font: "Codec Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Helvetica, Arial, sans-serif;
+
+  --measure: 34rem;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Ossature ---------- */
+
+.wrap {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.site-head {
+  padding: 2.5rem 0 0;
+}
+
+.site-foot {
+  margin-top: 5rem;
+  padding: 2rem 0 3rem;
+  border-top: 1px solid var(--hairline);
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.site-foot nav a { margin-right: 1.25rem; }
+.site-foot p { margin: 1.25rem 0 0; }
+
+/* ---------- Marque ---------- */
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Placeholder : remplace ce bloc par ton vrai logo SVG. */
+.mark__glyph {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(135deg, var(--ember-start), var(--ember-end));
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.mark__name {
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Accueil ---------- */
+
+.hero {
+  padding: 5rem 0 0;
+}
+
+.hero__line {
+  margin: 0;
+  font-size: clamp(2.25rem, 8vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  background: linear-gradient(105deg, var(--ember-start), var(--ember-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__what {
+  margin: 2rem 0 0;
+  font-size: 1.1875rem;
+  color: var(--cream);
+}
+
+.hero__note {
+  margin: 2.5rem 0 0;
+  padding: 1rem 1.25rem;
+  background: var(--ink-raised);
+  border-left: 2px solid var(--lime);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.hero__note strong {
+  color: var(--cream);
+  font-weight: 700;
+}
+
+/* ---------- Pages de texte ---------- */
+
+.doc { padding: 3.5rem 0 0; }
+
+.doc h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.875rem, 6vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+.doc h2 {
+  margin: 3rem 0 0.75rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.doc h3 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--ember-start);
+}
+
+.doc p,
+.doc li { color: #D8D3D9; }
+
+.doc strong { color: var(--cream); }
+
+.doc ul { padding-left: 1.25rem; }
+.doc li { margin: 0.4rem 0; }
+
+.doc hr { display: none; }
+
+.doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9375rem;
+}
+
+.doc th,
+.doc td {
+  text-align: left;
+  padding: 0.7rem 0.75rem 0.7rem 0;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+
+.doc th {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.doc td { color: #D8D3D9; }
+
+/* ---------- Liens ---------- */
+
+a {
+  color: var(--ember-start);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 106, 26, 0.35);
+  transition: border-color 0.15s ease;
+}
+
+a:hover { border-bottom-color: var(--ember-start); }
+
+a:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.site-foot a {
+  color: var(--muted);
+  border-bottom-color: transparent;
+}
+
+.site-foot a:hover {
+  color: var(--cream);
+  border-bottom-color: var(--hairline);
+}
+
+.mark { border-bottom: none; }
+
+/* ---------- Petits écrans ---------- */
+
+@media (max-width: 30rem) {
+  .hero { padding-top: 3.5rem; }
+  .doc table { font-size: 0.875rem; }
+  .doc th:first-child,
+  .doc td:first-child { padding-right: 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
