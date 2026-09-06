@@ -18,7 +18,7 @@ Directeur de la publication : Maël MERCIER
 
 ## Hébergement des données de l'application
 
-Les données de l'application sont hébergées par **Supabase**, dont les modalités sont détaillées dans la [politique de confidentialité](confidentialite.html).
+Les données de l'application sont hébergées par **Supabase**, dont les modalités sont détaillées dans la [politique de confidentialité](/confidentialite).
 
 ## Propriété intellectuelle
 

@@ -40,7 +40,7 @@ GABARIT = """<!DOCTYPE html>
 
 <header class="site-head">
   <div class="wrap">
-    <a class="mark" href="index.html">
+    <a class="mark" href="/">
       <img class="mark__logo" src="braiz-wordmark.svg" alt="Braiz" width="132" height="62">
     </a>
   </div>
@@ -57,9 +57,9 @@ GABARIT = """<!DOCTYPE html>
 <footer class="site-foot">
   <div class="wrap">
     <nav>
-      <a href="confidentialite.html">Confidentialité</a>
-      <a href="cgu.html">Conditions d'utilisation</a>
-      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="/confidentialite">Confidentialité</a>
+      <a href="/cgu">Conditions d'utilisation</a>
+      <a href="/mentions-legales">Mentions légales</a>
     </nav>
     <p><a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a></p>
   </div>
