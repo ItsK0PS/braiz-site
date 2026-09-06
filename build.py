@@ -32,6 +32,8 @@ GABARIT = """<!DOCTYPE html>
 <title>{titre} - Braiz</title>
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#08070A">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -39,8 +41,7 @@ GABARIT = """<!DOCTYPE html>
 <header class="site-head">
   <div class="wrap">
     <a class="mark" href="index.html">
-      <span class="mark__glyph">B</span>
-      <span class="mark__name">Braiz</span>
+      <img class="mark__logo" src="braiz-wordmark.svg" alt="Braiz" width="132" height="62">
     </a>
   </div>
 </header>

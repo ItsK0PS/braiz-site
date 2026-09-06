@@ -85,31 +85,14 @@ body {
 /* ---------- Marque ---------- */
 
 .mark {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  color: inherit;
+  display: inline-block;
+  line-height: 0;
 }
 
-/* Placeholder : remplace ce bloc par ton vrai logo SVG. */
-.mark__glyph {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.6rem;
-  background: linear-gradient(135deg, var(--ember-start), var(--ember-end));
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--ink);
-  line-height: 1;
-}
-
-.mark__name {
-  font-weight: 700;
-  font-size: 1.125rem;
-  letter-spacing: -0.01em;
+.mark__logo {
+  height: 1.9rem;
+  width: auto;
+  display: block;
 }
 
 /* ---------- Accueil ---------- */
