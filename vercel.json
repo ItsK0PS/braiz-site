@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/join/:token", "destination": "/join.html" }
+    {
+      "source": "/join/:token",
+      "destination": "/join"
+    }
   ]
 }
