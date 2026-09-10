@@ -101,9 +101,9 @@ Elles peuvent être communiquées à une autorité si la loi l'exige.
 
 ## 6. Où sont hébergées tes données
 
-Les données sont hébergées par Supabase, dans la région **[À COMPLÉTER - vérifier la région du projet dans le tableau de bord Supabase, section General]**.
+Les données sont hébergées par Supabase, dans la région **eu-west-2 (West Europe, Londres)**, au Royaume-Uni.
 
-Si l'hébergement se situe hors de l'Union européenne, le transfert repose sur les clauses contractuelles types de la Commission européenne, prévues à cet effet.
+Le Royaume-Uni ne fait plus partie de l'Union européenne, mais la Commission européenne a reconnu que sa législation assure un niveau de protection des données substantiellement équivalent à celui garanti dans l'Union. Cette décision d'adéquation, renouvelée le 19 décembre 2025, permet le transfert de données personnelles depuis l'Union européenne vers le Royaume-Uni sans formalité supplémentaire.
 
 ---
 
