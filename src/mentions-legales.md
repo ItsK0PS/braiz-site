@@ -1,6 +1,6 @@
 # Mentions légales
 
-**Dernière mise à jour : 6 septembre 2026**
+**Dernière mise à jour : 10 septembre 2026**
 
 ## Éditeur du site et de l'application
 
@@ -12,9 +12,9 @@ Directeur de la publication : Maël MERCIER
 
 ## Hébergement du site
 
-**[À COMPLÉTER - raison sociale de l'hébergeur choisi]**
-[Adresse complète]
-[Site web]
+**Vercel Inc.**  
+440 N Barranca Ave #4133, Covina, CA 91723, États-Unis  
+<https://vercel.com>
 
 ## Hébergement des données de l'application
 
