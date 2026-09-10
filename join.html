@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invitation - Braiz</title>
+<meta name="description" content="Tu as reçu une invitation à rejoindre un groupe sur Braiz.">
+<!-- noindex : une page d'invitation porte un jeton, elle n'a rien à faire
+     dans un moteur de recherche. Les pages légales, elles, sont indexées. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#08070A">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="mark" href="/">
+      <img class="mark__logo" src="/braiz-wordmark.svg" alt="Braiz" width="132" height="62">
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="join" id="join">
+
+      <!-- Trois états mutuellement exclusifs, un seul visible à la fois.
+           Ils sont dans le HTML plutôt que construits en JavaScript : le
+           texte reste lisible à la source, et rien ne clignote. -->
+
+      <div id="state-loading">
+        <p class="join__wait">Vérification de l'invitation…</p>
+      </div>
+
+      <div id="state-invalid" hidden>
+        <h1 class="join__title">Ce lien n'est plus valide.</h1>
+        <p class="join__lede">
+          Une invitation Braiz peut expirer ou avoir déjà servi. Demande un
+          nouveau lien à la personne qui t'a invité, ça prend dix secondes de
+          son côté.
+        </p>
+        <p class="join__back"><a href="/">Retour à l'accueil</a></p>
+      </div>
+
+      <div id="state-ready" hidden>
+        <h1 class="join__title">Rejoins <span id="group-name"></span> sur Braiz.</h1>
+        <p class="join__lede">
+          Braiz suit les dépenses d'un groupe d'amis et calcule qui doit quoi
+          à qui. Tu as été invité à rejoindre ce groupe.
+        </p>
+
+        <!-- Chemin principal. C'est le cas NORMAL pendant le test fermé :
+             quasiment personne n'a encore l'application. -->
+        <div class="join__cta">
+          <a class="btn" id="install-link" href="#" hidden>Installer Braiz</a>
+
+          <div class="join__soon" id="install-soon">
+            <strong>L'installation ouvre bientôt.</strong>
+            Braiz est en test fermé et les invitations partent par vagues.
+            Écris à <a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a>
+            pour être dans la prochaine.
+          </div>
+
+          <p class="join__alt" id="has-app-line">
+            <a id="open-app" href="#">J'ai déjà l'application</a>
+          </p>
+        </div>
+
+        <!-- Le code. Copiable d'un geste : personne ne sélectionne 36
+             caractères à la main sur un téléphone. -->
+        <h2 class="join__h2">Ton code d'invitation</h2>
+        <div class="code">
+          <code class="code__value" id="code-value"></code>
+          <button class="code__copy" id="code-copy" type="button">Copier</button>
+        </div>
+
+        <!-- ⚠️ Le point que les testeurs doivent lire ICI et pas seulement
+             dans le message qui les a amenés : un lien ouvert avant d'avoir
+             un compte n'est pas mémorisé par l'application. -->
+        <h2 class="join__h2">Une fois l'application installée</h2>
+        <ol class="steps">
+          <li>Ouvre Braiz et <strong>crée ton compte</strong>.</li>
+          <li>Sur l'écran d'accueil, touche <strong>Rejoindre un groupe</strong>.</li>
+          <li><strong>Colle ton code</strong>, puis valide.</li>
+        </ol>
+
+        <div class="join__warn">
+          <strong>Garde ton code sous la main.</strong>
+          Une invitation ouverte avant la création du compte n'est pas
+          mémorisée par l'application. Copie le code maintenant, ou reviens
+          sur cette page après avoir créé ton compte.
+        </div>
+
+        <p class="join__desktop" id="desktop-note" hidden>
+          Braiz est une application iPhone. Ouvre ce lien depuis ton iPhone,
+          ou note ton code pour le coller dans l'application.
+        </p>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <nav>
+      <a href="/confidentialite">Confidentialité</a>
+      <a href="/cgu">Conditions d'utilisation</a>
+      <a href="/mentions-legales">Mentions légales</a>
+    </nav>
+    <p><a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // ------------------------------------------------------------------
+  // ⚠️ LA SEULE VALEUR À CHANGER quand TestFlight sera ouvert.
+  // Chaîne vide = le bouton d'installation est masqué et remplacé par le
+  // bloc "L'installation ouvre bientôt". Y mettre le lien public TestFlight
+  // suffit à inverser les deux, il n'y a rien d'autre à toucher.
+  // ------------------------------------------------------------------
+  var TESTFLIGHT_URL = "";
+
+  // Clé publishable Supabase. Publique par conception : elle ne porte aucune
+  // identité, elle sélectionne le rôle anon, et tout son accès est filtré
+  // par la RLS. Elle est de toute façon lisible dans le source de cette page
+  // par n'importe quel visiteur, la mettre ici ne l'expose pas davantage.
+  var SUPABASE_URL = "https://oajskntmzmqmajfuvmny.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_jy24W0CwtBD9lrSE1oz2Dw_ZKNkLDJ8";
+
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  function show(id) {
+    ["state-loading", "state-invalid", "state-ready"].forEach(function (s) {
+      document.getElementById(s).hidden = s !== id;
+    });
+  }
+
+  // Le jeton est le dernier segment du chemin : la réécriture Vercel sert
+  // ce fichier pour /join/<token> sans changer l'URL visible.
+  var token = (location.pathname.split("/").filter(Boolean).pop() || "").toLowerCase();
+
+  if (!UUID.test(token)) {
+    show("state-invalid");
+    return;
+  }
+
+  var isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  // PostgREST directement, sans supabase-js : c'est un POST avec deux
+  // en-têtes, charger une bibliothèque pour ça sur un site sans bundler
+  // n'apporterait rien. Même RPC que l'application (get_invitation_group),
+  // accessible aux anonymes.
+  fetch(SUPABASE_URL + "/rest/v1/rpc/get_invitation_group", {
+    method: "POST",
+    headers: { "apikey": SUPABASE_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ invitation_token: token })
+  })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (rows) {
+      if (!rows || !rows.length || !rows[0].group_name) {
+        show("state-invalid");
+        return;
+      }
+      render(rows[0].group_name);
+    })
+    .catch(function () { show("state-invalid"); });
+
+  function render(groupName) {
+    // textContent et jamais innerHTML : le nom du groupe est saisi par un
+    // utilisateur, il ne doit jamais être interprété comme du balisage.
+    document.getElementById("group-name").textContent = "« " + groupName + " »";
+    document.getElementById("code-value").textContent = token;
+    document.getElementById("open-app").href = "braiz://join/" + token;
+
+    if (TESTFLIGHT_URL && isIOS) {
+      var install = document.getElementById("install-link");
+      install.href = TESTFLIGHT_URL;
+      install.hidden = false;
+      document.getElementById("install-soon").hidden = true;
+    }
+
+    if (!isIOS) {
+      document.getElementById("desktop-note").hidden = false;
+      // Sur ordinateur, braiz:// ne mène nulle part : proposer le lien
+      // donnerait une erreur de navigateur au lieu d'une explication.
+      document.getElementById("has-app-line").hidden = true;
+    }
+
+    show("state-ready");
+  }
+
+  document.getElementById("code-copy").addEventListener("click", function () {
+    var btn = this;
+    var done = function () {
+      btn.textContent = "Copié";
+      btn.classList.add("is-done");
+      setTimeout(function () {
+        btn.textContent = "Copier";
+        btn.classList.remove("is-done");
+      }, 2000);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(token).then(done, selectFallback);
+    } else {
+      selectFallback();
+    }
+  });
+
+  // Repli quand l'API presse-papiers est absente ou refusée : on sélectionne
+  // le code, il ne reste qu'à valider la copie. Mieux que rien, et surtout
+  // mieux que de laisser croire que le bouton a marché.
+  function selectFallback() {
+    var node = document.getElementById("code-value");
+    var range = document.createRange();
+    range.selectNodeContents(node);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+})();
+</script>
+
+</body>
+</html>

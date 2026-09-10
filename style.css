@@ -45,6 +45,13 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* ⚠️ L'attribut hidden doit gagner contre nos propres regles d'affichage.
+   [hidden] de la feuille du navigateur a la meme specificite qu'un selecteur
+   de classe : une regle comme .btn { display: block } passe apres et
+   l'annule, ce qui affiche un element cense etre masque. Constate sur le
+   bouton d'installation de la page d'invitation. */
+[hidden] { display: none !important; }
+
 html {
   -webkit-text-size-adjust: 100%;
 }
@@ -234,4 +241,152 @@ a:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+}
+
+/* ---------- Invitation ---------- */
+
+.join { padding: 3.5rem 0 0; }
+
+.join__wait {
+  margin: 0;
+  color: var(--muted);
+}
+
+.join__title {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  background: linear-gradient(105deg, var(--ember-start), var(--ember-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.join__lede {
+  margin: 1.75rem 0 0;
+  font-size: 1.0625rem;
+  color: #D8D3D9;
+}
+
+.join__back { margin: 2rem 0 0; }
+
+.join__cta { margin: 2.5rem 0 0; }
+
+/* Le seul aplat ember de la page : un seul geste est le geste principal. */
+.btn {
+  display: block;
+  padding: 0.95rem 1.25rem;
+  background: linear-gradient(105deg, var(--ember-start), var(--ember-end));
+  border: none;
+  border-radius: 0.75rem;
+  color: var(--cream);
+  font-family: inherit;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn:hover { border-bottom-color: transparent; opacity: 0.92; }
+
+.join__soon {
+  padding: 1rem 1.25rem;
+  background: var(--ink-raised);
+  border-left: 2px solid var(--lime);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.join__soon strong { color: var(--cream); font-weight: 700; }
+
+.join__alt {
+  margin: 1.25rem 0 0;
+  text-align: center;
+  font-size: 0.9375rem;
+}
+
+.join__h2 {
+  margin: 3rem 0 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+/* Le code et son bouton. En colonne sous 26rem : un UUID et un bouton ne
+   tiennent pas côte à côte sur un petit iPhone sans rogner le code. */
+.code {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.code__value {
+  flex: 1;
+  min-width: 0;
+  padding: 0.8rem 0.9rem;
+  background: var(--ink-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 0.6rem;
+  color: var(--cream);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.code__copy {
+  flex: 0 0 auto;
+  padding: 0.8rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--ember-start);
+  border-radius: 0.6rem;
+  color: var(--ember-start);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.code__copy.is-done {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+.steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #D8D3D9;
+}
+
+.steps li { margin: 0.5rem 0; }
+.steps strong { color: var(--cream); }
+
+.join__warn {
+  margin: 2rem 0 0;
+  padding: 1rem 1.25rem;
+  background: var(--ink-raised);
+  border-left: 2px solid var(--ember-start);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.join__warn strong { color: var(--cream); font-weight: 700; }
+
+.join__desktop {
+  margin: 2rem 0 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 26rem) {
+  .code { flex-direction: column; }
+  .code__copy { width: 100%; }
 }
