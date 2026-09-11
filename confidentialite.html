@@ -41,7 +41,9 @@
       <li><strong>Photo de profil</strong> - si tu en ajoutes une, elle est facultative</li>
       <li><strong>Date de création du compte</strong></li>
       </ul>
-      <p>La connexion se fait par code à usage unique envoyé par email, ou via ton compte Google si tu choisis cette option. Braiz ne stocke aucun mot de passe.</p>
+      <p>La connexion se fait par <strong>code à usage unique envoyé par email</strong>, ou avec <strong>Sign in with Apple</strong>. Braiz ne stocke aucun mot de passe.</p>
+      <p>Quand tu te connectes avec Apple, Apple transmet à Braiz un <strong>identifiant de compte propre à cette application</strong>, ton <strong>adresse email</strong> et, <strong>à la première connexion uniquement</strong>, ton <strong>prénom et ton nom</strong>. Apple ne transmet ton nom qu'une seule fois : Braiz l'enregistre alors comme nom d'affichage, et ne le redemande jamais.</p>
+      <p>Si tu choisis <strong>« Masquer mon adresse email »</strong>, Apple ne communique pas ton adresse réelle. Braiz reçoit à la place une adresse relais en <code>@privaterelay.appleid.com</code>, qui transfère les messages vers ta vraie boîte sans que Braiz la connaisse. C'est la seule adresse que Braiz détient, et elle est traitée comme n'importe quelle autre adresse email.</p>
       <h3>Tes groupes et tes dépenses</h3>
       <ul>
       <li><strong>Groupes</strong> - nom, emoji, liste des membres, qui a créé le groupe</li>
@@ -61,7 +63,7 @@
       <li><strong>Historique des trophées</strong> obtenus, y compris dans des groupes supprimés depuis</li>
       </ul>
       <h3>Données techniques</h3>
-      <p>L'application enregistre les erreurs qui surviennent afin de les corriger. Pendant la phase de test, Apple fournit également des rapports de plantage via TestFlight.</p>
+      <p>Braiz n'embarque <strong>aucun outil de mesure d'audience, de traçage ou de rapport d'erreurs</strong>. Pendant la phase de test, Apple met à disposition de l'éditeur les rapports de plantage collectés par TestFlight ; cette collecte est celle d'Apple, pas celle de l'application.</p>
       <p>Braiz n'utilise <strong>aucun outil de publicité, de traçage publicitaire ou de profilage commercial</strong>.</p>
       <hr />
       <h2>3. Pourquoi ces données sont collectées</h2>
@@ -140,14 +142,9 @@
       <td>Adresse email</td>
       </tr>
       <tr>
-      <td><strong>Google</strong></td>
-      <td>Connexion via compte Google, si tu utilises cette option</td>
-      <td>Email, nom, photo de profil Google</td>
-      </tr>
-      <tr>
       <td><strong>Apple</strong></td>
-      <td>Distribution de l'application, rapports de plantage</td>
-      <td>Données techniques</td>
+      <td>Connexion avec Apple, distribution de l'application, rapports de plantage</td>
+      <td>Identifiant de compte, adresse email (réelle ou relais), nom à la première connexion, données techniques</td>
       </tr>
       <tr>
       <td><strong>Expo</strong></td>

@@ -48,10 +48,10 @@ Le service est fourni **gratuitement** pendant cette phase.
 Pour utiliser Braiz, tu dois :
 
 - Avoir **18 ans ou plus**
-- Fournir une adresse email valide dont tu es titulaire
+- Fournir une adresse email valide, ou passer par Sign in with Apple
 - Ne créer qu'un seul compte
 
-Tu es responsable de l'accès à ton compte et à l'adresse email associée. La connexion se fait par code à usage unique ou via un compte Google.
+Tu es responsable de l'accès à ton compte et à l'adresse email associée. La connexion se fait par **code à usage unique envoyé par email**, ou avec **Sign in with Apple**.
 
 Tu peux supprimer ton compte à tout moment depuis l'application. Les modalités et leurs limites sont détaillées dans la politique de confidentialité.
 

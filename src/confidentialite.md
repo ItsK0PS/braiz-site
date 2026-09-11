@@ -27,7 +27,11 @@ Braiz est actuellement en phase de test fermée. L'application est distribuée �
 - **Photo de profil** - si tu en ajoutes une, elle est facultative
 - **Date de création du compte**
 
-La connexion se fait par code à usage unique envoyé par email, ou via ton compte Google si tu choisis cette option. Braiz ne stocke aucun mot de passe.
+La connexion se fait par **code à usage unique envoyé par email**, ou avec **Sign in with Apple**. Braiz ne stocke aucun mot de passe.
+
+Quand tu te connectes avec Apple, Apple transmet à Braiz un **identifiant de compte propre à cette application**, ton **adresse email** et, **à la première connexion uniquement**, ton **prénom et ton nom**. Apple ne transmet ton nom qu'une seule fois : Braiz l'enregistre alors comme nom d'affichage, et ne le redemande jamais.
+
+Si tu choisis **« Masquer mon adresse email »**, Apple ne communique pas ton adresse réelle. Braiz reçoit à la place une adresse relais en `@privaterelay.appleid.com`, qui transfère les messages vers ta vraie boîte sans que Braiz la connaisse. C'est la seule adresse que Braiz détient, et elle est traitée comme n'importe quelle autre adresse email.
 
 ### Tes groupes et tes dépenses
 
@@ -49,7 +53,7 @@ La connexion se fait par code à usage unique envoyé par email, ou via ton comp
 
 ### Données techniques
 
-L'application enregistre les erreurs qui surviennent afin de les corriger. Pendant la phase de test, Apple fournit également des rapports de plantage via TestFlight.
+Braiz n'embarque **aucun outil de mesure d'audience, de traçage ou de rapport d'erreurs**. Pendant la phase de test, Apple met à disposition de l'éditeur les rapports de plantage collectés par TestFlight ; cette collecte est celle d'Apple, pas celle de l'application.
 
 Braiz n'utilise **aucun outil de publicité, de traçage publicitaire ou de profilage commercial**.
 
@@ -89,8 +93,7 @@ Braiz s'appuie sur des prestataires techniques, appelés sous-traitants. Ils tra
 |---|---|---|
 | **Supabase** | Hébergement de la base de données, stockage des fichiers, authentification | Toutes les données de l'application |
 | **Resend** | Envoi des emails (codes de connexion, invitations) | Adresse email |
-| **Google** | Connexion via compte Google, si tu utilises cette option | Email, nom, photo de profil Google |
-| **Apple** | Distribution de l'application, rapports de plantage | Données techniques |
+| **Apple** | Connexion avec Apple, distribution de l'application, rapports de plantage | Identifiant de compte, adresse email (réelle ou relais), nom à la première connexion, données techniques |
 | **Expo** | Compilation de l'application et mises à jour | Données techniques |
 
 Tes données ne sont **ni vendues, ni louées, ni transmises à des tiers à des fins commerciales**.
