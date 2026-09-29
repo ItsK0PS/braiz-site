@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+---
+import Base from "../layouts/Base.astro";
+---
+<Base>
+<Fragment slot="head">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Braiz - Règle tes comptes, garde tes potes</title>
@@ -10,19 +12,10 @@
 <meta property="og:description" content="Règle tes comptes, garde tes potes.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://getbraiz.com">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header class="site-head">
-  <div class="wrap">
-    <a class="mark" href="/">
-      <img class="mark__logo" src="braiz-wordmark.svg" alt="Braiz" width="132" height="62">
-    </a>
-  </div>
-</header>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css">
+</Fragment>
 
 <main>
   <div class="wrap">
@@ -47,17 +40,4 @@
     </section>
   </div>
 </main>
-
-<footer class="site-foot">
-  <div class="wrap">
-    <nav>
-      <a href="/confidentialite">Confidentialité</a>
-      <a href="/cgu">Conditions d'utilisation</a>
-      <a href="/mentions-legales">Mentions légales</a>
-    </nav>
-    <p><a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a></p>
-  </div>
-</footer>
-
-</body>
-</html>
+</Base>

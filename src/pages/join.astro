@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+---
+import Base from "../layouts/Base.astro";
+---
+<Base>
+<Fragment slot="head">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Invitation - Braiz</title>
@@ -12,16 +14,7 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-
-<header class="site-head">
-  <div class="wrap">
-    <a class="mark" href="/">
-      <img class="mark__logo" src="/braiz-wordmark.svg" alt="Braiz" width="132" height="62">
-    </a>
-  </div>
-</header>
+</Fragment>
 
 <main>
   <div class="wrap">
@@ -127,21 +120,11 @@
   </div>
 </main>
 
-<footer class="site-foot">
-  <div class="wrap">
-    <nav>
-      <a href="/confidentialite">Confidentialité</a>
-      <a href="/cgu">Conditions d'utilisation</a>
-      <a href="/mentions-legales">Mentions légales</a>
-    </nav>
-    <p><a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a></p>
-  </div>
-</footer>
-
+<Fragment slot="after">
 <!-- TESTFLIGHT_URL, partagé avec /beta. Chemin absolu : cette page est
      servie sous /join/<token>. -->
-<script src="/testflight.js"></script>
-<script>
+<script is:inline src="/testflight.js"></script>
+<script is:inline>
 (function () {
   "use strict";
 
@@ -258,6 +241,5 @@
   }
 })();
 </script>
-
-</body>
-</html>
+</Fragment>
+</Base>

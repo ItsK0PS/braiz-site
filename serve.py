@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-Sert le site en local en reproduisant vercel.json : la réécriture
-/join/:token et les URLs sans extension (cleanUrls).
+Sert le site construit (dist/) en local en reproduisant vercel.json : la
+réécriture /join/:token et les URLs sans extension (cleanUrls).
 
-    python3 serve.py
+    npm run build && python3 serve.py
+
+Le serveur de développement d'Astro (npm run dev) ne connaît pas la
+réécriture de vercel.json : /join/<token> y renvoie une 404. Pour tester une
+invitation, passer par ce script.
 
 Écoute sur toutes les interfaces, pour qu'un téléphone du même Wi-Fi
 puisse ouvrir la page. L'adresse à utiliser est affichée au démarrage.
@@ -20,7 +24,7 @@ import os
 import re
 import socket
 
-ROOT = "/Users/kops/Desktop/braiz-site"
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist")
 PORT = 8765
 JOIN = re.compile(r"^/join/[^/]+/?$")
 

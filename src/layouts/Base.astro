@@ -1,0 +1,36 @@
+---
+// Ossature commune : en-tête avec le logo, pied de page avec les liens
+// légaux. Chaque page fournit son propre <head> (slot "head") et, si besoin,
+// ses scripts après le pied de page (slot "after").
+---
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<slot name="head" />
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="mark" href="/">
+      <img class="mark__logo" src="/braiz-wordmark.svg" alt="Braiz" width="132" height="62">
+    </a>
+  </div>
+</header>
+
+<slot />
+
+<footer class="site-foot">
+  <div class="wrap">
+    <nav>
+      <a href="/confidentialite">Confidentialité</a>
+      <a href="/cgu">Conditions d'utilisation</a>
+      <a href="/mentions-legales">Mentions légales</a>
+    </nav>
+    <p><a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a></p>
+  </div>
+</footer>
+
+<slot name="after" />
+</body>
+</html>

@@ -1,0 +1,48 @@
+---
+// Pages légales, générées depuis src/content/legal/*.md. Remplace build.py :
+// même gabarit, mêmes titres d'onglet, mêmes URLs.
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const TITRES: Record<string, string> = {
+  confidentialite: "Politique de confidentialité",
+  cgu: "Conditions d'utilisation",
+  "mentions-legales": "Mentions légales",
+};
+
+export async function getStaticPaths() {
+  const pages = await getCollection("legal");
+  return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const titre = TITRES[page.id];
+
+// Le Markdown d'Astro transforme « www.cnil.fr » en lien, ce que build.py
+// ne faisait pas : on remet le texte brut pour que les pages légales restent
+// identiques. Les e-mails, eux, deviennent des liens comme avant.
+const contenu = (page.rendered?.html ?? "").replace(
+  /<a href="http:\/\/(www\.[^"]+)">\1<\/a>/g,
+  "$1",
+);
+---
+<Base>
+<Fragment slot="head">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{titre} - Braiz</title>
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#08070A">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css">
+</Fragment>
+
+<main>
+  <div class="wrap">
+    <article class="doc">
+<Fragment set:html={contenu} />
+    </article>
+  </div>
+</main>
+</Base>

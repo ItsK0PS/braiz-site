@@ -1,0 +1,16 @@
+{
+  "name": "braiz-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "python3 serve.py"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "astro": "7.3.5"
+  }
+}
