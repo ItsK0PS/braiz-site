@@ -17,8 +17,19 @@ type Kind = "words" | "lines" | "chars";
 // intérieure, un mot décalé de 100 % y serait encore en partie visible.
 export const MASK_TRAVEL = 150;
 
+// Espaces : par défaut, SplitText remplace TOUTES les espaces (\s, donc
+// aussi l'espace insécable U+00A0) par une espace simple. Le « ? » de
+// « à qui ? » ou le « à » de « à décrocher » pouvaient alors passer seuls à
+// la ligne. On fusionne nous-mêmes les espaces ordinaires et on laisse les
+// insécables : elles restent collées au mot, qui ne se coupe plus.
+export const SPLIT_TEXT = {
+  reduceWhiteSpace: false,
+  prepareText: (text: string) => text.replace(/[ \t\n\r\f]+/g, " "),
+};
+
 export function splitMasked(SplitText: typeof SplitTextType, target: Element, type: Kind = "words") {
   return new SplitText(target, {
+    ...SPLIT_TEXT,
     type,
     mask: type,
     wordsClass: "split-word",

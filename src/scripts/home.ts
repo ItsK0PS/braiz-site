@@ -8,7 +8,7 @@
 // arrive ; ce qui est déjà visible ne clignote jamais.
 // Uniquement transform, opacity et stroke-dashoffset (DrawSVG).
 import { registerScene } from "./motion";
-import { splitMasked, MASK_TRAVEL } from "./split";
+import { splitMasked, MASK_TRAVEL, SPLIT_TEXT } from "./split";
 
 // Même logique que le compteur de la scène : colonnes 0→9 en translateY.
 function roller(el: HTMLElement) {
@@ -56,7 +56,7 @@ registerScene(({ gsap, ScrollTrigger, conditions, plugins }) => {
   const hero = document.querySelector<HTMLElement>("[data-hero]");
   const heroTitle = hero?.querySelector<HTMLElement>("[data-hero-title]");
   if (hero && heroTitle) {
-    const split = new SplitText(heroTitle, { type: "words", wordsClass: "hero-word" });
+    const split = new SplitText(heroTitle, { ...SPLIT_TEXT, type: "words", wordsClass: "hero-word" });
     splits.push(split);
     // La vague : les mots sautent l'un après l'autre et retombent en
     // ressort. Seulement si le hero est à l'écran.
