@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rejoindre la beta - Braiz</title>
-<meta name="description" content="Rejoins la beta de Braiz sur iPhone ou Android : l'app qui partage les dépenses entre potes et calcule qui doit quoi à qui.">
+<meta name="description" content="Rejoins la beta de Braiz sur iPhone ou Android : l'application qui partage les dépenses entre amis et calcule qui doit combien à qui.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#08070A">
 <meta property="og:title" content="Braiz, la beta">
@@ -31,10 +31,10 @@
       <h1 class="hero__line">Règle tes comptes,<br>garde tes potes.</h1>
 
       <p class="hero__what">
-        Braiz est en beta, et on cherche des gens pour la malmener avant tout
-        le monde. Tu suis les dépenses de ta bande, l'appli calcule qui doit
-        quoi à qui, et toi tu nous dis ce qui cloche. En bonus, tu chambres
-        tes potes avec les trophées avant qu'ils sachent que ça existe.
+        Braiz est en beta, et on l'ouvre à quelques personnes avant tout le
+        monde. Tu ajoutes les dépenses du groupe, Braiz calcule qui doit
+        combien à qui, et tu nous dis ce qui peut être amélioré. En bonus,
+        des trophées pour animer le groupe.
       </p>
     </section>
 
@@ -47,9 +47,9 @@
     <div id="platforms">
 
       <section class="beta__block" id="block-qr" hidden>
-        <h2 class="join__h2">T'es sur ton ordi ?</h2>
+        <h2 class="join__h2">Tu es sur ordinateur ?</h2>
         <p class="join__lede">
-          Scanne ce code avec ton téléphone, tu tomberas direct sur cette page.
+          Scanne ce code avec ton téléphone pour ouvrir cette page directement.
         </p>
         <img class="beta__qr" src="/qr-beta.svg" alt="QR code vers getbraiz.com/beta" width="200" height="200">
       </section>
@@ -58,18 +58,18 @@
         <h2 class="join__h2">Sur iPhone</h2>
         <p class="join__lede">
           Installe d'abord
-          <a href="https://apps.apple.com/app/testflight/id899247664">TestFlight</a>
-          (l'app d'Apple pour les betas), puis rejoins Braiz.
+          <a href="https://apps.apple.com/app/testflight/id899247664">TestFlight</a>,
+          l'application d'Apple pour les versions beta, puis rejoins Braiz.
         </p>
 
         <div class="join__cta">
           <a class="btn btn--outline" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
 
           <div id="ios-soon">
-            <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt dispo sur iPhone</button>
+            <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt disponible sur iPhone</button>
             <p class="join__alt">
-              Apple relit notre copie avant de nous ouvrir la porte.
-              Repasse dans quelques jours, ce lien ne bougera pas.
+              Apple vérifie l'application avant de l'ouvrir aux testeurs.
+              Reviens dans quelques jours : ce lien restera le même.
             </p>
           </div>
         </div>
@@ -78,50 +78,52 @@
       <section class="beta__block" id="block-android">
         <h2 class="join__h2">Sur Android</h2>
         <p class="join__lede">
-          Braiz n'est pas (encore) sur le Play Store : tu installes le fichier
-          de l'appli directement, en trois étapes.
+          Braiz n'est pas encore sur le Play Store. Tu installes l'application
+          directement à partir de son fichier, en trois étapes.
         </p>
 
         <div class="join__cta">
           <a class="btn btn--outline" id="android-link" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Télécharger Braiz pour Android</a>
-          <p class="join__alt">~155 Mo, prends le wifi.</p>
+          <p class="join__alt">Fichier d'environ 155 Mo, une connexion wifi est conseillée.</p>
         </div>
 
         <ol class="steps beta__steps">
-          <li><strong>Télécharge</strong> le fichier braiz.apk avec le bouton au-dessus.</li>
-          <li><strong>Autorise l'installation d'applis inconnues</strong> :
-            en ouvrant le fichier, Android te propose d'aller dans les réglages
-            pour autoriser ton navigateur. Active, puis reviens.</li>
-          <li><strong>Installe</strong>, ouvre Braiz et crée ton compte.</li>
+          <li><strong>Télécharge</strong> le fichier braiz.apk avec le bouton ci-dessus.</li>
+          <li><strong>Autorise l'installation</strong> : à l'ouverture du
+            fichier, Android te propose d'autoriser ton navigateur à installer
+            des applications. Active l'option, puis reviens en arrière.</li>
+          <li><strong>Installe</strong> l'application, ouvre-la et crée ton compte.</li>
         </ol>
 
         <div class="join__warn">
-          <strong>Android va faire son parano, c'est normal.</strong>
-          Il va te dire que l'appli vient d'une source inconnue, et Play
-          Protect peut te demander si t'es bien sûr de toi. Tout ça parce que
-          Braiz ne passe pas par le Play Store. Selon ton téléphone, touche
-          « Installer quand même », parfois caché derrière « Plus de détails ».
+          <strong>Android affichera un avertissement : c'est normal pour une
+          application installée en dehors du Play Store.</strong>
+          Play Protect, le contrôle de sécurité d'Android, peut aussi te
+          demander de confirmer. Touche « Installer quand même ». Sur certains
+          téléphones, ce bouton se trouve sous « Plus de détails ».
         </div>
       </section>
 
     </div>
 
     <section class="beta__faq">
-      <h2 class="join__h2">Questions</h2>
+      <h2 class="join__h2">Questions fréquentes</h2>
       <dl>
         <dt>C'est gratuit ?</dt>
-        <dd>Oui. Pendant la beta, tout est gratuit, et personne ne te demandera
-          ta carte bancaire pour tester.</dd>
+        <dd>Oui. Braiz est entièrement gratuit pendant la beta, et aucune
+          carte bancaire ne t'est demandée.</dd>
 
         <dt>Et mes données ?</dt>
-        <dd>Elles servent à faire marcher l'appli, point. Ni revendues, ni
-          pistées pour de la pub. Tout est détaillé dans la
+        <dd>Elles servent uniquement au fonctionnement de l'application. Elles
+          ne sont ni vendues, ni utilisées à des fins publicitaires. Tout est
+          détaillé dans la
           <a href="/confidentialite">politique de confidentialité</a>.</dd>
 
         <dt>Et les mises à jour ?</dt>
-        <dd>Automatiques : l'appli se met à jour toute seule. Dans de rares cas,
-          il faudra une nouvelle version complète. Sur iPhone, TestFlight te la
-          proposera ; sur Android, on te renverra un nouveau fichier.</dd>
+        <dd>Elles sont automatiques : l'application se met à jour d'elle-même.
+          Dans de rares cas, une nouvelle version complète sera nécessaire. Sur
+          iPhone, TestFlight te la proposera. Sur Android, on t'enverra un
+          nouveau fichier.</dd>
       </dl>
     </section>
   </div>
