@@ -1,0 +1,44 @@
+---
+// Appel final : le slogan en très grand, et le bouton ember (le seul de
+// l'écran). home.ts fait monter les mots un à un ; sans script, tout est là.
+import Button from "../Button.astro";
+import { BETA_PATH } from "../../lib/links";
+---
+<section class="final" aria-labelledby="final-title">
+  <div class="final__glow" data-depth="-10" aria-hidden="true"></div>
+  <div class="wrap">
+    <h2 class="final__title" id="final-title" data-split-title>Règle tes comptes, garde tes potes.</h2>
+    <div class="final__cta">
+      <Button href={BETA_PATH} variant="ember">Rejoindre la beta</Button>
+      <p>Gratuite, sans pub. Sur iPhone et Android.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final { position: relative; padding: var(--section-y) 0 calc(var(--section-y) * 1.2); overflow: clip; }
+  .final__glow {
+    position: absolute;
+    left: 60%;
+    top: 40%;
+    width: min(130vw, 1100px);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: var(--glow-ember);
+    opacity: 0.5;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .final .wrap { position: relative; }
+  .final__title {
+    margin: 0;
+    max-width: 11ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3.2rem, 0.8rem + 11vw, 11rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+  .final__cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin-top: var(--s-7); }
+  .final__cta p { margin: 0; color: var(--muted); }
+</style>

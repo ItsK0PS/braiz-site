@@ -1,0 +1,203 @@
+---
+// Ce que fait Braiz : quatre blocs, chacun avec un iPhone (écran
+// provisoire) et un élément qui déborde du téléphone. Les blocs alternent
+// de côté et de composition : pas une grille de cartes identiques.
+// Les apparitions (téléphone qui arrive en tournant, élément qui éclot,
+// titre mot par mot) sont dans home.ts ; sans script, tout est en place.
+import PhoneFrame from "../PhoneFrame.astro";
+import AppScreen from "./AppScreen.astro";
+import Roller from "../virements/Roller.astro";
+import { BALANCES, SETTLEMENTS } from "../../lib/weekend";
+import { formatEur } from "../../lib/systemMessages";
+
+const blocks = [
+  {
+    kind: "ajout" as const,
+    title: "Ajoute une dépense en quelques secondes.",
+    text: "Le montant, qui a payé, pour qui. Parts égales ou montants différents : Braiz fait le calcul pour tout le monde.",
+  },
+  {
+    kind: "soldes" as const,
+    title: "Vois qui doit combien à qui.",
+    text: `Les soldes se mettent à jour à chaque dépense, avec le moins de virements possible pour être quittes. Ici, ${SETTLEMENTS.length} suffisent.`,
+  },
+  {
+    kind: "rembourser" as const,
+    title: "Rembourse par IBAN.",
+    text: "Braiz affiche l'IBAN de la personne à rembourser, tu fais le virement depuis ta banque. L'argent ne passe jamais par Braiz.",
+  },
+  {
+    kind: "chat" as const,
+    title: "Discute avec le groupe.",
+    text: "Le chat est au même endroit que les comptes. Et quand une dépense disparaît, Braiz le remarque, avec le sourire.",
+  },
+];
+---
+<section class="feats" aria-labelledby="feats-title">
+  <div class="wrap">
+    <h2 class="feats__title" id="feats-title" data-split-title>Tout le groupe, au même endroit.</h2>
+
+    <div class="feats__list">
+      {blocks.map((b, i) => (
+        <article class:list={["feat", `feat--${b.kind}`, { "feat--flip": i % 2 === 1 }]} data-feat>
+          <div class="feat__visual">
+            <div class="feat__phone" data-feat-phone>
+              <PhoneFrame width="clamp(210px, 22vw, 320px)">
+                <AppScreen kind={b.kind} />
+              </PhoneFrame>
+            </div>
+
+            {b.kind === "ajout" && (
+              <div class="feat__prop feat__prop--amount" data-feat-prop aria-hidden="true">
+                <Roller text="42,00 €" />
+                <small>Pizzas du vendredi</small>
+              </div>
+            )}
+            {b.kind === "soldes" && (
+              <div class="feat__prop feat__prop--balances" data-feat-prop aria-hidden="true">
+                <span class="pill pill--pos">Inès <b>+ {formatEur(BALANCES.ines)}</b></span>
+                <span class="pill pill--neg">Léa <b>− {formatEur(-BALANCES.lea)}</b></span>
+              </div>
+            )}
+            {b.kind === "rembourser" && (
+              <div class="feat__prop feat__prop--toast" data-feat-prop aria-hidden="true">
+                <span class="toast__check"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg></span>
+                IBAN copié
+              </div>
+            )}
+            {b.kind === "chat" && (
+              <div class="feat__prop feat__prop--react" data-feat-prop aria-hidden="true">
+                <span>😂 <b>3</b></span>
+                <span>👀 <b>2</b></span>
+              </div>
+            )}
+          </div>
+
+          <div class="feat__text">
+            <h3 class="feat__title" data-split-title>{b.title}</h3>
+            <p class="feat__body" data-feat-body>{b.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .feats { position: relative; padding: var(--section-y) 0; }
+  .feats__title {
+    margin: 0 0 var(--s-8);
+    max-width: 14ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 1.2rem + 4.4vw, 5.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .feats__list { display: grid; gap: clamp(var(--s-8), 10vw, 160px); }
+
+  .feat {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-7);
+  }
+  .feat--flip .feat__visual { order: 2; }
+  .feat__visual { position: relative; display: grid; justify-items: center; padding: var(--s-5) 0; }
+  .feat__phone { rotate: -4deg; will-change: transform; }
+  .feat--flip .feat__phone { rotate: 4deg; }
+  /* Compositions différentes d'un bloc à l'autre. */
+  .feat--soldes .feat__visual { justify-items: end; padding-right: 8%; }
+  .feat--rembourser .feat__visual { justify-items: start; padding-left: 10%; }
+
+  .feat__text { max-width: 28rem; }
+  .feat--ajout .feat__text { justify-self: start; }
+  .feat--soldes .feat__text { justify-self: end; }
+  .feat__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.9rem, 1.1rem + 2.6vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .feat__body { margin: var(--s-4) 0 0; color: var(--muted); font-size: var(--t-lead); }
+
+  /* ---------- Éléments qui débordent du téléphone ---------- */
+  .feat__prop { position: absolute; z-index: 2; will-change: transform, opacity; }
+  .feat__prop--amount {
+    right: 2%;
+    bottom: 10%;
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3) var(--s-5) var(--s-4);
+    border-radius: var(--r-l);
+    background: var(--ink);
+    box-shadow: 0 0 0 1px rgba(250, 247, 244, 0.1), 0 24px 50px -16px rgba(0, 0, 0, 0.9);
+    font-size: clamp(2.6rem, 1.6rem + 3vw, 4.6rem);
+    rotate: 5deg;
+  }
+  .feat__prop--amount small { font-size: var(--t-small); color: var(--muted); }
+  .feat__prop--balances { left: 0; top: 18%; display: grid; gap: var(--s-3); justify-items: start; }
+  .pill {
+    display: inline-flex;
+    white-space: nowrap;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: var(--s-3) var(--s-5);
+    border-radius: var(--r-pill);
+    background: rgba(27, 23, 31, 0.95);
+    box-shadow: 0 16px 40px -14px rgba(0, 0, 0, 0.9);
+    font-size: 1.05rem;
+  }
+  .pill b { font-family: var(--font-display); font-size: 1.6rem; }
+  .pill--pos { rotate: -4deg; box-shadow: inset 0 0 0 1.5px rgba(182, 240, 60, 0.45), 0 16px 40px -14px rgba(0, 0, 0, 0.9); }
+  .pill--pos b { color: var(--lime); }
+  .pill--neg { margin-left: 18%; rotate: 3deg; box-shadow: inset 0 0 0 1.5px rgba(242, 65, 95, 0.45), 0 16px 40px -14px rgba(0, 0, 0, 0.9); }
+  .pill--neg b { color: var(--framboise); }
+  .feat__prop--toast {
+    right: 6%;
+    top: 30%;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5) var(--s-3) var(--s-3);
+    border-radius: var(--r-pill);
+    background: var(--cream);
+    color: var(--ink);
+    font-weight: 600;
+    rotate: -5deg;
+    box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.9);
+  }
+  .toast__check { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--lime); }
+  .toast__check svg { width: 18px; fill: none; stroke: var(--ink); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+  .feat__prop--react { left: 8%; bottom: 20%; display: flex; gap: var(--s-2); }
+  .feat__prop--react span {
+    padding: var(--s-2) var(--s-4);
+    border-radius: var(--r-pill);
+    background: var(--surface-2);
+    box-shadow: 0 0 0 1px rgba(250, 247, 244, 0.1), 0 16px 30px -12px rgba(0, 0, 0, 0.9);
+    font-size: 1.4rem;
+  }
+  .feat__prop--react span:first-child { rotate: -8deg; }
+  .feat__prop--react span:last-child { rotate: 6deg; translate: 0 -40%; }
+  .feat__prop--react b { font-family: var(--font-display); font-size: 1rem; }
+
+  @media (max-width: 899px) {
+    .feats__title { margin-bottom: var(--s-7); }
+    .feat { grid-template-columns: 1fr; gap: var(--s-5); }
+    .feat--flip .feat__visual { order: 0; }
+    .feat__visual { padding: var(--s-4) 0; }
+    .feat--soldes .feat__visual { justify-items: end; padding-right: 4%; }
+    .feat--rembourser .feat__visual { justify-items: start; padding-left: 4%; }
+    .feat--soldes .feat__text,
+    .feat--ajout .feat__text { justify-self: start; }
+    .feat__prop--amount { right: 0; }
+    .feat__prop--balances { left: -2%; }
+    .feat__prop--toast { right: 0; }
+    .feat__prop--react { left: 0; }
+    .pill b { font-size: 1.3rem; }
+  }
+</style>

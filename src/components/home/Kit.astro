@@ -1,0 +1,155 @@
+---
+// Bientôt : le kit de l'organisateur (passation §6). Fonctions À VENIR :
+// formulation au conditionnel, aucun prix, aucune date, aucune promesse
+// ferme. Un seul achat débloquerait le kit pour tout le groupe.
+//
+// Le ticket est un décor (aria-hidden) : un faisceau lime le balaie (CSS,
+// transform seulement, en pause hors de l'écran) et les lignes se cochent.
+const features = [
+  { title: "Scan de ticket par IA", text: "Une photo du ticket, et chaque ligne serait détaillée pour être répartie entre les bonnes personnes." },
+  { title: "Relances automatiques", text: "Braiz pourrait rappeler, avec tact, qui doit encore rembourser." },
+  { title: "Bilan PDF", text: "Le récapitulatif du voyage ou de l'année, prêt à partager." },
+];
+const receipt = [
+  ["2 pizzas margherita", "24,00"],
+  ["1 pizza 4 fromages", "13,50"],
+  ["3 limonades", "10,50"],
+  ["1 tiramisu", "7,00"],
+];
+---
+<section class="kit" data-kit aria-labelledby="kit-title">
+  <div class="wrap kit__grid">
+    <div class="kit__text">
+      <p class="kit__soon">Bientôt</p>
+      <h2 class="kit__title" id="kit-title" data-split-title>Le kit de l'organisateur.</h2>
+      <p class="kit__lead">
+        Pour les groupes qui organisent beaucoup, des outils en plus sont à
+        venir. Un seul achat débloquerait le kit pour tout le groupe.
+      </p>
+      <ul class="kit__list">
+        {features.map((f) => (
+          <li data-kit-item><b>{f.title}</b>{f.text}</li>
+        ))}
+      </ul>
+      <p class="kit__price">Tarifs bientôt.</p>
+    </div>
+
+    <div class="kit__visual" aria-hidden="true">
+      <div class="receipt" data-kit-receipt>
+        <p class="receipt__shop">Pizzeria du Port</p>
+        <p class="receipt__date">Vendredi, 20:42</p>
+        <ul>
+          {receipt.map(([label, price], i) => (
+            <li style={`--i: ${i}`}><span class="receipt__tick"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg></span><span>{label}</span><span>{price}</span></li>
+          ))}
+        </ul>
+        <p class="receipt__total"><span>Total</span><span>55,00 €</span></p>
+        <span class="receipt__beam"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .kit { position: relative; padding: var(--section-y) 0; }
+  .kit__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: var(--s-8);
+    align-items: center;
+    padding-block: var(--s-8);
+    border-radius: var(--r-l);
+    background:
+      radial-gradient(60% 80% at 85% 50%, rgba(255, 106, 26, 0.12), transparent 70%),
+      var(--surface);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    padding-inline: clamp(var(--s-5), 5vw, var(--s-8));
+  }
+  .kit__soon {
+    display: inline-block;
+    margin: 0 0 var(--s-4);
+    padding: 4px 14px;
+    border-radius: var(--r-pill);
+    box-shadow: inset 0 0 0 1.5px var(--outline);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .kit__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .kit__lead { margin: var(--s-5) 0 0; max-width: 32rem; color: var(--muted); font-size: var(--t-lead); }
+  .kit__list { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-4); }
+  .kit__list li { display: grid; gap: 2px; padding-left: var(--s-5); border-left: 2px solid var(--outline); color: var(--muted); }
+  .kit__list b { color: var(--cream); font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+  .kit__price { margin: var(--s-6) 0 0; font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; }
+
+  .kit__visual { display: grid; justify-items: center; }
+  .receipt {
+    position: relative;
+    width: min(300px, 100%);
+    padding: var(--s-6) var(--s-5) var(--s-5);
+    overflow: hidden;
+    background: #EDE8E2;
+    color: #1B171F;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    rotate: 4deg;
+    box-shadow: 0 40px 70px -24px rgba(0, 0, 0, 0.9);
+    /* Bords dentelés du ticket. */
+    -webkit-mask: radial-gradient(circle 6px at 50% 0, transparent 98%, #000) 0 0 / 16px 100% repeat-x;
+    mask: radial-gradient(circle 6px at 50% 0, transparent 98%, #000) 0 0 / 16px 100% repeat-x;
+  }
+  .receipt p { margin: 0; }
+  .receipt__shop { font-weight: 700; text-align: center; letter-spacing: 0.04em; }
+  .receipt__date { text-align: center; opacity: 0.65; margin-bottom: var(--s-4) !important; }
+  .receipt ul { list-style: none; margin: 0; padding: var(--s-3) 0; border-block: 1px dashed rgba(27, 23, 31, 0.35); display: grid; gap: var(--s-2); }
+  .receipt li { display: grid; grid-template-columns: 18px 1fr auto; gap: var(--s-2); align-items: center; }
+  .receipt__tick { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #7CB518; }
+  .receipt__tick svg { width: 12px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .receipt__total { display: flex; justify-content: space-between; padding-top: var(--s-3); font-weight: 700; }
+  .receipt__beam {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    top: 0;
+    height: 44px;
+    background: linear-gradient(transparent, rgba(182, 240, 60, 0.35) 70%, rgba(182, 240, 60, 0.9) 96%, transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Le faisceau ne tourne que lorsque le ticket est à l'écran (.is-live,
+     posé par home.ts) et jamais en reduced-motion. Les coches éclosent
+     une à une pendant son passage. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.motion-ok) .receipt.is-live .receipt__beam { animation: beam 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+    :global(html.motion-ok) .receipt .receipt__tick { transform: scale(0); }
+    :global(html.motion-ok) .receipt.is-live .receipt__tick {
+      animation: tick 3.2s infinite;
+      animation-delay: calc(0.55s + var(--i) * 0.28s);
+    }
+  }
+  @keyframes beam {
+    0%   { opacity: 0; transform: translate3d(0, -50px, 0); }
+    10%  { opacity: 1; }
+    75%  { opacity: 1; transform: translate3d(0, 330px, 0); }
+    90%, 100% { opacity: 0; transform: translate3d(0, 330px, 0); }
+  }
+  @keyframes tick {
+    0%   { transform: scale(0); }
+    8%   { transform: scale(1.3); }
+    14%, 88% { transform: scale(1); }
+    100% { transform: scale(0); }
+  }
+
+  @media (max-width: 899px) {
+    .kit__grid { grid-template-columns: 1fr; gap: var(--s-7); padding-block: var(--s-7); }
+  }
+</style>

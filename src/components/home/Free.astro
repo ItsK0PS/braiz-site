@@ -1,0 +1,106 @@
+---
+// Gratuit, sans pub : « 0 € » et « 0 pub » en très grand, puis ce qui est
+// gratuit (§6 : le gratuit d'abord). home.ts fait arriver les deux chiffres
+// avec impact et trace le cercle ember ; sans script, tout est déjà là.
+const items = [
+  { title: "Groupes illimités", text: "Un pour la coloc, un pour les vacances, un pour le foot du jeudi." },
+  { title: "Membres illimités", text: "Toute la promo ou toute la famille : le groupe grandit autant que tu veux." },
+  { title: "Dépenses illimitées", text: "Du café du matin à la location de la maison." },
+  { title: "Remboursement par IBAN", text: "Braiz indique qui rembourse qui, et à quel IBAN. L'argent ne passe jamais par Braiz." },
+  { title: "Chat du groupe", text: "Les comptes et la discussion au même endroit." },
+  { title: "Trophées", text: "Seize trophées, attribués automatiquement au fil des dépenses." },
+];
+---
+<section class="free" data-free aria-labelledby="free-title">
+  <div class="wrap">
+    <h2 class="free__title" id="free-title">
+      <span class="free__big free__big--eur" data-free-big>
+        0&nbsp;€
+        <svg class="free__scribble" viewBox="0 0 400 220" aria-hidden="true" preserveAspectRatio="none">
+          <path data-free-scribble d="M226 30C150 8 44 26 22 96c-20 66 64 104 170 104 112 0 190-40 186-104C374 36 290 10 196 18c-54 5-96 16-120 34" />
+        </svg>
+      </span>
+      <span class="free__big free__big--pub" data-free-big>0&nbsp;pub</span>
+    </h2>
+
+    <p class="free__lead" data-free-lead>
+      Braiz est gratuite, et il n'y a aucune publicité dans l'app. Tout ce
+      dont un groupe a besoin est inclus.
+    </p>
+
+    <ul class="free__list">
+      {items.map((item) => (
+        <li data-free-item>
+          <span class="free__check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg></span>
+          <span class="free__item"><b>{item.title}</b>{item.text}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .free { position: relative; padding: var(--section-y) 0; }
+  .free__title {
+    position: relative;
+    margin: 0;
+    display: grid;
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 0.82;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  .free__big { display: block; font-size: clamp(6.5rem, 1rem + 27vw, 22rem); white-space: nowrap; will-change: transform, opacity; }
+  .free__big--eur { position: relative; justify-self: start; rotate: -4deg; }
+  .free__big--pub { justify-self: end; margin-top: -0.12em; rotate: 3deg; }
+  .free__scribble {
+    position: absolute;
+    left: -8%;
+    top: -12%;
+    width: 116%;
+    height: 124%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .free__scribble path {
+    fill: none;
+    stroke: var(--ember-start);
+    stroke-width: 6;
+    stroke-linecap: round;
+  }
+
+  /* Marge en em du grand titre : le jambage du « p » de « pub » déborde
+     de sa ligne (interligne 0,82). */
+  .free__lead {
+    margin: clamp(var(--s-7), 6vw, var(--s-9)) 0 0;
+    max-width: 36rem;
+    font-size: var(--t-lead);
+  }
+  .free__list {
+    list-style: none;
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5) var(--s-6);
+  }
+  .free__list li { display: flex; gap: var(--s-3); align-items: flex-start; }
+  .free__check {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+    border-radius: 50%;
+    background: var(--lime);
+  }
+  .free__check svg { width: 16px; fill: none; stroke: var(--ink); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+  .free__item { display: grid; gap: var(--s-1); color: var(--muted); }
+  .free__item b { color: var(--cream); font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; }
+
+  @media (max-width: 899px) {
+    .free__list { grid-template-columns: 1fr; gap: var(--s-4); }
+  }
+</style>

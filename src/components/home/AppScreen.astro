@@ -1,0 +1,244 @@
+---
+// Écrans PROVISOIRES de l'app, en HTML, pour les iPhone de l'accueil. Ils
+// seront remplacés par les captures du compte démo au palier P4.
+// Même groupe fictif que la scène des virements (lib/weekend.ts) : les
+// chiffres se recoupent d'une section à l'autre.
+//
+// Charte : montant d'une dépense en blanc chaud (jamais coloré), soldes en
+// lime (on te doit) et framboise (tu dois), badge du payeur neutre, message
+// système distinct des messages des membres.
+//
+// Les tailles sont en cqw (largeur de l'écran) : le même écran s'adapte à
+// tous les iPhone de la page, quelle que soit leur largeur.
+import { FRIENDS, EXPENSES, BALANCES, SETTLEMENTS, friend } from "../../lib/weekend";
+import { formatEur, deletionDisparu } from "../../lib/systemMessages";
+
+interface Props {
+  kind: "liste" | "ajout" | "soldes" | "rembourser" | "chat";
+}
+const { kind } = Astro.props;
+const tab = kind === "chat" ? "chat" : kind === "soldes" || kind === "rembourser" ? "soldes" : "depenses";
+const sami = SETTLEMENTS.find((s) => s.de === "sami")!;
+const notice = deletionDisparu("Chloé", "Glaces", 12.4);
+---
+<div class="scr-box" aria-hidden="true"><div class="scr">
+  <div class="scr__status"><span>9:41</span><span class="scr__icons"><i></i><i></i><i></i></span></div>
+
+  {kind === "ajout" ? (
+    <div class="scr__head scr__head--sheet"><span class="scr__cancel">Annuler</span><b>Nouvelle dépense</b><span></span></div>
+  ) : kind === "rembourser" ? (
+    <div class="scr__head scr__head--sheet"><span class="scr__cancel">‹</span><b>Rembourser</b><span></span></div>
+  ) : (
+    <>
+      <div class="scr__head"><span class="scr__back">‹</span><b>🏖️ Week-end à Biarritz</b><span class="scr__more">•••</span></div>
+      <div class="scr__tabs">
+        <span class:list={{ on: tab === "depenses" }}>Dépenses</span>
+        <span class:list={{ on: tab === "soldes" }}>Soldes</span>
+        <span class:list={{ on: tab === "chat" }}>Chat</span>
+      </div>
+    </>
+  )}
+
+  {kind === "liste" && (
+    <div class="scr__body">
+      <p class="scr__date">Samedi</p>
+      {EXPENSES.slice(0, 6).map((e) => (
+        <div class="row">
+          <span class="row__emoji">{e.emoji}</span>
+          <span class="row__main"><b>{e.title}</b><small>payé par {friend(e.by).name}</small></span>
+          <span class="row__amount">{formatEur(e.amount)}</span>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {kind === "ajout" && (
+    <div class="scr__body scr__body--form">
+      <label class="field"><small>Titre</small><span>🍕 Pizzas du vendredi</span></label>
+      <label class="field field--amount"><small>Montant</small><span>42,00 €</span></label>
+      <p class="scr__label">Payé par</p>
+      <div class="avs">
+        {FRIENDS.map((f, i) => <span class:list={["av", { "av--on": i === 0 }]} style={`background:${f.color}`}>{f.initial}</span>)}
+      </div>
+      <p class="scr__label">Pour</p>
+      <div class="avs">
+        {FRIENDS.map((f) => <span class="av av--for" style={`background:${f.color}`}>{f.initial}</span>)}
+      </div>
+      <div class="seg"><span class="seg__on">Partage égal</span><span>Montants perso</span></div>
+      <p class="scr__hint">8,40 € par personne</p>
+      <span class="scr__cta">Ajouter</span>
+    </div>
+  )}
+
+  {kind === "soldes" && (
+    <div class="scr__body">
+      {FRIENDS.map((f) => {
+        const b = BALANCES[f.id];
+        return (
+          <div class="bal">
+            <span class="av" style={`background:${f.color}`}>{f.initial}</span>
+            <span>{f.id === "sami" ? "Toi" : f.name}</span>
+            <span class:list={[b > 0 ? "pos" : b < 0 ? "neg" : "zero"]}>{b > 0 ? "+ " : b < 0 ? "− " : ""}{formatEur(Math.abs(b))}</span>
+          </div>
+        );
+      })}
+      <p class="scr__date">Pour être quittes</p>
+      {SETTLEMENTS.map((s) => (
+        <div class="pay"><span>{friend(s.de).name} → {friend(s.vers).name}</span><b>{formatEur(s.montant)}</b></div>
+      ))}
+    </div>
+  )}
+
+  {kind === "rembourser" && (
+    <div class="scr__body scr__body--form">
+      <div class="to">
+        <span class="av av--xl" style={`background:${friend("hugo").color}`}>H</span>
+        <p>Tu rembourses Hugo</p>
+        <b class="to__amount">{formatEur(sami.montant)}</b>
+      </div>
+      <div class="iban">
+        <small>IBAN de Hugo Martin</small>
+        <span>FR76 3000 4012 •••• •••• 4821</span>
+      </div>
+      <span class="scr__ghost">Copier l'IBAN</span>
+      <p class="scr__hint">Fais le virement depuis ta banque, puis reviens le noter ici.</p>
+      <span class="scr__cta">J'ai remboursé</span>
+    </div>
+  )}
+
+  {kind === "chat" && (
+    <div class="scr__body scr__body--chat">
+      <div class="msg"><span class="av" style={`background:${friend("lea").color}`}>L</span><p>Quelqu'un a vu passer les glaces ?</p></div>
+      <div class="sys"><span class="sys__emoji">{notice.emoji}</span><p>{notice.text}</p></div>
+      <div class="msg msg--me"><p>Je n'ai rien vu 👀</p></div>
+      <div class="msg"><span class="av" style={`background:${friend("chloe").color}`}>C</span><p>Doublon, promis !</p></div>
+      <div class="composer"><span>Message</span><i></i></div>
+    </div>
+  )}
+</div></div>
+
+<style>
+  /* Le conteneur est l'enveloppe : les cqw de .scr (et de tout ce qu'il
+     contient) se rapportent à la largeur de l'écran du téléphone. */
+  .scr-box { container-type: inline-size; height: 100%; }
+  .scr {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-text);
+    font-size: 4.4cqw;
+    line-height: 1.3;
+    text-align: left;
+    user-select: none;
+  }
+  .scr__status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5.5cqw 8cqw 2cqw;
+    font-size: 4.2cqw;
+    font-weight: 600;
+  }
+  .scr__icons { display: flex; gap: 1cqw; }
+  .scr__icons i { width: 3cqw; height: 3cqw; border-radius: 1cqw; background: var(--cream); opacity: 0.85; }
+  .scr__head {
+    display: grid;
+    grid-template-columns: 8cqw 1fr 8cqw;
+    align-items: center;
+    padding: 4cqw 5cqw 2.5cqw;
+    text-align: center;
+    font-size: 4.6cqw;
+  }
+  .scr__head b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .scr__back, .scr__more, .scr__cancel { color: var(--muted); }
+  .scr__head--sheet { grid-template-columns: 18cqw 1fr 18cqw; }
+  .scr__cancel { font-size: 3.8cqw; text-align: left; }
+  .scr__tabs {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid var(--hairline);
+    color: var(--muted);
+    font-size: 4cqw;
+  }
+  .scr__tabs span { padding: 2.5cqw 0; }
+  .scr__tabs .on { color: var(--ember-start); box-shadow: inset 0 -2px 0 var(--ember-start); }
+  .scr__body { flex: 1; padding: 3cqw 4.5cqw; display: flex; flex-direction: column; gap: 2cqw; overflow: hidden; }
+  .scr__date, .scr__label { margin: 2cqw 0 0; color: var(--muted); font-size: 3.5cqw; }
+  .row {
+    display: grid;
+    grid-template-columns: 10cqw 1fr auto;
+    align-items: center;
+    gap: 3cqw;
+    padding: 2.8cqw 3cqw;
+    border-radius: 4cqw;
+    background: var(--surface);
+  }
+  .row__emoji { display: grid; place-items: center; width: 10cqw; height: 10cqw; border-radius: 3cqw; background: var(--surface-2); font-size: 5cqw; }
+  .row__main { display: grid; min-width: 0; }
+  .row__main b { font-weight: 600; font-size: 4cqw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row__main small { color: var(--muted); font-size: 3.3cqw; }
+  .row__amount { font-weight: 600; font-size: 4cqw; white-space: nowrap; }
+
+  .av {
+    display: inline-grid;
+    place-items: center;
+    width: 9cqw;
+    height: 9cqw;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid rgba(250, 247, 244, 0.16);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 4cqw;
+  }
+  .av--xl { width: 20cqw; height: 20cqw; font-size: 9cqw; }
+  .avs { display: flex; gap: 2.2cqw; }
+  .av--on { box-shadow: 0 0 0 0.6cqw var(--ink), 0 0 0 1.3cqw var(--ember-start); }
+  .av--for { box-shadow: 0 0 0 0.6cqw var(--ink), 0 0 0 1.1cqw rgba(250, 247, 244, 0.5); }
+
+  .bal { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 3cqw; padding: 2cqw 1cqw; font-size: 4cqw; }
+  .pos { color: var(--lime); font-weight: 600; }
+  .neg { color: var(--framboise); font-weight: 600; }
+  .zero { color: var(--muted); }
+  .pay { display: flex; justify-content: space-between; padding: 3cqw; border-radius: 3.5cqw; background: var(--surface); font-size: 3.8cqw; }
+  .pay b { font-weight: 600; }
+
+  .scr__body--form { gap: 2.4cqw; }
+  .field { display: grid; gap: 1cqw; padding: 3cqw 3.5cqw; border-radius: 3.5cqw; background: var(--surface); }
+  .field small { color: var(--muted); font-size: 3.2cqw; }
+  .field--amount span { font-family: var(--font-display); font-weight: 700; font-size: 8cqw; line-height: 1.1; }
+  .seg { display: flex; margin-top: 2cqw; padding: 1cqw; border-radius: 3cqw; background: var(--surface); font-size: 3.5cqw; color: var(--muted); }
+  .seg span { flex: 1; text-align: center; padding: 1.8cqw 0; border-radius: 2.4cqw; }
+  .seg__on { background: var(--surface-2); color: var(--cream); box-shadow: inset 0 0 0 1px rgba(250, 247, 244, 0.14); }
+  .scr__hint { margin: 0; color: var(--muted); font-size: 3.4cqw; text-align: center; }
+  .scr__cta {
+    margin-top: auto;
+    margin-bottom: 4cqw;
+    padding: 3.6cqw;
+    border-radius: 99px;
+    background: var(--gradient-button);
+    text-align: center;
+    font-weight: 600;
+  }
+  .scr__ghost { padding: 3cqw; border-radius: 99px; border: 1px solid var(--outline); text-align: center; font-size: 3.8cqw; }
+
+  .to { display: grid; justify-items: center; gap: 1.5cqw; padding: 3cqw 0; text-align: center; }
+  .to p { margin: 1cqw 0 0; color: var(--muted); font-size: 3.8cqw; }
+  .to__amount { font-family: var(--font-display); font-weight: 700; font-size: 11cqw; line-height: 1; }
+  .iban { display: grid; gap: 1cqw; padding: 3cqw 3.5cqw; border-radius: 3.5cqw; background: var(--surface); }
+  .iban small { color: var(--muted); font-size: 3.2cqw; }
+  .iban span { font-size: 3.7cqw; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+
+  .scr__body--chat { gap: 2.6cqw; }
+  .msg { display: flex; align-items: flex-end; gap: 2cqw; }
+  .msg p { margin: 0; max-width: 72%; padding: 2.4cqw 3.4cqw; border-radius: 4cqw 4cqw 4cqw 1cqw; background: var(--surface-2); font-size: 3.8cqw; }
+  .msg--me { justify-content: flex-end; }
+  .msg--me p { border-radius: 4cqw 4cqw 1cqw 4cqw; background: #2A1A12; }
+  .sys { display: flex; gap: 2.4cqw; align-items: flex-start; padding: 3cqw; border-radius: 4cqw; background: rgba(255, 106, 26, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 106, 26, 0.22); }
+  .sys p { margin: 0; font-size: 3.6cqw; }
+  .sys__emoji { font-size: 5.5cqw; line-height: 1; }
+  .composer { margin-top: auto; margin-bottom: 4cqw; display: flex; justify-content: space-between; align-items: center; padding: 2.6cqw 3.4cqw; border-radius: 99px; background: var(--surface); color: var(--muted); font-size: 3.6cqw; }
+  .composer i { width: 7cqw; height: 7cqw; border-radius: 50%; background: var(--ember-start); }
+</style>

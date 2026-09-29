@@ -1,0 +1,214 @@
+---
+// Hero de l'accueil : ce qu'est Braiz en une phrase, « Gratuite, sans
+// pub. », le bouton ember, et l'iPhone entouré de bulles qui flottent.
+//
+// Tout est visible sans JavaScript. Entrée au chargement en CSS pur
+// (data-intro, et les bulles qui éclosent) ; quand GSAP arrive, home.ts
+// ajoute la vague du titre (SplitText) et la parallaxe au défilement.
+import Button from "../Button.astro";
+import PhoneFrame from "../PhoneFrame.astro";
+import AppScreen from "./AppScreen.astro";
+import { BETA_PATH } from "../../lib/links";
+import { deletionDisparu, formatEur } from "../../lib/systemMessages";
+
+const chambrage = deletionDisparu("Chloé", "Glaces", 12.4);
+---
+<section class="hero" data-hero>
+  <div class="hero__glow" data-depth="-12" aria-hidden="true"></div>
+  <div class="wrap hero__grid">
+    <div class="hero__text">
+      <h1 class="hero__title" data-hero-title>Braiz, l'app pour partager les dépenses entre amis.</h1>
+      <p class="hero__free" data-intro style="--i: 1">Gratuite, sans pub.</p>
+      <p class="hero__lead" data-intro style="--i: 2">
+        Restos, week-ends, colocs : le groupe ajoute ses dépenses, Braiz calcule
+        qui doit combien à qui.
+      </p>
+      <div class="hero__cta" data-intro style="--i: 3">
+        <Button href={BETA_PATH} variant="ember">Rejoindre la beta</Button>
+        <p class="hero__note">Beta ouverte sur iPhone et Android.</p>
+      </div>
+    </div>
+
+    <div class="hero__stage">
+      <div class="hero__phone" data-depth="-6">
+        <PhoneFrame width="clamp(210px, 22vw, 300px)">
+          <AppScreen kind="liste" />
+        </PhoneFrame>
+      </div>
+
+      <!-- Bulles : décor, le même contenu est dans la page (liste de
+           dépenses, chat). -->
+      <div class="bubble bubble--add" data-depth="18" aria-hidden="true" style="--d: 0">
+        <div class="bubble__in">
+          <span class="bubble__tile">🍕</span>
+          <span class="bubble__main"><b>Pizzas du vendredi</b><small>ajoutée par Inès</small></span>
+          <span class="bubble__amount">{formatEur(42)}</span>
+        </div>
+      </div>
+      <div class="bubble bubble--sys" data-depth="10" aria-hidden="true" style="--d: 1">
+        <div class="bubble__in">
+          <span class="bubble__emoji">{chambrage.emoji}</span>
+          <p>{chambrage.text}</p>
+        </div>
+      </div>
+      <div class="bubble bubble--paid" data-depth="26" aria-hidden="true" style="--d: 2">
+        <div class="bubble__in">
+          <span class="bubble__check"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg></span>
+          <span class="bubble__main"><b>Sami a remboursé Hugo</b><small>{formatEur(19)}</small></span>
+        </div>
+      </div>
+      <div class="bubble bubble--trophy" data-depth="14" aria-hidden="true" style="--d: 3">
+        <div class="bubble__in"><span>🚒</span><b>Le Pompier</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: var(--s-6) 0 var(--s-9);
+  }
+  .hero__glow {
+    position: absolute;
+    right: -10vw;
+    top: 5%;
+    width: min(110vw, 900px);
+    aspect-ratio: 1;
+    background: var(--glow-ember);
+    opacity: 0.55;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .hero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: var(--s-7);
+  }
+  .hero__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.75rem, 1.1rem + 5.6vw, 6.4rem);
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    max-width: 12ch;
+    text-wrap: balance;
+  }
+  /* Entrée du titre au chargement : mouvement seul, SANS fondu. Le texte
+     est visible dès le premier rendu, ce qui en fait le plus grand élément
+     affiché (LCP) dès la première image, et non à l'arrivée de GSAP. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__title { animation: hero-title-in 1000ms var(--ease-spring) 80ms both; }
+  }
+  @keyframes hero-title-in {
+    from { transform: translate3d(0, 26px, 0) rotate(-1.5deg); }
+    to   { transform: none; }
+  }
+  .hero__free {
+    margin: var(--s-5) 0 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem);
+    line-height: 1.1;
+  }
+  .hero__lead {
+    margin: var(--s-4) 0 0;
+    max-width: 30rem;
+    color: var(--muted);
+    font-size: var(--t-lead);
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-5);
+    margin-top: var(--s-6);
+  }
+  .hero__note { margin: 0; color: var(--muted); font-size: var(--t-small); }
+
+  .hero__stage {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    padding: var(--s-6) 0;
+  }
+  .hero__phone { rotate: 5deg; will-change: transform; }
+
+  /* ---------- Bulles ---------- */
+  .bubble {
+    position: absolute;
+    z-index: 2;
+    will-change: transform;
+  }
+  .bubble__in {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-m);
+    background: rgba(27, 23, 31, 0.92);
+    box-shadow: 0 0 0 1px rgba(250, 247, 244, 0.08), 0 18px 40px -12px rgba(0, 0, 0, 0.7);
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+  .bubble__tile { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--surface); font-size: 1.1rem; }
+  .bubble__main { display: grid; }
+  .bubble__main b { font-weight: 600; }
+  .bubble__main small { color: var(--muted); font-size: 0.8rem; }
+  .bubble__amount { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; white-space: nowrap; }
+  .bubble--sys .bubble__in {
+    align-items: flex-start;
+    max-width: 17rem;
+    background: rgba(38, 22, 16, 0.94);
+    box-shadow: 0 0 0 1px rgba(255, 106, 26, 0.28), 0 18px 40px -12px rgba(0, 0, 0, 0.7);
+  }
+  .bubble--sys p { margin: 0; }
+  .bubble__emoji { font-size: 1.35rem; line-height: 1.1; }
+  .bubble__check { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--lime); }
+  .bubble__check svg { width: 18px; fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .bubble--trophy .bubble__in { gap: var(--s-2); padding: var(--s-2) var(--s-4) var(--s-2) var(--s-3); border-radius: var(--r-pill); font-family: var(--font-display); }
+  .bubble--trophy b { font-weight: 600; }
+
+  .bubble--add { left: -12%; top: 14%; rotate: -6deg; }
+  .bubble--sys { right: -16%; top: 42%; rotate: 4deg; }
+  .bubble--paid { left: -6%; bottom: 12%; rotate: 3deg; }
+  .bubble--trophy { right: 2%; top: 4%; rotate: -8deg; }
+
+  /* Au chargement, les bulles éclosent l'une après l'autre (ressort en
+     linear()), puis flottent. Deux éléments différents : .bubble porte la
+     parallaxe (GSAP), .bubble__in l'éclosion et le flottement (CSS). */
+  @media (prefers-reduced-motion: no-preference) {
+    .bubble__in {
+      animation:
+        bubble-pop 900ms linear(0, 0.4 10%, 1.1 26%, 1.14 31%, 0.98 48%, 1.01 66%, 1) both,
+        bubble-float 6s ease-in-out infinite alternate;
+      animation-delay: calc(700ms + var(--d) * 180ms), calc(1600ms + var(--d) * 400ms);
+    }
+    .bubble:nth-child(odd) .bubble__in { animation-duration: 900ms, 7.5s; }
+  }
+  @keyframes bubble-pop {
+    from { opacity: 0; transform: scale(0.4) translate3d(0, 20px, 0); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Part de « none », comme la fin de l'éclosion : aucun saut au relais. */
+  @keyframes bubble-float {
+    from { transform: none; }
+    to   { transform: translate3d(0, 10px, 0) rotate(1.2deg); }
+  }
+
+  @media (max-width: 899px) {
+    .hero { padding: var(--s-4) 0 var(--s-8); }
+    .hero__grid { grid-template-columns: 1fr; gap: var(--s-6); }
+    .hero__stage { padding: var(--s-5) 0 var(--s-6); }
+    .hero__glow { top: 40%; right: -40vw; }
+    .bubble__in { font-size: 0.8rem; padding: var(--s-2) var(--s-3); }
+    .bubble--add { left: 0; top: 10%; }
+    .bubble--sys { right: 0; top: 46%; }
+    .bubble--sys .bubble__in { max-width: 13.5rem; }
+    .bubble--paid { left: 2%; bottom: 12%; }
+    .bubble--trophy { display: none; }
+  }
+</style>

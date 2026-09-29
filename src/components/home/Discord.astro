@@ -1,0 +1,33 @@
+---
+// Communauté Discord. Rendu SEULEMENT si DISCORD_URL est renseigné
+// (lib/links.ts) : tant que le lien est vide, ce composant ne produit
+// rien, ni HTML ni place réservée.
+import Button from "../Button.astro";
+import { DISCORD_URL } from "../../lib/links";
+---
+{DISCORD_URL && (
+  <section class="discord" aria-labelledby="discord-title">
+    <div class="wrap discord__inner">
+      <h2 class="discord__title" id="discord-title">Rejoins la communauté.</h2>
+      <p class="discord__text">
+        Signale un bug, propose une idée, suis les nouveautés de la beta : tout
+        se passe sur le serveur Discord de Braiz.
+      </p>
+      <Button href={DISCORD_URL} rel="noopener" target="_blank">Rejoindre le Discord</Button>
+    </div>
+  </section>
+)}
+
+<style>
+  .discord { padding: var(--section-y) 0; }
+  .discord__inner { display: grid; justify-items: start; gap: var(--s-5); }
+  .discord__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .discord__text { margin: 0; max-width: 32rem; color: var(--muted); font-size: var(--t-lead); }
+</style>

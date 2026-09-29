@@ -1,43 +1,40 @@
 ---
-import Base from "../layouts/Base.astro";
+// Accueil (palier P3). Pendant la beta, tous les appels à l'action mènent à
+// /beta ; un seul bouton ember par écran.
+// Ordre : hero, scène des virements, gratuit, ce que fait Braiz, ambiance
+// (chat et trophées), kit de l'organisateur, FAQ, Discord (masqué tant que
+// le lien est vide), appel final. Les illustrations de scènes de vie
+// viendront plus tard.
+import Site from "../layouts/Site.astro";
+import Hero from "../components/home/Hero.astro";
+import VirementsScene from "../components/virements/VirementsScene.astro";
+import Free from "../components/home/Free.astro";
+import Features from "../components/home/Features.astro";
+import Ambiance from "../components/home/Ambiance.astro";
+import Kit from "../components/home/Kit.astro";
+import Faq from "../components/home/Faq.astro";
+import Discord from "../components/home/Discord.astro";
+import FinalCta from "../components/home/FinalCta.astro";
 ---
-<Base>
-<Fragment slot="head">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Braiz - Règle tes comptes, garde tes potes</title>
-<meta name="description" content="Braiz partage les dépenses entre amis et calcule qui doit quoi à qui. Application mobile en beta, sur iPhone et Android.">
-<meta name="theme-color" content="#08070A">
-<meta property="og:title" content="Braiz">
-<meta property="og:description" content="Règle tes comptes, garde tes potes.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://getbraiz.com">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/style.css">
-</Fragment>
-
-<main>
-  <div class="wrap">
-    <section class="hero">
-      <h1 class="hero__line">Règle tes comptes,<br>garde tes potes.</h1>
-
-      <p class="hero__what">
-        Braiz suit les dépenses d'un groupe d'amis, calcule qui doit quoi à qui,
-        et met un peu d'ambiance dans le moment le moins drôle d'un week-end :
-        celui où il faut se rembourser.
-      </p>
-
-      <div class="hero__note">
-        <strong>L'application est en beta.</strong>
-        Elle n'est pas encore sur les stores, mais tu peux rejoindre les
-        premiers testeurs.
-      </div>
-
-      <div class="hero__cta">
-        <a class="btn" href="/beta">Rejoindre la beta</a>
-      </div>
-    </section>
+<Site
+  title="Braiz, l'app pour partager les dépenses entre amis"
+  description="Ajoute les dépenses du groupe, Braiz calcule qui doit combien à qui, avec le moins de virements possible. Gratuite, sans pub. Beta ouverte sur iPhone et Android."
+  ogTitle="Braiz. Règle tes comptes, garde tes potes."
+  ogImage="/og-accueil.png"
+>
+  <div class="home" data-home data-gsap="split draw">
+    <Hero />
+    <VirementsScene headingLevel={2} />
+    <Free />
+    <Features />
+    <Ambiance />
+    <Kit />
+    <Faq />
+    <Discord />
+    <FinalCta />
   </div>
-</main>
-</Base>
+</Site>
+
+<script>
+  import "../scripts/home.ts";
+</script>

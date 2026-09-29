@@ -27,7 +27,7 @@ const payers = new Set(EXPENSES.map((e) => e.by)).size;
 
 const chapters = [
   { title: "Un week-end, cinq amis.", text: `${namesText} partent deux jours à ${PLACE}.` },
-  { title: "Chacun paie sa part.", text: `La maison, les courses, le restaurant, la route, le surf : ${EXPENSES.length} dépenses, avancées par ${payers} personnes.` },
+  { title: "Chacun paie sa part.", text: `La maison, les courses, le restaurant, la route, le surf : ${EXPENSES.length} dépenses, avancées par ${payers} personnes.` },
   { title: "Qui doit combien à qui ?", text: `Rembourser chaque dépense à chaque personne qui l'a avancée, c'est ${NAIVE.length} virements.` },
   { title: "Braiz démêle tout.", text: `Braiz compense les dettes entre elles. Il ne reste que ${SETTLEMENTS.length} virements, et les comptes tombent juste.` },
 ];
@@ -175,11 +175,11 @@ const H2 = headingLevel === 1 ? "h2" : "h3";
           <p class="story__text">{chapters[3].text}</p>
           <div class="story__compare">
             <figure>
-              <ArrowsFigure kind="naive" label={`Sans calcul : ${NAIVE.length} virements entre les cinq amis, dans tous les sens.`} />
+              <ArrowsFigure kind="naive" label={`Sans calcul : ${NAIVE.length} virements entre les cinq amis, dans tous les sens.`} />
               <figcaption><strong>{NAIVE.length}</strong> virements sans calcul</figcaption>
             </figure>
             <figure>
-              <ArrowsFigure kind="settle" label={`Avec Braiz : ${SETTLEMENTS.length} virements.`} />
+              <ArrowsFigure kind="settle" label={`Avec Braiz : ${SETTLEMENTS.length} virements.`} />
               <figcaption><strong>{SETTLEMENTS.length}</strong> virements avec Braiz</figcaption>
             </figure>
           </div>

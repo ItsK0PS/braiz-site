@@ -95,9 +95,27 @@ a { color: inherit; }
 
 .site-bottom {
   border-top: 1px solid var(--hairline);
-  padding: var(--s-7) 0;
+  /* Zone de sécurité en bas (barre de Safari iOS, indicateur d'accueil). */
+  padding: var(--s-7) 0 calc(var(--s-7) + env(safe-area-inset-bottom));
   color: var(--muted);
   font-size: var(--t-small);
+}
+.site-bottom__inner { display: grid; gap: var(--s-5); }
+.site-bottom__logo { width: 88px; height: auto; }
+.site-bottom__nav { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); }
+.site-bottom a { color: var(--muted); text-underline-offset: 3px; }
+.site-bottom a:hover { color: var(--cream); }
+.site-bottom p { margin: 0; }
+
+/* Texte réservé aux lecteurs d'écran. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* ---------- Masques de SplitText (scripts/split.ts) ----------
