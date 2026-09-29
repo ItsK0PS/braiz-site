@@ -115,17 +115,12 @@
   </div>
 </footer>
 
+<!-- TESTFLIGHT_URL, partagé avec /beta. Chemin absolu : cette page est
+     servie sous /join/<token>. -->
+<script src="/testflight.js"></script>
 <script>
 (function () {
   "use strict";
-
-  // ------------------------------------------------------------------
-  // ⚠️ LA SEULE VALEUR À CHANGER quand TestFlight sera ouvert.
-  // Chaîne vide = le bouton d'installation est masqué et remplacé par le
-  // bloc "L'installation ouvre bientôt". Y mettre le lien public TestFlight
-  // suffit à inverser les deux, il n'y a rien d'autre à toucher.
-  // ------------------------------------------------------------------
-  var TESTFLIGHT_URL = "";
 
   // Clé publishable Supabase. Publique par conception : elle ne porte aucune
   // identité, elle sélectionne le rôle anon, et tout son accès est filtré

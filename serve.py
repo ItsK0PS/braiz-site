@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Sert le site en local en reproduisant la réécriture Vercel /join/:token.
+Sert le site en local en reproduisant vercel.json : la réécriture
+/join/:token et les URLs sans extension (cleanUrls).
 
     python3 serve.py
 
@@ -15,6 +16,7 @@ Pour tester la copie pour de vrai, il faut du https, donc le site déployé.
 
 import functools
 import http.server
+import os
 import re
 import socket
 
@@ -29,7 +31,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # l'URL change, donc le script y lit toujours son jeton.
         if JOIN.match(path.split("?")[0]):
             return ROOT + "/join.html"
-        return super().translate_path(path)
+        # cleanUrls de vercel.json : /beta sert beta.html.
+        local = super().translate_path(path)
+        if not os.path.exists(local) and os.path.exists(local + ".html"):
+            return local + ".html"
+        return local
 
     def end_headers(self):
         # Pas de cache : sinon une correction de style ne se voit pas.

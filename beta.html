@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rejoindre la beta - Braiz</title>
+<meta name="description" content="Rejoins la beta de Braiz sur iPhone ou Android : l'app qui partage les dépenses entre potes et calcule qui doit quoi à qui.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#08070A">
+<meta property="og:title" content="Braiz, la beta">
+<meta property="og:description" content="Règle tes comptes, garde tes potes. Rejoins la beta sur iPhone ou Android.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://getbraiz.com/beta">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="mark" href="/">
+      <img class="mark__logo" src="/braiz-wordmark.svg" alt="Braiz" width="132" height="62">
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero">
+      <h1 class="hero__line">Règle tes comptes,<br>garde tes potes.</h1>
+
+      <p class="hero__what">
+        Braiz est en beta, et on cherche des gens pour la malmener avant tout
+        le monde. Tu suis les dépenses de ta bande, l'appli calcule qui doit
+        quoi à qui, et toi tu nous dis ce qui cloche. En bonus, tu chambres
+        tes potes avec les trophées avant qu'ils sachent que ça existe.
+      </p>
+    </section>
+
+    <!-- L'ordre des blocs suit la plateforme : iPhone d'abord par défaut
+         (et sans JavaScript), Android d'abord sur Android. Sur ordinateur,
+         le QR code passe en tête : on n'installe rien depuis un ordi. -->
+    <div id="platforms">
+
+      <section class="beta__block" id="block-qr" hidden>
+        <h2 class="join__h2">T'es sur ton ordi ?</h2>
+        <p class="join__lede">
+          Scanne ce code avec ton téléphone, tu tomberas direct sur cette page.
+        </p>
+        <img class="beta__qr" src="/qr-beta.svg" alt="QR code vers getbraiz.com/beta" width="200" height="200">
+      </section>
+
+      <section class="beta__block" id="block-ios">
+        <h2 class="join__h2">Sur iPhone</h2>
+        <p class="join__lede">
+          Installe d'abord
+          <a href="https://apps.apple.com/app/testflight/id899247664">TestFlight</a>
+          (l'app d'Apple pour les betas), puis rejoins Braiz.
+        </p>
+
+        <div class="join__cta">
+          <a class="btn" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
+
+          <div id="ios-soon">
+            <button class="btn" type="button" disabled>Bientôt dispo sur iPhone</button>
+            <p class="join__alt">
+              Apple relit notre copie avant de nous ouvrir la porte.
+              Repasse dans quelques jours, ce lien ne bougera pas.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="beta__block" id="block-android">
+        <h2 class="join__h2">Sur Android</h2>
+        <p class="join__lede">
+          Braiz n'est pas (encore) sur le Play Store : tu installes le fichier
+          de l'appli directement, en trois étapes.
+        </p>
+
+        <div class="join__cta">
+          <a class="btn" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Télécharger Braiz pour Android</a>
+          <p class="join__alt">~155 Mo, prends le wifi.</p>
+        </div>
+
+        <ol class="steps beta__steps">
+          <li><strong>Télécharge</strong> le fichier braiz.apk avec le bouton au-dessus.</li>
+          <li><strong>Autorise l'installation d'applis inconnues</strong> :
+            en ouvrant le fichier, Android te propose d'aller dans les réglages
+            pour autoriser ton navigateur. Active, puis reviens.</li>
+          <li><strong>Installe</strong>, ouvre Braiz et crée ton compte.</li>
+        </ol>
+
+        <div class="join__warn">
+          <strong>Android va faire son parano, c'est normal.</strong>
+          Il va te dire que l'appli vient d'une source inconnue, et Play
+          Protect peut te demander si t'es bien sûr de toi. Tout ça parce que
+          Braiz ne passe pas par le Play Store. Selon ton téléphone, touche
+          « Installer quand même », parfois caché derrière « Plus de détails ».
+        </div>
+      </section>
+
+    </div>
+
+    <section class="beta__faq">
+      <h2 class="join__h2">Questions</h2>
+      <dl>
+        <dt>C'est gratuit ?</dt>
+        <dd>Oui. Pendant la beta, tout est gratuit, et personne ne te demandera
+          ta carte bancaire pour tester.</dd>
+
+        <dt>Et mes données ?</dt>
+        <dd>Elles servent à faire marcher l'appli, point. Ni revendues, ni
+          pistées pour de la pub. Tout est détaillé dans la
+          <a href="/confidentialite">politique de confidentialité</a>.</dd>
+
+        <dt>Et les mises à jour ?</dt>
+        <dd>Automatiques : l'appli se met à jour toute seule. Dans de rares cas,
+          il faudra une nouvelle version complète. Sur iPhone, TestFlight te la
+          proposera ; sur Android, on te renverra un nouveau fichier.</dd>
+      </dl>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <nav>
+      <a href="/confidentialite">Confidentialité</a>
+      <a href="/cgu">Conditions d'utilisation</a>
+      <a href="/mentions-legales">Mentions légales</a>
+    </nav>
+    <p><a href="mailto:contact@getbraiz.com">contact@getbraiz.com</a></p>
+  </div>
+</footer>
+
+<script src="/testflight.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // Même détection que /join. iPadOS se présente comme un Mac : on le
+  // reconnaît à l'écran tactile.
+  var ua = navigator.userAgent;
+  var isIOS =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(ua);
+
+  var platforms = document.getElementById("platforms");
+  var ios = document.getElementById("block-ios");
+  var android = document.getElementById("block-android");
+  var qr = document.getElementById("block-qr");
+
+  if (TESTFLIGHT_URL) {
+    var link = document.getElementById("ios-link");
+    link.href = TESTFLIGHT_URL;
+    link.hidden = false;
+    document.getElementById("ios-soon").hidden = true;
+  }
+
+  if (isAndroid) {
+    platforms.insertBefore(android, ios);
+  } else if (!isIOS) {
+    // Le QR code est déjà en tête dans le HTML, il suffit de l'afficher.
+    qr.hidden = false;
+  }
+})();
+</script>
+
+</body>
+</html>
