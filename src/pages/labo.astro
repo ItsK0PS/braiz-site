@@ -1,14 +1,10 @@
 ---
-// Labo v2 : une seule séquence, la scène des virements, qui deviendra le
-// cœur de l'accueil. noindex, absente de tout sitemap, liée nulle part.
+// Labo : la scène des virements seule, pour la régler à part de l'accueil.
+// noindex, absente de tout sitemap, liée nulle part.
 import Site from "../layouts/Site.astro";
-import Settle from "../components/labo/Settle.astro";
+import VirementsScene from "../components/virements/VirementsScene.astro";
 ---
 <Site title="Labo - Braiz" description="La scène des virements : un week-end, cinq amis, et Braiz qui démêle les comptes." noindex overlayHeader>
-  <Settle />
+  <VirementsScene />
   <p slot="footer">Page de démonstration du palier P2, non indexée.</p>
 </Site>
-
-<script>
-  import "../scripts/settle.ts";
-</script>

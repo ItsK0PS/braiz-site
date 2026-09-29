@@ -1,7 +1,9 @@
 ---
 // La scène des virements : un week-end, cinq amis, six dépenses, et Braiz
 // qui ramène 18 virements à 3. Séquence épinglée (position: sticky) que
-// settle.ts fait avancer et reculer avec le défilement.
+// scripts/virements.ts fait avancer et reculer avec le défilement.
+// Utilisée par l'accueil et par /labo ; elle charge elle-même son script.
+// Une seule scène par page (le script cherche [data-settle]).
 //
 // Deux mises en page dans le même HTML :
 // - html.motion-ok (posée avant le premier rendu, hors reduced-motion) :
@@ -35,6 +37,16 @@ const chapters = [
 const row = (i: number) => ({ x: 500 + (i - 2) * 118, y: 520 + [-14, 12, -6, 16, -10][i] });
 const pct = (n: number) => `${n / 10}%`;
 const chipTilt = [-5, 4, -3];
+
+interface Props {
+  // Niveau du titre du premier chapitre : h1 quand la scène ouvre la page
+  // (/labo), h2 quand un hero la précède (accueil). Les chapitres suivants
+  // sont un niveau en dessous. Aucun effet visuel.
+  headingLevel?: 1 | 2;
+}
+const { headingLevel = 1 } = Astro.props;
+const H1 = headingLevel === 1 ? "h1" : "h2";
+const H2 = headingLevel === 1 ? "h2" : "h3";
 ---
 <section class="settle" data-settle data-gsap="split draw path" aria-labelledby="settle-title">
   <div class="settle__track">
@@ -132,7 +144,7 @@ const chipTilt = [-5, 4, -3];
            d'écran quand la scène est animée. -->
       <ol class="story">
         <li class="story__ch">
-          <h1 class="story__title" id="settle-title">{chapters[0].title}</h1>
+          <H1 class="story__title" id="settle-title">{chapters[0].title}</H1>
           <p class="story__text">{chapters[0].text}</p>
           <ul class="story__friends" aria-label={`Les membres du groupe ${GROUP}`}>
             {FRIENDS.map((f) => (
@@ -141,7 +153,7 @@ const chipTilt = [-5, 4, -3];
           </ul>
         </li>
         <li class="story__ch">
-          <h2 class="story__title">{chapters[1].title}</h2>
+          <H2 class="story__title">{chapters[1].title}</H2>
           <p class="story__text">{chapters[1].text}</p>
           <ul class="story__expenses">
             {EXPENSES.map((e) => (
@@ -155,11 +167,11 @@ const chipTilt = [-5, 4, -3];
           <p class="story__big">{euros(TOTAL)} <span>pour tout le week-end</span></p>
         </li>
         <li class="story__ch">
-          <h2 class="story__title">{chapters[2].title}</h2>
+          <H2 class="story__title">{chapters[2].title}</H2>
           <p class="story__text">{chapters[2].text}</p>
         </li>
         <li class="story__ch">
-          <h2 class="story__title">{chapters[3].title}</h2>
+          <H2 class="story__title">{chapters[3].title}</H2>
           <p class="story__text">{chapters[3].text}</p>
           <div class="story__compare">
             <figure>
@@ -186,7 +198,7 @@ const chipTilt = [-5, 4, -3];
           <div class="outro__halo"></div>
           <BrandMark class="outro__b" id="settle-b" />
         </div>
-        <h2 class="outro__title">Règle tes comptes, garde tes potes.</h2>
+        <H2 class="outro__title">Règle tes comptes, garde tes potes.</H2>
         <p class="outro__text">Braiz calcule le moins de virements possible. Toi, tu profites du week-end.</p>
         <div class="outro__cta"><Button href="/beta" variant="ember">Rejoindre la beta</Button></div>
       </div>
@@ -194,6 +206,10 @@ const chipTilt = [-5, 4, -3];
     </div>
   </div>
 </section>
+
+<script>
+  import "../../scripts/virements.ts";
+</script>
 
 <style>
   /* =========================================================

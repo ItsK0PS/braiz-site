@@ -1,4 +1,4 @@
-// La scène des virements (Settle.astro), en cinq chapitres, liée au
+// La scène des virements (components/virements/VirementsScene.astro), en cinq chapitres, liée au
 // défilement : elle avance et recule avec le scroll (scrub).
 //
 // 1. Un week-end, cinq amis : les pastilles se placent en cercle.
