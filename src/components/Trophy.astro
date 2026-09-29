@@ -1,0 +1,99 @@
+---
+// Trophée en vedette : PNG de l'app (WebP / AVIF), incliné en perspective
+// (±12° maximum, charte), avec reflet et glow. Pas de 3D.
+//
+// L'inclinaison et le reflet suivent le scroll quand GSAP est chargé
+// (data-tilt). Sans script ou en reduced-motion : trophée droit, glow fixe.
+interface Props {
+  name: string;
+  base: string; // chemin sans suffixe, ex. /images/labo/trophee-pompier
+  class?: string;
+}
+const { name, base, class: className } = Astro.props;
+---
+<figure class:list={["trophy", className]} data-tilt>
+  <div class="trophy__glow" aria-hidden="true"></div>
+  <div class="trophy__card">
+    <picture>
+      <source type="image/avif" srcset={`${base}-240.avif 240w, ${base}-480.avif 480w`} sizes="240px" />
+      <img
+        src={`${base}-480.webp`}
+        srcset={`${base}-240.webp 240w, ${base}-480.webp 480w`}
+        sizes="240px"
+        width="240"
+        height="240"
+        alt={`Trophée ${name}`}
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+    <span class="trophy__sheen" aria-hidden="true" style={`--trophy-mask: url(${base}-240.webp)`}><span class="trophy__band" data-sheen></span></span>
+  </div>
+  <figcaption class="trophy__name">{name}</figcaption>
+</figure>
+
+<style>
+  .trophy {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-4);
+    margin: 0;
+    perspective: 900px;
+  }
+  .trophy__glow {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    width: 420px;
+    max-width: 120vw;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: var(--glow-ember);
+    opacity: 0.75;
+    transition: opacity var(--dur-slow) var(--ease-out);
+    pointer-events: none;
+  }
+  .trophy__card {
+    position: relative;
+    width: 240px;
+    aspect-ratio: 1;
+    will-change: transform;
+  }
+  .trophy__card img {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.55));
+  }
+  /* Reflet : une bande claire qui glisse sur le trophée (translation
+     seulement), découpée par sa silhouette (mask = l'image elle-même). */
+  .trophy__sheen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    -webkit-mask: var(--trophy-mask) center / contain no-repeat;
+    mask: var(--trophy-mask) center / contain no-repeat;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+  }
+  .trophy__band {
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    left: 0;
+    width: 45%;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.85) 50%, transparent);
+    transform: translate3d(-120%, 0, 0);
+    will-change: transform;
+  }
+  .trophy__name {
+    position: relative;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--t-h3);
+  }
+  @media (hover: hover) {
+    .trophy:hover .trophy__glow { opacity: 1; }
+  }
+</style>
+

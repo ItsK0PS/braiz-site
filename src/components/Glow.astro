@@ -1,0 +1,37 @@
+---
+// Lueur ember diffuse, décorative (aria-hidden). Un dégradé radial déjà
+// flou : pas de filter: blur(), coûteux à animer sur mobile.
+// data-parallax : la scène de la page peut la déplacer au scroll.
+interface Props {
+  size?: string;
+  top?: string;
+  left?: string;
+  opacity?: number;
+  parallax?: number;
+  class?: string;
+}
+const { size = "min(90vw, 720px)", top = "0", left = "50%", opacity = 0.9, parallax, class: className } = Astro.props;
+---
+<div
+  class:list={["glow", className]}
+  aria-hidden="true"
+  data-parallax={parallax}
+  style={`--glow-size: ${size}; --glow-top: ${top}; --glow-left: ${left}; --glow-opacity: ${opacity}`}
+>
+</div>
+
+<style>
+  .glow {
+    position: absolute;
+    top: var(--glow-top);
+    left: var(--glow-left);
+    width: var(--glow-size);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: var(--glow-ember);
+    opacity: var(--glow-opacity);
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+  }
+</style>

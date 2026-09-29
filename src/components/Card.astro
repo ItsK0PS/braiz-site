@@ -1,0 +1,27 @@
+---
+// Carte : surface sombre neutre. Jamais d'ember sur une carte secondaire.
+interface Props {
+  as?: "div" | "article" | "li";
+  reveal?: boolean;
+  index?: number;
+  class?: string;
+}
+const { as: Tag = "div", reveal = true, index = 0, class: className } = Astro.props;
+---
+<Tag
+  class:list={["card", className]}
+  data-reveal={reveal ? "" : undefined}
+  style={reveal ? `--i: ${index}` : undefined}
+>
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-l);
+    padding: var(--s-5);
+    box-shadow: var(--shadow-card);
+  }
+</style>

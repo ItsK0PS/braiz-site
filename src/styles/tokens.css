@@ -1,0 +1,104 @@
+/* ------------------------------------------------------------------
+   Tokens de la refonte, tirés de BRAIZ-charte-DA.md.
+   Chargés uniquement par les pages construites sur Site.astro : les pages
+   actuelles (/, /beta, /join, légales) gardent public/style.css tel quel.
+------------------------------------------------------------------ */
+
+/* Outfit variable, graisses 600 à 700 seulement (sous-titres et titres),
+   sous-ensemble latin + tous les caractères français, Ÿ compris. OFL 1.1,
+   licence dans public/fonts/OFL-Outfit.txt. */
+@font-face {
+  font-family: "Outfit";
+  src: url("/fonts/outfit-var-fr.woff2") format("woff2");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Arial ajustée aux proportions d'Outfit 700 : quand Outfit arrive, le
+   texte garde la même largeur et la même hauteur de ligne, donc rien ne
+   bouge (CLS). Valeurs calculées sur les tables des deux polices. */
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Arial"), local("Roboto");
+  font-weight: 600 700;
+  size-adjust: 95.06%;
+  ascent-override: 105.2%;
+  descent-override: 27.35%;
+  line-gap-override: 0%;
+}
+
+:root {
+  /* --- Couleurs de marque (canoniques) --- */
+  --ink:          #08070A;   /* fond */
+  --cream:        #FAF7F4;   /* texte principal, montants de dépense */
+  --ember-start:  #FF6A1A;
+  --ember-end:    #E11D2E;
+  --lime:         #B6F03C;   /* positif : « on te doit » */
+  --lime-deep:    #7CB518;
+  --framboise:    #F2415F;   /* dette et danger */
+  --framboise-deep: #D62246;
+
+  /* --- Structure (indicatifs dans la charte) --- */
+  --surface:      #141117;   /* cartes */
+  --surface-2:    #1B171F;   /* cartes surélevées, bulles */
+  --muted:        #9A959F;   /* texte secondaire */
+  --muted-2:      #6F6A64;
+  --hairline:     #232028;
+  --outline:      #3A3540;
+
+  /* --- Dégradé ember, deux variantes (charte §2) --- */
+  --gradient-brand: linear-gradient(135deg, var(--ember-start), var(--ember-end));
+  --veil: rgba(0, 0, 0, 0.28);          /* voile des boutons, jamais du logo */
+  --gradient-button:
+    linear-gradient(var(--veil), var(--veil)),
+    var(--gradient-brand);
+
+  /* --- Glow : lumière douce, jamais un halo net --- */
+  --glow-ember: radial-gradient(closest-side, rgba(255, 106, 26, 0.55), rgba(225, 29, 46, 0.22) 55%, transparent 100%);
+  --glow-soft:  0 0 0 1px rgba(255, 106, 26, 0.18), 0 12px 48px -8px rgba(255, 106, 26, 0.45);
+
+  /* --- Ombres --- */
+  --shadow-card:  0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --shadow-phone: 0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  /* --- Rayons --- */
+  --r-s:    10px;
+  --r-m:    16px;
+  --r-l:    24px;
+  --r-pill: 999px;
+
+  /* --- Espacements (base 4 px) --- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --section-y: clamp(64px, 12vw, 144px);
+  --gutter: clamp(16px, 5vw, 40px);
+  --content: 72rem;
+  --measure: 36rem;
+
+  /* --- Polices --- */
+  --font-display: "Outfit", "Outfit Fallback", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* --- Échelle typographique fluide, de 360 px à 1280 px de large --- */
+  --t-hero: clamp(2.5rem, 1.6rem + 4.2vw, 5rem);        /* 40 → 80 px */
+  --t-h2:   clamp(1.875rem, 1.4rem + 2.2vw, 3.25rem);   /* 30 → 52 px */
+  --t-h3:   clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);   /* 20 → 26 px */
+  --t-lead: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem); /* 18 → 21 px */
+  --t-body: 1.0625rem;                                    /* 17 px */
+  --t-small: 0.875rem;
+
+  /* --- Mouvement --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur: 320ms;
+  --dur-slow: 720ms;
+}

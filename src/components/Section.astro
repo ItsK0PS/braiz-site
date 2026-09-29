@@ -1,0 +1,22 @@
+---
+// Section de page : espacement vertical fluide et largeur de contenu.
+interface Props {
+  id?: string;
+  class?: string;
+  narrow?: boolean;
+}
+const { id, class: className, narrow = false } = Astro.props;
+---
+<section id={id} class:list={["section", className]}>
+  <div class:list={["wrap", { "wrap--narrow": narrow }]}>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    position: relative;
+    padding: var(--section-y) 0;
+  }
+  .wrap--narrow { max-width: calc(var(--measure) + 2 * var(--gutter)); }
+</style>

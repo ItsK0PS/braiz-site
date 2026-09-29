@@ -1,0 +1,171 @@
+/* ------------------------------------------------------------------
+   Base de la refonte : ossature, typographie, apparitions au scroll,
+   transitions entre pages. Uniquement transform et opacity sont animés.
+------------------------------------------------------------------ */
+@import "./tokens.css";
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Les glows débordent volontairement de leur section : on coupe au niveau
+   de main. Pas sur body : son overflow serait reporté sur la fenêtre, où
+   clip devient hidden, qui se laisse encore faire défiler en JavaScript.
+   clip (et non hidden) ne crée pas de conteneur de défilement, donc
+   position: sticky continue de marcher. */
+main { overflow-x: clip; }
+
+img, svg { display: block; max-width: 100%; }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--ember-start);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Typographie ---------- */
+.t-hero,
+.t-h2,
+.t-h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  text-wrap: balance;
+}
+.t-hero { font-size: var(--t-hero); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+.t-h2   { font-size: var(--t-h2);   font-weight: 700; line-height: 1.08; letter-spacing: -0.015em; }
+.t-h3   { font-size: var(--t-h3);   font-weight: 600; line-height: 1.2; }
+.t-lead { font-size: var(--t-lead); line-height: 1.55; color: var(--cream); margin: 0; text-wrap: pretty; }
+.t-muted { color: var(--muted); }
+.t-small { font-size: var(--t-small); }
+
+/* Texte en dégradé ember : réservé aux grands titres de marque. */
+.t-ember {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ember-start);
+  margin: 0 0 var(--s-3);
+}
+
+/* ---------- Ossature ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.site-top {
+  position: relative;
+  z-index: 2;
+  padding: var(--s-5) 0;
+}
+.site-top .logo { width: 104px; height: auto; view-transition-name: logo; }
+
+.site-bottom {
+  border-top: 1px solid var(--hairline);
+  padding: var(--s-7) 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+
+/* ---------- Apparitions au scroll ----------
+   Par défaut tout est visible. Deux façons de faire apparaître :
+   1. CSS animation-timeline: view() quand le navigateur le gère ;
+   2. sinon reveal.ts ajoute .is-pending aux éléments encore sous l'écran,
+      puis .is-in quand ils y entrent (IntersectionObserver).
+   Décalage : --i sur l'élément (0, 1, 2…). */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translate3d(0, 28px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 6%) entry calc(55% + var(--i, 0) * 6%);
+    }
+  }
+
+  html.reveal-io [data-reveal].is-pending {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  html.reveal-io [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  /* Entrée du hero, au chargement (pas au scroll). CSS pur : aucune
+     dépendance au JavaScript. */
+  [data-intro] {
+    animation: reveal-up 900ms var(--ease-out) both;
+    animation-delay: calc(120ms + var(--i, 0) * 110ms);
+  }
+}
+
+/* ---------- Transitions entre pages ----------
+   Natif, sans ClientRouter. Les deux pages doivent l'activer ; les pages
+   actuelles ne le font pas, donc elles ne changent pas. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  ::view-transition-old(root) {
+    animation: vt-out 220ms var(--ease-out) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 420ms var(--ease-out) both;
+  }
+}
+@keyframes vt-out { to { opacity: 0; transform: translate3d(0, -12px, 0); } }
+@keyframes vt-in  { from { opacity: 0; transform: translate3d(0, 16px, 0); } }
+
+/* ---------- Lenis (ordinateur uniquement) ----------
+   Reprise de lenis/dist/lenis.css (1.3.26), pour ne pas dépendre du
+   chemin interne du paquet. */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
+}

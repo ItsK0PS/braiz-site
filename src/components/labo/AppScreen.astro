@@ -1,0 +1,227 @@
+---
+// Écrans PROVISOIRES aux couleurs de l'app, en HTML, pour le récit au
+// scroll de /labo. Groupe et prénoms inventés (jamais de vraies données,
+// ni les comptes de test). Ils seront remplacés par les captures du compte
+// démo au palier P4.
+//
+// Charte : montant d'une dépense en blanc chaud, soldes en lime / framboise,
+// badge du payeur neutre, message système distinct des messages normaux.
+interface Props {
+  kind: "depense" | "soldes" | "chat" | "trophee";
+}
+const { kind } = Astro.props;
+---
+<div class="scr" data-kind={kind}>
+  <div class="scr__status" aria-hidden="true"><span>9:41</span><span>●●● ▮</span></div>
+  <div class="scr__head">
+    <span class="scr__back" aria-hidden="true">‹</span>
+    <span class="scr__title">🏖️ Week-end à Biarritz</span>
+  </div>
+  <div class="scr__tabs" aria-hidden="true">
+    <span class:list={{ on: kind === "depense" }}>Dépenses</span>
+    <span class:list={{ on: kind === "soldes" }}>Soldes</span>
+    <span class:list={{ on: kind === "chat" || kind === "trophee" }}>Chat</span>
+  </div>
+
+  {kind === "depense" && (
+    <div class="scr__body">
+      <p class="scr__date">Aujourd'hui</p>
+      <div class="row row--new">
+        <span class="row__emoji">🍽️</span>
+        <span class="row__main"><b>Dîner au port</b><small>payé par Inès</small></span>
+        <span class="row__amount">96,40 €</span>
+      </div>
+      <div class="row">
+        <span class="row__emoji">⛽</span>
+        <span class="row__main"><b>Essence</b><small>payé par Hugo</small></span>
+        <span class="row__amount">58,00 €</span>
+      </div>
+      <div class="row">
+        <span class="row__emoji">🏄</span>
+        <span class="row__main"><b>Cours de surf</b><small>payé par Camille</small></span>
+        <span class="row__amount">120,00 €</span>
+      </div>
+      <p class="scr__date">Hier</p>
+      <div class="row">
+        <span class="row__emoji">🛒</span>
+        <span class="row__main"><b>Courses</b><small>payé par Léa</small></span>
+        <span class="row__amount">43,60 €</span>
+      </div>
+    </div>
+  )}
+
+  {kind === "soldes" && (
+    <div class="scr__body">
+      <div class="bal"><span class="av">C</span><span>Camille</span><span class="pos">+ 40,50 €</span></div>
+      <div class="bal"><span class="av">I</span><span>Inès</span><span class="pos">+ 16,90 €</span></div>
+      <div class="bal"><span class="av">H</span><span>Hugo</span><span class="neg">− 21,50 €</span></div>
+      <div class="bal"><span class="av">L</span><span>Léa</span><span class="neg">− 35,90 €</span></div>
+      <p class="scr__date">Pour être quittes</p>
+      <div class="pay"><span>Léa → Camille</span><b>35,90 €</b></div>
+      <div class="pay"><span>Hugo → Inès</span><b>16,90 €</b></div>
+      <div class="pay"><span>Hugo → Camille</span><b>4,60 €</b></div>
+    </div>
+  )}
+
+  {kind === "chat" && (
+    <div class="scr__body scr__body--chat">
+      <div class="bubble"><small>Hugo</small>Quelqu'un a pris la crème solaire ?</div>
+      <div class="bubble bubble--me">Dans la voiture 👍</div>
+      <div class="sys"><span class="sys__emoji">🧹</span><span>Hugo a passé un coup de balai sur « Glaces » (12,50 €). Ça brille, mais on a noté.</span></div>
+      <div class="bubble"><small>Camille</small>On a tous vu 😄</div>
+    </div>
+  )}
+
+  {kind === "trophee" && (
+    <div class="scr__body scr__body--chat">
+      <div class="bubble"><small>Inès</small>Je vous rembourse ce soir</div>
+      <div class="sys sys--trophy"><span class="sys__emoji">🚒</span><span>Inès décroche Le Pompier. Un pote qui rembourse vite, ça se garde.</span></div>
+      <div class="unlock">
+        <span class="unlock__glow" aria-hidden="true"></span>
+        <picture>
+          <source type="image/avif" srcset="/images/labo/trophee-pompier-240.avif" />
+          <img src="/images/labo/trophee-pompier-240.webp" width="120" height="120" alt="" loading="lazy" decoding="async" />
+        </picture>
+        <b>Le Pompier</b>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .scr {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-text);
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .scr__status {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 22px 0;
+    font-weight: 600;
+    font-size: 10px;
+  }
+  .scr__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 22px 14px 10px;
+  }
+  .scr__back { font-size: 18px; color: var(--muted); line-height: 1; }
+  .scr__title { font-weight: 700; font-size: 13px; }
+  .scr__tabs {
+    display: flex;
+    gap: 16px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--hairline);
+    color: var(--muted);
+  }
+  .scr__tabs span { padding: 6px 0; }
+  /* Onglet actif : label ember + soulignement 2 px (charte 3.1). */
+  .scr__tabs .on { color: var(--ember-start); box-shadow: inset 0 -2px 0 var(--ember-start); }
+  .scr__body { padding: 10px 12px; display: grid; gap: 8px; align-content: start; }
+  .scr__date { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--surface);
+    border-radius: 12px;
+  }
+  .row--new { box-shadow: 0 0 0 1px rgba(255, 106, 26, 0.35); }
+  .row__emoji {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    font-size: 14px;
+  }
+  .row__main { display: grid; }
+  .row__main small { color: var(--muted); font-size: 10px; }
+  .row__amount { font-weight: 700; }
+
+  .bal {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--surface);
+    border-radius: 12px;
+  }
+  .av {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    font-weight: 700;
+    font-size: 10px;
+  }
+  .pos { color: var(--lime); font-weight: 700; }
+  .neg { color: var(--framboise); font-weight: 700; }
+  .pay {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    color: var(--muted);
+  }
+  .pay b { color: var(--cream); }
+
+  .scr__body--chat { gap: 10px; }
+  .bubble {
+    max-width: 78%;
+    padding: 7px 10px;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--surface-2);
+  }
+  .bubble small { display: block; color: var(--muted); font-size: 9px; }
+  .bubble--me {
+    justify-self: end;
+    border-radius: 14px 14px 4px 14px;
+    background: #2A2430;
+  }
+  /* Message système : centré, encadré, emoji à gauche (comme l'app). */
+  .sys {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 9px 10px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 106, 26, 0.12), rgba(225, 29, 46, 0.08));
+    border: 1px solid rgba(255, 106, 26, 0.25);
+  }
+  .sys__emoji { font-size: 15px; line-height: 1.1; }
+  .unlock {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .unlock img { position: relative; width: 120px; height: 120px; }
+  .unlock b { position: relative; font-size: 13px; }
+  .unlock__glow {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 220px;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: var(--glow-ember);
+    opacity: 0.8;
+  }
+</style>

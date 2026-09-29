@@ -1,0 +1,140 @@
+---
+// Récit au scroll : un iPhone fixe dont l'écran change au fil des étapes.
+//
+// - Ordinateur (≥ 900 px) : deux colonnes, l'iPhone reste collé
+//   (position: sticky, aucun scroll-jacking) pendant que le texte défile.
+//   Le changement d'écran est fait par un petit script (IntersectionObserver),
+//   indépendant de GSAP : il marche aussi en reduced-motion (sans fondu).
+// - Mobile : version simple, chaque étape a son propre iPhone sous le texte.
+//
+// La mise en page ne dépend que des media queries, jamais du script :
+// aucun décalage quand le JavaScript arrive (CLS).
+import PhoneFrame from "./PhoneFrame.astro";
+import Glow from "./Glow.astro";
+import AppScreen from "./labo/AppScreen.astro";
+
+type Kind = "depense" | "soldes" | "chat" | "trophee";
+interface Props {
+  steps: { kind: Kind; eyebrow: string; title: string; text: string }[];
+}
+const { steps } = Astro.props;
+---
+<div class="story" data-story data-gsap>
+  <ol class="story__steps">
+    {steps.map((step, i) => (
+      <li class="step" data-step={i}>
+        <div class="step__text">
+          <p class="eyebrow" data-reveal>{step.eyebrow}</p>
+          <h2 class="t-h2" data-reveal style="--i: 1">{step.title}</h2>
+          <p class="t-lead t-muted" data-reveal style="--i: 2">{step.text}</p>
+        </div>
+        <div class="step__phone" aria-hidden="true" data-reveal style="--i: 2">
+          <PhoneFrame width="240px"><AppScreen kind={step.kind} /></PhoneFrame>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <div class="story__stage" aria-hidden="true">
+    <div class="story__sticky">
+      <Glow size="620px" top="50%" opacity={0.7} parallax={12} />
+      <div class="story__device" data-story-device>
+        <PhoneFrame width="300px">
+          {steps.map((step, i) => (
+            <div class:list={["stage-screen", { "is-on": i === 0 }]} data-screen={i}>
+              <AppScreen kind={step.kind} />
+            </div>
+          ))}
+        </PhoneFrame>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .story {
+    position: relative;
+    display: grid;
+    gap: var(--s-8);
+  }
+  .story__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-9);
+  }
+  .step { display: grid; gap: var(--s-6); }
+  .step__text { max-width: var(--measure); }
+  .step__text .t-h2 { margin-bottom: var(--s-4); }
+  .step__phone { justify-self: center; }
+  .story__stage { display: none; }
+
+  @media (min-width: 900px) {
+    .story {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--s-7);
+    }
+    .story__steps { gap: 0; }
+    .step {
+      min-height: 85vh;
+      align-content: center;
+    }
+    .step__phone { display: none; }
+    .story__stage { display: block; }
+    .story__sticky {
+      position: sticky;
+      top: calc(50vh - 325px);
+      height: 650px;
+      display: grid;
+      place-items: center;
+    }
+    .story__device {
+      position: relative;
+      z-index: 1;
+      will-change: transform;
+    }
+  }
+
+  /* Écrans empilés dans l'iPhone : un seul visible, fondu entre deux. */
+  .stage-screen {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.985);
+    /* L'écran qui part s'efface vite, celui qui arrive entre un peu après :
+       les deux ne se superposent presque pas. */
+    transition:
+      opacity 200ms var(--ease-out),
+      transform 200ms var(--ease-out);
+  }
+  .stage-screen.is-on {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 460ms var(--ease-out) 140ms,
+      transform 460ms var(--ease-out) 140ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stage-screen { transition: none; }
+  }
+</style>
+
+<script>
+  // Active l'écran de l'étape qui passe au milieu de l'écran.
+  for (const story of document.querySelectorAll<HTMLElement>("[data-story]")) {
+    const screens = story.querySelectorAll<HTMLElement>("[data-screen]");
+    const show = (i: number) =>
+      screens.forEach((s) => s.classList.toggle("is-on", s.dataset.screen === String(i)));
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) show(Number((entry.target as HTMLElement).dataset.step));
+        }
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    story.querySelectorAll("[data-step]").forEach((step) => io.observe(step));
+  }
+</script>

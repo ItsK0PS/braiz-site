@@ -1,0 +1,70 @@
+---
+// Bouton de la charte. « ember » = LE bouton primaire : un seul par écran
+// (dégradé 135° + voile noir 28 %). Tous les autres sont « outline ».
+interface Props {
+  href: string;
+  variant?: "ember" | "outline";
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, variant = "outline", class: className, ...rest } = Astro.props;
+---
+<a class:list={["btn", `btn--${variant}`, className]} href={href} {...rest}>
+  <span class="btn__label"><slot /></span>
+</a>
+
+<style>
+  .btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 var(--s-5);
+    border-radius: var(--r-pill);
+    font-family: var(--font-text);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--cream);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  /* Halo au survol : un pseudo-élément dont seule l'opacité change. */
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    box-shadow: var(--glow-soft);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+
+  .btn--ember { background: var(--gradient-button); }
+
+  .btn--outline {
+    border: 1.5px solid var(--outline);
+    background: transparent;
+  }
+  .btn--outline::after { box-shadow: 0 0 0 1px rgba(250, 247, 244, 0.22); }
+
+  @media (hover: hover) {
+    .btn:hover { transform: translate3d(0, -2px, 0); }
+    .btn:hover::after { opacity: 1; }
+  }
+  .btn:active {
+    transform: scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn,
+    .btn::after { transition: none; }
+    .btn:hover,
+    .btn:active { transform: none; }
+  }
+</style>

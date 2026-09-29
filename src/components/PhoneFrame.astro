@@ -1,0 +1,55 @@
+---
+// Cadre iPhone dessiné en CSS (pas d'image) : il accueille une capture
+// (props src + alt) ou un écran HTML (slot). Proportions d'un iPhone
+// récent, 9 / 19,5, Dynamic Island comprise.
+interface Props {
+  src?: string;
+  alt?: string;
+  width?: string;
+  class?: string;
+}
+const { src, alt = "", width = "300px", class: className } = Astro.props;
+---
+<div class:list={["phone", className]} style={`--phone-w: ${width}`}>
+  <div class="phone__screen">
+    {src ? <img src={src} alt={alt} loading="lazy" decoding="async" /> : <slot />}
+  </div>
+  <span class="phone__island" aria-hidden="true"></span>
+</div>
+
+<style>
+  .phone {
+    position: relative;
+    width: var(--phone-w);
+    max-width: 100%;
+    aspect-ratio: 9 / 19.5;
+    padding: calc(var(--phone-w) * 0.035);
+    border-radius: calc(var(--phone-w) * 0.16);
+    background: linear-gradient(160deg, #2a262e, #0f0d12 40%, #1c1920);
+    box-shadow: var(--shadow-phone), inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+  }
+  .phone__screen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: calc(var(--phone-w) * 0.13);
+    background: var(--ink);
+    isolation: isolate;
+  }
+  .phone__screen > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .phone__island {
+    position: absolute;
+    top: calc(var(--phone-w) * 0.065);
+    left: 50%;
+    width: 32%;
+    height: calc(var(--phone-w) * 0.085);
+    translate: -50% 0;
+    border-radius: 999px;
+    background: #000;
+    z-index: 2;
+  }
+</style>

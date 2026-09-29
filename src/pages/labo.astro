@@ -1,0 +1,148 @@
+---
+// Page de démonstration du palier P2 : juger la fluidité avant de
+// construire l'accueil. noindex, absente de tout sitemap, liée nulle part.
+import Site from "../layouts/Site.astro";
+import Section from "../components/Section.astro";
+import Button from "../components/Button.astro";
+import Card from "../components/Card.astro";
+import Glow from "../components/Glow.astro";
+import Story from "../components/Story.astro";
+import Trophy from "../components/Trophy.astro";
+
+const steps = [
+  {
+    kind: "depense" as const,
+    eyebrow: "1. Une dépense",
+    title: "Tu ajoutes le dîner en dix secondes.",
+    text: "Qui a payé, pour qui, combien. Braiz s'occupe du reste, même quand le groupe grandit en cours de route.",
+  },
+  {
+    kind: "soldes" as const,
+    eyebrow: "2. Les soldes",
+    title: "Chacun voit où il en est.",
+    text: "Qui doit combien à qui, avec le moins de virements possible. Le vert, on te doit ; le rouge, tu dois.",
+  },
+  {
+    kind: "chat" as const,
+    eyebrow: "3. Le chat",
+    title: "Le groupe en parle, Braiz aussi.",
+    text: "Une dépense disparaît ? Le chat le remarque, avec le sourire. Rien ne se perd, tout se commente.",
+  },
+  {
+    kind: "trophee" as const,
+    eyebrow: "4. Les trophées",
+    title: "Et quelqu'un décroche un trophée.",
+    text: "Seize trophées, attribués automatiquement. Certains font plaisir, d'autres font rire tout le groupe.",
+  },
+];
+
+const cards = [
+  { emoji: "👥", title: "Groupes illimités", text: "Un pour la coloc, un pour les vacances, un pour le foot du jeudi." },
+  { emoji: "💸", title: "Remboursement par IBAN", text: "Braiz indique qui rembourse qui. L'argent ne passe jamais par Braiz." },
+  { emoji: "💬", title: "Chat du groupe", text: "Les dépenses et la discussion au même endroit." },
+  { emoji: "🚫", title: "Sans publicité", text: "Aucune pub, aucun traçage publicitaire." },
+];
+---
+<Site title="Labo - Braiz" description="Page de démonstration des animations du site Braiz." noindex>
+  <section class="hero">
+    <Glow size="min(120vw, 900px)" top="30%" parallax={14} />
+    <div class="wrap hero__inner">
+      <p class="eyebrow" data-intro>Labo P2</p>
+      <h1 class="t-hero t-ember hero__title" data-intro style="--i: 1">Règle tes comptes,<br />garde tes potes.</h1>
+      <p class="t-lead hero__lead" data-intro style="--i: 2">
+        Braiz suit les dépenses du groupe et calcule qui doit combien à qui.
+        Le reste du temps, il met de l'ambiance.
+      </p>
+      <div class="hero__cta" data-intro style="--i: 3">
+        <Button href="/beta" variant="ember">Rejoindre la beta</Button>
+        <Button href="#recit">Voir comment ça marche</Button>
+      </div>
+    </div>
+  </section>
+
+  <Section id="recit">
+    <Story steps={steps} />
+  </Section>
+
+  <Section>
+    <Glow size="min(110vw, 760px)" top="10%" left="80%" opacity={0.45} parallax={24} />
+    <div class="free__head">
+      <p class="eyebrow" data-reveal>Gratuit</p>
+      <h2 class="t-h2" data-reveal style="--i: 1">Gratuit, sans publicité.</h2>
+    </div>
+    <ul class="cards">
+      {cards.map((c, i) => (
+        <Card as="li" index={i}>
+          <span class="cards__emoji" aria-hidden="true">{c.emoji}</span>
+          <h3 class="t-h3">{c.title}</h3>
+          <p class="t-muted">{c.text}</p>
+        </Card>
+      ))}
+    </ul>
+  </Section>
+
+  <Section>
+    <div class="trophies__head">
+      <p class="eyebrow" data-reveal>Trophées</p>
+      <h2 class="t-h2" data-reveal style="--i: 1">Un trophée, et tout le groupe en parle.</h2>
+    </div>
+    <div class="trophies__stage" data-gsap>
+      <Trophy name="Le Pompier" base="/images/labo/trophee-pompier" />
+    </div>
+  </Section>
+
+  <Section narrow>
+    <p class="eyebrow" data-reveal>Micro-interactions</p>
+    <h2 class="t-h2 buttons__title" data-reveal style="--i: 1">Survole, appuie.</h2>
+    <p class="t-lead t-muted" data-reveal style="--i: 2">
+      Un seul bouton ember par écran, les autres en contour. Le lien de droite
+      ouvre une seconde page, pour juger la transition entre pages.
+    </p>
+    <div class="buttons__row" data-reveal style="--i: 3">
+      <Button href="/beta" variant="ember">Rejoindre la beta</Button>
+      <Button href="/labo-2">Page suivante</Button>
+    </div>
+  </Section>
+
+  <p slot="footer">Page de démonstration du palier P2, non indexée.</p>
+</Site>
+
+<script>
+  import "../scripts/labo-scenes.ts";
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: calc(100svh - 100px);
+    display: grid;
+    align-items: center;
+    padding: var(--s-8) 0 var(--s-9);
+  }
+  .hero__inner { position: relative; z-index: 1; }
+  .hero__title { max-width: 14ch; view-transition-name: page-title; }
+  .hero__lead { max-width: 34rem; margin-top: var(--s-5); }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+
+  .free__head,
+  .trophies__head { position: relative; z-index: 1; max-width: var(--measure); margin-bottom: var(--s-7); }
+  .cards {
+    position: relative;
+    z-index: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  }
+  .cards__emoji { font-size: 1.75rem; }
+  .cards .t-h3 { margin: var(--s-3) 0 var(--s-2); }
+  .cards p { margin: 0; }
+
+  .trophies__head { margin-inline: auto; text-align: center; }
+  .trophies__stage { display: grid; justify-items: center; }
+
+  .buttons__title { margin-bottom: var(--s-4); }
+  .buttons__row { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+</style>
