@@ -141,6 +141,8 @@ body {
   font-weight: 700;
 }
 
+.hero__cta { margin: 1.5rem 0 0; }
+
 /* ---------- Pages de texte ---------- */
 
 .doc { padding: 3.5rem 0 0; }
@@ -304,6 +306,18 @@ a:focus-visible {
   opacity: 0.4;
   cursor: default;
 }
+
+/* Geste secondaire : même contour que le bouton Copier. Un seul aplat ember
+   par écran, les autres boutons passent en contour. Le padding retire le
+   pixel de bordure pour garder la hauteur du bouton plein. */
+.btn--outline {
+  padding: calc(0.95rem - 1px) calc(1.25rem - 1px);
+  background: transparent;
+  border: 1px solid var(--ember-start);
+  color: var(--ember-start);
+}
+
+.btn--outline:hover { border-bottom-color: var(--ember-start); }
 
 .join__soon {
   padding: 1rem 1.25rem;

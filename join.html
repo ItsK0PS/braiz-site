@@ -52,10 +52,27 @@
           à qui. Tu as été invité à rejoindre ce groupe.
         </p>
 
-        <!-- Chemin principal. C'est le cas NORMAL pendant le test fermé :
-             quasiment personne n'a encore l'application. -->
+        <!-- Chemin principal. C'est le cas NORMAL pendant la beta :
+             quasiment personne n'a encore l'application. Un seul geste
+             d'installation est affiché, choisi selon la plateforme :
+             TestFlight sur iPhone, l'APK sur Android, /beta sur ordinateur. -->
         <div class="join__cta">
           <a class="btn" id="install-link" href="#" hidden>Installer Braiz</a>
+
+          <!-- L'APK directement, sans détour par /beta : le visiteur garde
+               cette page ouverte et y revient pour son code une fois
+               l'application installée. Les étapes et l'avertissement Play
+               Protect restent sur /beta, pour ne pas les écrire deux fois. -->
+          <div id="install-android" hidden>
+            <a class="btn" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Installer Braiz pour Android</a>
+            <p class="join__alt">
+              ~155 Mo, prends le wifi. Android va faire son parano à
+              l'installation, c'est normal :
+              <a href="/beta#block-android">le mode d'emploi en 3 étapes</a>.
+            </p>
+          </div>
+
+          <a class="btn" id="install-desktop" href="/beta" hidden>Installer Braiz sur ton téléphone</a>
 
           <div class="join__soon" id="install-soon">
             <strong>L'installation ouvre bientôt.</strong>
@@ -95,8 +112,9 @@
         </div>
 
         <p class="join__desktop" id="desktop-note" hidden>
-          Braiz est une application iPhone. Ouvre ce lien depuis ton iPhone,
-          ou note ton code pour le coller dans l'application.
+          Braiz s'installe sur ton téléphone, iPhone ou Android. Ouvre ce lien
+          depuis ton téléphone, ou note ton code pour le coller dans
+          l'application une fois installée.
         </p>
       </div>
 
@@ -149,6 +167,7 @@
   var isIOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(navigator.userAgent);
 
   // PostgREST directement, sans supabase-js : c'est un POST avec deux
   // en-têtes, charger une bibliothèque pour ça sur un site sans bundler
@@ -176,14 +195,23 @@
     document.getElementById("code-value").textContent = token;
     document.getElementById("open-app").href = "braiz://join/" + token;
 
-    if (TESTFLIGHT_URL && isIOS) {
-      var install = document.getElementById("install-link");
-      install.href = TESTFLIGHT_URL;
-      install.hidden = false;
-      document.getElementById("install-soon").hidden = true;
-    }
+    // Par défaut, le bloc « L'installation ouvre bientôt » : c'est le cas
+    // de l'iPhone tant que TestFlight n'est pas ouvert.
+    var soon = document.getElementById("install-soon");
 
-    if (!isIOS) {
+    if (isIOS) {
+      if (TESTFLIGHT_URL) {
+        var install = document.getElementById("install-link");
+        install.href = TESTFLIGHT_URL;
+        install.hidden = false;
+        soon.hidden = true;
+      }
+    } else if (isAndroid) {
+      document.getElementById("install-android").hidden = false;
+      soon.hidden = true;
+    } else {
+      document.getElementById("install-desktop").hidden = false;
+      soon.hidden = true;
       document.getElementById("desktop-note").hidden = false;
       // Sur ordinateur, braiz:// ne mène nulle part : proposer le lien
       // donnerait une erreur de navigateur au lieu d'une explication.

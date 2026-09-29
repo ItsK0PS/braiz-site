@@ -40,7 +40,10 @@
 
     <!-- L'ordre des blocs suit la plateforme : iPhone d'abord par défaut
          (et sans JavaScript), Android d'abord sur Android. Sur ordinateur,
-         le QR code passe en tête : on n'installe rien depuis un ordi. -->
+         le QR code passe en tête : on n'installe rien depuis un ordi.
+         Un seul aplat ember par écran : tous les boutons sont en contour
+         dans le HTML, le script remplit celui de la plateforme détectée.
+         Sur ordinateur, l'action principale est le QR code, aucun ne l'est. -->
     <div id="platforms">
 
       <section class="beta__block" id="block-qr" hidden>
@@ -60,10 +63,10 @@
         </p>
 
         <div class="join__cta">
-          <a class="btn" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
+          <a class="btn btn--outline" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
 
           <div id="ios-soon">
-            <button class="btn" type="button" disabled>Bientôt dispo sur iPhone</button>
+            <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt dispo sur iPhone</button>
             <p class="join__alt">
               Apple relit notre copie avant de nous ouvrir la porte.
               Repasse dans quelques jours, ce lien ne bougera pas.
@@ -80,7 +83,7 @@
         </p>
 
         <div class="join__cta">
-          <a class="btn" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Télécharger Braiz pour Android</a>
+          <a class="btn btn--outline" id="android-link" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Télécharger Braiz pour Android</a>
           <p class="join__alt">~155 Mo, prends le wifi.</p>
         </div>
 
@@ -160,9 +163,17 @@
     document.getElementById("ios-soon").hidden = true;
   }
 
-  if (isAndroid) {
+  function promote(id) {
+    document.getElementById(id).classList.remove("btn--outline");
+  }
+
+  if (isIOS) {
+    promote("ios-link");
+    promote("ios-soon-btn");
+  } else if (isAndroid) {
     platforms.insertBefore(android, ios);
-  } else if (!isIOS) {
+    promote("android-link");
+  } else {
     // Le QR code est déjà en tête dans le HTML, il suffit de l'afficher.
     qr.hidden = false;
   }
