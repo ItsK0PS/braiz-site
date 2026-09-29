@@ -2,7 +2,7 @@
 // La scène des virements : un week-end, cinq amis, six dépenses, et Braiz
 // qui ramène 18 virements à 3. Séquence épinglée (position: sticky) que
 // scripts/virements.ts fait avancer et reculer avec le défilement.
-// Utilisée par l'accueil et par /labo ; elle charge elle-même son script.
+// Utilisée par l'accueil ; elle charge elle-même son script.
 // Une seule scène par page (le script cherche [data-settle]).
 //
 // Deux mises en page dans le même HTML :
@@ -39,8 +39,8 @@ const pct = (n: number) => `${n / 10}%`;
 const chipTilt = [-5, 4, -3];
 
 interface Props {
-  // Niveau du titre du premier chapitre : h1 quand la scène ouvre la page
-  // (/labo), h2 quand un hero la précède (accueil). Les chapitres suivants
+  // Niveau du titre du premier chapitre : h1 quand la scène ouvre la page,
+  // h2 quand un hero la précède (accueil). Les chapitres suivants
   // sont un niveau en dessous. Aucun effet visuel.
   headingLevel?: 1 | 2;
 }
