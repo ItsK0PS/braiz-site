@@ -1,0 +1,162 @@
+---
+// Après l'installation : « Et ensuite ? », « Ton avis compte » et une FAQ
+// courte en <details> (accessible sans script).
+import { CONTACT_EMAIL, DISCORD_URL } from "../../lib/links";
+
+const next = [
+  { title: "Crée ton groupe", text: "Un nom, un emoji, et c'est parti : week-end, coloc ou voyage." },
+  { title: "Invite tes amis", text: "Envoie-leur le lien d'invitation. Il fonctionne sur iPhone comme sur Android." },
+  { title: "Ajoute la première dépense", text: "Qui a payé, pour qui, combien. Braiz s'occupe du reste." },
+];
+
+const faq = [
+  {
+    q: "C'est gratuit ?",
+    a: "Oui. Braiz est gratuite et sans publicité, et aucune carte bancaire ne t'est demandée.",
+  },
+  {
+    q: "Et mes données ?",
+    a: "Elles servent uniquement au fonctionnement de l'application. Elles ne sont ni vendues, ni utilisées à des fins publicitaires. Tout est détaillé dans la",
+    link: { href: "/confidentialite", label: "politique de confidentialité" },
+  },
+  {
+    q: "Et les mises à jour ?",
+    a: "Elles sont automatiques : l'application se met à jour d'elle-même. Dans de rares cas, une nouvelle version complète sera nécessaire. Sur iPhone, TestFlight te la proposera. Sur Android, on t'enverra un nouveau fichier.",
+  },
+  {
+    q: "Mes amis sont sur l'autre plateforme ?",
+    a: "Aucun problème : un même groupe peut réunir des amis sur iPhone et sur Android. L'invitation fonctionne des deux côtés.",
+  },
+];
+---
+<section class="next" aria-labelledby="next-title">
+  <div class="wrap">
+    <h2 class="more__title" id="next-title" data-reveal>Et ensuite&nbsp;?</h2>
+    <ol class="next__list">
+      {next.map((n, i) => (
+        <li data-reveal style={`--i: ${i + 1}`}>
+          <span class="next__n" aria-hidden="true">{i + 1}</span>
+          <b>{n.title}</b>
+          <span>{n.text}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<section class="avis" aria-labelledby="avis-title">
+  <div class="wrap avis__inner" data-reveal>
+    <h2 class="more__title" id="avis-title">Ton avis compte.</h2>
+    <p>
+      Braiz est en beta : chaque retour aide à l'améliorer. Un bug, une idée,
+      une question&nbsp;? Écris à <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+    </p>
+    {DISCORD_URL && (
+      <p>Tu peux aussi en parler sur le <a href={DISCORD_URL} rel="noopener">Discord de Braiz</a>.</p>
+    )}
+    <a class="bbtn" href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Mon retour sur Braiz")}`}>Écrire un message</a>
+  </div>
+</section>
+
+<section class="bfaq" aria-labelledby="bfaq-title">
+  <div class="wrap bfaq__grid">
+    <h2 class="more__title" id="bfaq-title" data-reveal>Questions fréquentes.</h2>
+    <div class="bfaq__list">
+      {faq.map((item) => (
+        <details class="bfaq__item">
+          <summary><span>{item.q}</span><span class="bfaq__plus" aria-hidden="true"></span></summary>
+          <p>{item.a}{item.link && <> <a href={item.link.href}>{item.link.label}</a>.</>}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .more__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .next { padding: var(--section-y) 0 0; }
+  .next__list {
+    list-style: none;
+    margin: var(--s-7) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  .next__list li {
+    position: relative;
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding: var(--s-6) var(--s-5) var(--s-5);
+    border-radius: var(--r-l);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    color: var(--muted);
+    overflow: hidden;
+  }
+  .next__list li:nth-child(2) { translate: 0 var(--s-5); }
+  .next__list b { position: relative; color: var(--cream); font-family: var(--font-display); font-weight: 600; font-size: 1.35rem; }
+  .next__list span:last-child { position: relative; }
+  .next__n {
+    position: absolute;
+    right: -0.05em;
+    bottom: -0.28em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 8rem;
+    line-height: 1;
+    color: rgba(250, 247, 244, 0.05);
+  }
+
+  .avis { padding: var(--section-y) 0 0; }
+  .avis__inner { display: grid; justify-items: start; gap: var(--s-4); }
+  .avis__inner p { margin: 0; max-width: 34rem; color: var(--muted); font-size: var(--t-lead); }
+  .avis__inner a:not(.bbtn) { color: var(--cream); text-underline-offset: 3px; }
+  .avis__inner .bbtn { margin-top: var(--s-2); }
+
+  .bfaq { padding: var(--section-y) 0; }
+  .bfaq__grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--s-8); align-items: start; }
+  .bfaq__list { border-top: 1px solid var(--hairline); }
+  .bfaq__item { border-bottom: 1px solid var(--hairline); }
+  .bfaq__item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-5);
+    min-height: 64px;
+    padding: var(--s-4) 0;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  }
+  .bfaq__item summary::-webkit-details-marker { display: none; }
+  .bfaq__plus { position: relative; flex: none; width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--outline); transition: transform var(--dur) var(--ease-spring); }
+  .bfaq__plus::before, .bfaq__plus::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; translate: -50% -50%; border-radius: 1px; background: var(--cream); }
+  .bfaq__plus::after { rotate: 90deg; }
+  .bfaq__item[open] .bfaq__plus { transform: rotate(45deg); }
+  .bfaq__item p { margin: 0; padding: 0 var(--s-7) var(--s-5) 0; color: var(--muted); }
+  .bfaq__item a { color: var(--cream); text-underline-offset: 3px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .bfaq__item[open] p { animation: bfaq-in 380ms var(--ease-out) both; }
+  }
+  @keyframes bfaq-in { from { opacity: 0; transform: translate3d(0, -8px, 0); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .bfaq__plus { transition: none; } }
+
+  @media (max-width: 899px) {
+    .next__list { grid-template-columns: 1fr; }
+    .next__list li:nth-child(2) { translate: none; }
+    .bfaq__grid { grid-template-columns: 1fr; gap: var(--s-6); }
+    .bfaq__item p { padding-right: 0; }
+  }
+</style>

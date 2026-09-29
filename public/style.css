@@ -459,69 +459,16 @@ a:focus-visible {
 
 /* ---------- Beta ---------- */
 
-/* Plateforme : classes posées sur <html> par le script du <head> de /beta
-   et /join (is-ios, is-android, is-desktop, has-testflight). Tout ce qui
+/* Plateforme : classes posées sur <html> par le script du <head> de /join
+   (is-ios, is-android, is-desktop, has-testflight). /beta a ses propres
+   styles (src/pages/beta.astro). Tout ce qui
    dépend de la plateforme est décidé ici, avant le premier rendu : rien ne
    bouge après l'affichage. Sans JavaScript, aucune classe : l'état par
    défaut est celui de l'iPhone sans lien TestFlight. */
 
-/* Lien TestFlight public : le bouton remplace « Bientôt disponible ». */
-#ios-link { display: none; }
-.has-testflight #ios-link { display: block; }
-.has-testflight #ios-soon { display: none; }
 
-/* Sur ordinateur, le QR code s'affiche (il est déjà en tête du HTML). */
-#block-qr { display: none; }
-.is-desktop #block-qr { display: block; }
 
-/* Sur Android, le bloc Android passe en tête. En flex, les marges ne
-   fusionnent plus entre blocs ni avec la FAQ qui suit : les marges basses
-   qui sortaient du bloc iPhone (dernière étape, 0,5rem, et bouton
-   TestFlight, 1,25rem) sont retirées pour garder exactement l'espacement
-   du flux normal (la marge haute de 3rem de la FAQ l'emportait). */
-.is-android #platforms { display: flex; flex-direction: column; }
-.is-android #block-android { order: -1; }
-.is-android #block-ios .steps > li:last-child,
-.is-android #ios-link { margin-bottom: 0; }
 
-/* Le bouton de la plateforme détectée devient le seul aplat ember. Mêmes
-   valeurs que .btn, qui l'emportent sur .btn--outline. */
-.is-ios #ios-link,
-.is-ios #ios-soon-btn,
-.is-android #android-link {
-  padding: 0.95rem 1.25rem;
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
-    linear-gradient(135deg, var(--ember-start), var(--ember-end));
-  border: none;
-  color: var(--cream);
-}
 
-.beta__steps { margin-top: 2rem; }
 
-/* Fond crème autour des modules : un QR code clair sur fond sombre n'est
-   pas lu par tous les lecteurs, l'inverse si. La marge blanche du SVG
-   (4 modules) fait la zone de silence. */
-.beta__qr {
-  display: block;
-  width: 12.5rem;
-  height: auto;
-  margin: 1.5rem 0 0;
-  border-radius: 0.75rem;
-  image-rendering: pixelated;
-}
 
-.beta__faq dl { margin: 0; }
-
-.beta__faq dt {
-  margin: 1.5rem 0 0.35rem;
-  color: var(--cream);
-  font-weight: 700;
-}
-
-.beta__faq dt:first-child { margin-top: 0; }
-
-.beta__faq dd {
-  margin: 0;
-  color: #D8D3D9;
-}

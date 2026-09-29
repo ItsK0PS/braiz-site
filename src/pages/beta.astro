@@ -1,155 +1,116 @@
 ---
-import Base from "../layouts/Base.astro";
+// /beta : transformer un curieux déjà intéressé en testeur. On ne convainc
+// plus, on installe.
+//
+// Invariants :
+// - TESTFLIGHT_URL : source unique dans /testflight.js (partagée avec /join) ;
+// - #block-android : ancre utilisée par /join ;
+// - plateforme détectée dans le <head>, avant le premier rendu (CLS nul) ;
+// - sans JavaScript et en reduced-motion : les deux plateformes et toutes
+//   les étapes restent visibles et utilisables.
+import Site from "../layouts/Site.astro";
+import BetaHero from "../components/beta/BetaHero.astro";
+import BetaSteps from "../components/beta/BetaSteps.astro";
+import BetaMore from "../components/beta/BetaMore.astro";
+import { APK_URL } from "../lib/links";
 ---
-<Base>
-<Fragment slot="head">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rejoindre la beta - Braiz</title>
-<meta name="description" content="Rejoins la beta de Braiz sur iPhone ou Android : l'application qui partage les dépenses entre amis et calcule qui doit combien à qui.">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#08070A">
-<meta property="og:title" content="Braiz, la beta">
-<meta property="og:description" content="Règle tes comptes, garde tes potes. Rejoins la beta sur iPhone ou Android.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://getbraiz.com/beta">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/style.css">
-<!-- Plateforme détectée AVANT le premier rendu : une classe sur <html>
-     (is-ios, is-android ou is-desktop, et has-testflight si le lien public
-     existe). Le CSS ordonne les blocs et choisit le bouton ember : plus
-     rien ne bouge après l'affichage (CLS nul). Sans JavaScript, aucune
-     classe : iPhone d'abord, « Bientôt disponible », comme avant.
-     testflight.js reste la source unique de TESTFLIGHT_URL. -->
-<script is:inline src="/testflight.js"></script>
-<script is:inline>
-  (function () {
-    var ua = navigator.userAgent;
-    // iPadOS se présente comme un Mac : on le reconnaît à l'écran tactile.
-    var ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    var c = document.documentElement.classList;
-    c.add(ios ? "is-ios" : /Android/i.test(ua) ? "is-android" : "is-desktop");
-    if (typeof TESTFLIGHT_URL === "string" && TESTFLIGHT_URL) c.add("has-testflight");
-  })();
-</script>
-</Fragment>
+<Site
+  title="Rejoindre la beta - Braiz"
+  description="Rejoins la beta de Braiz sur iPhone ou Android : l'application qui partage les dépenses entre amis et calcule qui doit combien à qui."
+  ogTitle="Braiz, la beta"
+  ogImage="/og-accueil.png"
+>
+  <Fragment slot="head">
+    <!-- Avant le premier rendu : appareil (is-ios, is-android, is-desktop),
+         onglet affiché (show-ios ou show-android) et lien TestFlight public
+         (has-testflight). Le CSS décide de tout le reste. /beta#block-android
+         (lien depuis /join) ouvre toujours l'onglet Android. -->
+    <script is:inline src="/testflight.js"></script>
+    <script is:inline>
+      (function () {
+        var ua = navigator.userAgent;
+        var ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        var android = /Android/i.test(ua);
+        var c = document.documentElement.classList;
+        c.add(ios ? "is-ios" : android ? "is-android" : "is-desktop");
+        c.add(android || location.hash === "#block-android" ? "show-android" : "show-ios");
+        c.add(typeof TESTFLIGHT_URL === "string" && TESTFLIGHT_URL ? "has-testflight" : "no-testflight");
+      })();
+    </script>
+  </Fragment>
 
-<main>
-  <div class="wrap">
-    <section class="hero">
-      <h1 class="hero__line">Règle tes comptes,<br>garde tes potes.</h1>
+  <BetaHero />
+  <BetaSteps />
+  <BetaMore />
 
-      <p class="hero__what">
-        Braiz est en beta, et on l'ouvre à quelques personnes avant tout le
-        monde. Tu ajoutes les dépenses du groupe, Braiz calcule qui doit
-        combien à qui, et tu nous dis ce qui peut être amélioré. En bonus,
-        des trophées pour animer le groupe.
-      </p>
-    </section>
-
-    <!-- L'ordre des blocs suit la plateforme : iPhone d'abord par défaut
-         (et sans JavaScript), Android d'abord sur Android. Sur ordinateur,
-         le QR code passe en tête : on n'installe rien depuis un ordi.
-         Un seul aplat ember par écran : tous les boutons sont en contour
-         dans le HTML, le CSS remplit celui de la plateforme détectée
-         (classes posées dans le <head>, voir public/style.css).
-         Sur ordinateur, l'action principale est le QR code, aucun ne l'est. -->
-    <div id="platforms">
-
-      <section class="beta__block" id="block-qr">
-        <h2 class="join__h2">Tu es sur ordinateur ?</h2>
-        <p class="join__lede">
-          Scanne ce code avec ton téléphone pour ouvrir cette page directement.
-        </p>
-        <img class="beta__qr" src="/qr-beta.svg" alt="QR code vers getbraiz.com/beta" width="200" height="200">
-      </section>
-
-      <section class="beta__block" id="block-ios">
-        <h2 class="join__h2">Sur iPhone</h2>
-
-        <!-- Le bouton TestFlight reste en contour partout : le geste
-             principal est la seconde étape, rejoindre la beta. -->
-        <ol class="steps">
-          <li><strong>Installe TestFlight</strong>, l'application d'Apple pour
-            les versions beta.
-            <a class="btn btn--outline" href="https://apps.apple.com/app/testflight/id899247664">Installer TestFlight</a>
-          </li>
-          <li><strong>Rejoins la beta</strong> de Braiz depuis TestFlight.
-            <a class="btn btn--outline" id="ios-link" href="#">Rejoindre la beta sur iPhone</a>
-
-            <div id="ios-soon">
-              <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt disponible sur iPhone</button>
-              <p class="join__alt">
-                Apple vérifie l'application avant de l'ouvrir aux testeurs.
-                Reviens dans quelques jours : ce lien restera le même.
-              </p>
-            </div>
-          </li>
-        </ol>
-      </section>
-
-      <section class="beta__block" id="block-android">
-        <h2 class="join__h2">Sur Android</h2>
-        <p class="join__lede">
-          Braiz n'est pas encore sur le Play Store. Tu installes l'application
-          directement à partir de son fichier, en trois étapes.
-        </p>
-
-        <div class="join__cta">
-          <a class="btn btn--outline" id="android-link" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Télécharger Braiz pour Android</a>
-          <p class="join__alt">Fichier d'environ 155 Mo, une connexion wifi est conseillée.</p>
-        </div>
-
-        <ol class="steps beta__steps">
-          <li><strong>Télécharge</strong> le fichier braiz.apk avec le bouton ci-dessus.</li>
-          <li><strong>Autorise l'installation</strong> : à l'ouverture du
-            fichier, Android te propose d'autoriser ton navigateur à installer
-            des applications. Active l'option, puis reviens en arrière.</li>
-          <li><strong>Installe</strong> l'application, ouvre-la et crée ton compte.</li>
-        </ol>
-
-        <div class="join__warn">
-          <strong>Android affichera un avertissement : c'est normal pour une
-          application installée en dehors du Play Store.</strong>
-          Play Protect, le contrôle de sécurité d'Android, peut aussi te
-          demander de confirmer. Touche « Installer quand même ». Sur certains
-          téléphones, ce bouton se trouve sous « Plus de détails ».
-        </div>
-      </section>
-
-    </div>
-
-    <section class="beta__faq">
-      <h2 class="join__h2">Questions fréquentes</h2>
-      <dl>
-        <dt>C'est gratuit ?</dt>
-        <dd>Oui. Braiz est entièrement gratuit pendant la beta, et aucune
-          carte bancaire ne t'est demandée.</dd>
-
-        <dt>Et mes données ?</dt>
-        <dd>Elles servent uniquement au fonctionnement de l'application. Elles
-          ne sont ni vendues, ni utilisées à des fins publicitaires. Tout est
-          détaillé dans la
-          <a href="/confidentialite">politique de confidentialité</a>.</dd>
-
-        <dt>Et les mises à jour ?</dt>
-        <dd>Elles sont automatiques : l'application se met à jour d'elle-même.
-          Dans de rares cas, une nouvelle version complète sera nécessaire. Sur
-          iPhone, TestFlight te la proposera. Sur Android, on t'enverra un
-          nouveau fichier.</dd>
-      </dl>
-    </section>
+  <!-- Barre d'installation, mobile seulement : apparaît une fois le premier
+       écran dépassé, disparaît quand les étapes sont à l'écran. -->
+  <div class="install-bar" data-install-bar>
+    <a class="bbtn bbtn--main" href="#steps-ios" data-platform="ios" data-track="Installer sur iPhone" data-track-where="barre">Installer sur iPhone</a>
+    <a class="bbtn bbtn--main" href={APK_URL} data-platform="android" data-track="Télécharger l'APK" data-track-where="barre">Télécharger pour Android</a>
   </div>
-</main>
+</Site>
 
-<Fragment slot="after">
-<script is:inline>
-  // La mise en page est déjà décidée par les classes posées dans le <head> :
-  // ici, seulement le lien TestFlight (aucun effet sur la mise en page).
-  if (typeof TESTFLIGHT_URL === "string" && TESTFLIGHT_URL) {
-    document.getElementById("ios-link").href = TESTFLIGHT_URL;
-  }
+<script>
+  import "../scripts/beta.ts";
 </script>
-</Fragment>
-</Base>
+
+<style is:global>
+  /* ---------- Boutons de /beta ----------
+     .bbtn--main : le seul aplat ember de l'écran (dégradé 135° + voile
+     28 %). Les autres en contour. */
+  .bbtn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 var(--s-6);
+    border: 1.5px solid var(--outline);
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--cream);
+    font: 600 1rem var(--font-text);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+  }
+  .bbtn--main { border-color: transparent; background: var(--gradient-button); }
+  .bbtn:disabled { opacity: 0.45; cursor: default; }
+  @media (hover: hover) {
+    .bbtn:not(:disabled):hover { transform: translate3d(0, -2px, 0); }
+  }
+  .bbtn:not(:disabled):active { transform: scale(0.97); transition-duration: 80ms; }
+
+  /* Sur ordinateur, le QR code est l'action principale : les boutons du
+     premier écran passent en contour. */
+  html.is-desktop .bhero .bbtn--main { border-color: var(--outline); background: transparent; }
+
+  /* ---------- Une plateforme à la fois (mode onglets) ----------
+     Seulement avec .motion-ok (JavaScript actif, sans reduced-motion) :
+     sinon les deux plateformes restent affichées. */
+  html.motion-ok.show-ios [data-platform="android"],
+  html.motion-ok.show-android [data-platform="ios"] { display: none !important; }
+
+  /* ---------- Barre d'installation (mobile) ---------- */
+  .install-bar { display: none; }
+  @media (max-width: 899px) {
+    html.motion-ok .install-bar {
+      position: fixed;
+      z-index: 20;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
+      background: linear-gradient(transparent, rgba(8, 7, 10, 0.92) 30%);
+      transform: translate3d(0, 110%, 0);
+      transition: transform 420ms var(--ease-out);
+    }
+    html.motion-ok .install-bar.is-shown { transform: none; }
+    .install-bar .bbtn { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step__check circle, .step__check path { transition: none !important; }
+  }
+</style>

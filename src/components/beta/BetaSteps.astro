@@ -1,0 +1,322 @@
+---
+// Les étapes d'installation, une liste par plateforme. Chaque étape : un
+// grand numéro, le geste, et un petit aperçu de l'écran que la personne va
+// voir, reconstruit en HTML/CSS (aucune capture d'Apple ou de Google, aucun
+// logo de marque). Une coche lime se dessine quand on dépasse l'étape
+// (beta.ts ajoute .is-done ; sans script, pas de coche, rien ne manque).
+//
+// #block-android : ancre utilisée par /join, à garder telle quelle.
+import fs from "node:fs";
+import { APK_URL, TESTFLIGHT_STORE_URL } from "../../lib/links";
+
+// TESTFLIGHT_URL lu au build dans public/testflight.js (qui reste la source
+// unique) : le lien est écrit dans le HTML, l'étape marche sans JavaScript.
+// Au chargement, le <head> relit testflight.js et peut encore basculer vers
+// « Bientôt disponible » si le lien a été vidé entre-temps.
+const tfSource = fs.readFileSync("public/testflight.js", "utf8");
+const TESTFLIGHT_URL = tfSource.match(/TESTFLIGHT_URL\s*=\s*"([^"]*)"/)?.[1] ?? "";
+---
+<section class="steps-wrap" aria-label="Étapes d'installation">
+  <div class="wrap">
+
+    <!-- ============ iPhone ============ -->
+    <div class="platform" id="steps-ios" data-platform="ios" data-panel="ios">
+      <h2 class="platform__title">Sur iPhone, en trois étapes.</h2>
+      <ol class="steps">
+        <li class="step" data-step>
+          <span class="step__num" aria-hidden="true">1<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Installe TestFlight</h3>
+            <p>TestFlight est l'application d'Apple pour tester des apps avant leur sortie. Elle est gratuite.</p>
+            <a class="bbtn" href={TESTFLIGHT_STORE_URL} data-track="Installer TestFlight" data-track-where="étapes">Installer TestFlight</a>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-store">
+              <span class="pv-store__icon">✈️</span>
+              <span class="pv-store__name"><b>TestFlight</b><small>Apple</small></span>
+              <span class="pv-pill pv-pill--blue">Obtenir</span>
+            </div>
+            <p class="pv-caption">Sur l'App Store</p>
+          </div>
+        </li>
+
+        <li class:list={["step", { "tf-open": TESTFLIGHT_URL }]} data-step>
+          <span class="step__num" aria-hidden="true">2<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Rejoins la beta de Braiz</h3>
+            <p>Ce lien ouvre TestFlight : touche «&nbsp;Accepter&nbsp;», puis «&nbsp;Installer&nbsp;».</p>
+            <a class="bbtn bbtn--main" id="ios-join" href={TESTFLIGHT_URL || "#"} data-testflight data-track="Rejoindre la beta iPhone" data-track-where="étapes">Rejoindre la beta sur iPhone</a>
+            <div class="soon" id="ios-soon">
+              <button class="bbtn" type="button" disabled>Bientôt disponible sur iPhone</button>
+              <p>Apple vérifie l'application avant de l'ouvrir aux testeurs. Reviens dans quelques jours : ce lien restera le même.</p>
+            </div>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-tf">
+              <img src="/icon-512.png" alt="" width="56" height="56" loading="lazy" />
+              <b>Braiz</b>
+              <small>Invitation à tester</small>
+              <span class="pv-swap">
+                <span class="pv-pill pv-pill--blue pv-swap__a">Accepter</span>
+                <span class="pv-pill pv-pill--blue pv-swap__b">Installer</span>
+              </span>
+            </div>
+            <p class="pv-caption">Dans TestFlight</p>
+          </div>
+        </li>
+
+        <li class="step" data-step>
+          <span class="step__num" aria-hidden="true">3<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Ouvre Braiz et crée ton compte</h3>
+            <p>L'icône Braiz est sur ton écran d'accueil. Ouvre-la et crée ton compte avec ton adresse email ou avec Apple.</p>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-login">
+              <img src="/braiz-wordmark.svg" alt="" width="96" height="45" loading="lazy" />
+              <span class="pv-field">ton@email.fr</span>
+              <span class="pv-pill pv-pill--ember">Continuer</span>
+            </div>
+            <p class="pv-caption">Dans Braiz</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ============ Android ============ -->
+    <div class="platform" id="block-android" data-platform="android" data-panel="android">
+      <h2 class="platform__title">Sur Android, en quatre étapes.</h2>
+      <p class="platform__lede">Braiz n'est pas encore sur le Play Store : tu l'installes directement à partir de son fichier.</p>
+      <ol class="steps">
+        <li class="step" data-step>
+          <span class="step__num" aria-hidden="true">1<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Télécharge l'application</h3>
+            <p>Fichier d'environ 155&nbsp;Mo, une connexion wifi est conseillée.</p>
+            <a class="bbtn bbtn--main" href={APK_URL} data-track="Télécharger l'APK" data-track-where="étapes">Télécharger pour Android</a>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-notif">
+              <span class="pv-notif__icon">↓</span>
+              <span class="pv-notif__text"><b>braiz.apk</b><small>Téléchargement terminé</small></span>
+              <span class="pv-progress"><i></i></span>
+            </div>
+            <p class="pv-caption">Dans tes notifications</p>
+          </div>
+        </li>
+
+        <li class="step" data-step>
+          <span class="step__num" aria-hidden="true">2<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Autorise l'installation</h3>
+            <p>À l'ouverture du fichier, Android te propose d'autoriser ton navigateur à installer des applications. Active l'option, puis reviens en arrière.</p>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-setting">
+              <span class="pv-setting__label"><b>Autoriser cette source</b><small>Ton navigateur</small></span>
+              <span class="pv-toggle"><i></i></span>
+            </div>
+            <p class="pv-caption">Dans les réglages</p>
+          </div>
+        </li>
+
+        <li class="step" data-step>
+          <span class="step__num" aria-hidden="true">3<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Touche «&nbsp;Installer quand même&nbsp;»</h3>
+            <p>
+              <strong>Android affichera un avertissement : c'est normal pour une
+              application installée en dehors du Play Store.</strong>
+              Play Protect, le contrôle de sécurité d'Android, peut aussi te
+              demander de confirmer. Touche «&nbsp;Installer quand même&nbsp;». Sur
+              certains téléphones, ce bouton se trouve sous «&nbsp;Plus de détails&nbsp;».
+            </p>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-dialog">
+              <b>Installer cette application&nbsp;?</b>
+              <small>Elle ne provient pas du Play Store.</small>
+              <span class="pv-dialog__actions"><span>Plus de détails</span><span class="pv-dialog__go">Installer quand même</span></span>
+            </div>
+            <p class="pv-caption">L'avertissement d'Android</p>
+          </div>
+        </li>
+
+        <li class="step" data-step>
+          <span class="step__num" aria-hidden="true">4<svg class="step__check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" /><path d="M12 20.5l5.5 5.5L28.5 14" /></svg></span>
+          <div class="step__body">
+            <h3>Ouvre Braiz et crée ton compte</h3>
+            <p>Ouvre Braiz depuis tes applications et crée ton compte avec ton adresse email.</p>
+          </div>
+          <div class="preview" aria-hidden="true">
+            <div class="pv-login">
+              <img src="/braiz-wordmark.svg" alt="" width="96" height="45" loading="lazy" />
+              <span class="pv-field">ton@email.fr</span>
+              <span class="pv-pill pv-pill--ember">Continuer</span>
+            </div>
+            <p class="pv-caption">Dans Braiz</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .steps-wrap { position: relative; padding: var(--s-6) 0 var(--section-y); }
+  .platform { scroll-margin-top: var(--s-5); }
+  .platform + .platform { margin-top: var(--section-y); }
+  .platform__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 1.2rem + 3vw, 3.8rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .platform__lede { margin: var(--s-4) 0 0; max-width: 34rem; color: var(--muted); font-size: var(--t-lead); }
+
+  /* En mode onglets, la plateforme qui apparaît glisse doucement. */
+  @media (prefers-reduced-motion: no-preference) {
+    .platform { animation: panel-in 520ms var(--ease-out) both; }
+  }
+  @keyframes panel-in { from { opacity: 0; transform: translate3d(0, 24px, 0); } to { opacity: 1; transform: none; } }
+
+  .steps { list-style: none; margin: var(--s-7) 0 0; padding: 0; display: grid; gap: var(--s-8); }
+  .step {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) minmax(0, 300px);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  .step__num {
+    position: relative;
+    justify-self: start;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(4.5rem, 3rem + 4vw, 7rem);
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    color: var(--cream);
+  }
+  /* La coche : un cercle lime et un trait qui se dessine
+     (stroke-dashoffset), en bas à droite du numéro. */
+  .step__check {
+    position: absolute;
+    right: -0.05em;
+    bottom: -0.05em;
+    width: 0.42em;
+    height: 0.42em;
+    overflow: visible;
+  }
+  .step__check circle { fill: var(--lime); transform-origin: center; transform-box: fill-box; transform: scale(0); transition: transform 420ms linear(0, 0.5 15%, 1.15 35%, 0.96 60%, 1); }
+  .step__check path { fill: none; stroke: var(--ink); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset 360ms var(--ease-out) 180ms; }
+  .step.is-done .step__check circle { transform: scale(1); }
+  .step.is-done .step__check path { stroke-dashoffset: 0; }
+
+  .step__body h3 {
+    margin: var(--s-2) 0 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .step__body p { margin: var(--s-3) 0 0; max-width: 32rem; color: var(--muted); }
+  .step__body strong { color: var(--cream); }
+  .step__body .bbtn { margin-top: var(--s-5); }
+
+  /* TestFlight : le bouton si le lien public existe, sinon « Bientôt ».
+     .tf-open vient du build (marche sans JavaScript) ; has-testflight et
+     no-testflight viennent du <head>, qui a le dernier mot. */
+  #ios-join { display: none; }
+  .tf-open #ios-join,
+  :global(html.has-testflight) #ios-join { display: inline-flex; }
+  .tf-open #ios-soon,
+  :global(html.has-testflight) #ios-soon { display: none; }
+  /* !important : le <head> a le dernier mot sur le build (.tf-open, plus
+     spécifique une fois scopé par Astro). */
+  :global(html.no-testflight) #ios-join { display: none !important; }
+  :global(html.no-testflight) #ios-soon { display: block !important; }
+  .soon { margin-top: var(--s-5); }
+  .soon p { font-size: var(--t-small); }
+
+  /* ---------- Aperçus d'écran ---------- */
+  .preview { justify-self: end; width: 100%; max-width: 300px; }
+  .preview > :first-child {
+    position: relative;
+    padding: var(--s-4);
+    border-radius: var(--r-l);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--hairline), 0 24px 50px -24px rgba(0, 0, 0, 0.9);
+    rotate: 2deg;
+    font-size: 0.9rem;
+  }
+  .step:nth-child(even) .preview > :first-child { rotate: -2deg; }
+  .pv-caption { margin: var(--s-3) 0 0; text-align: center; color: var(--muted); font-size: 0.8rem; }
+  .pv-pill { display: inline-grid; place-items: center; padding: 6px 16px; border-radius: var(--r-pill); font-weight: 600; font-size: 0.85rem; }
+  /* Bleu neutre, façon bouton de système : pas une couleur de marque. */
+  .pv-pill--blue { background: #2F6FEB; color: #fff; }
+  .pv-pill--ember { background: var(--gradient-button); color: var(--cream); }
+
+  .pv-store { display: grid; grid-template-columns: auto 1fr auto; gap: var(--s-3); align-items: center; }
+  .pv-store__icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(145deg, #3b4b66, #1f2a3d); font-size: 1.5rem; }
+  .pv-store__name { display: grid; }
+  .pv-store__name small, .pv-tf small, .pv-notif small, .pv-setting small, .pv-dialog small { color: var(--muted); font-size: 0.78rem; }
+
+  .pv-tf { display: grid; justify-items: center; gap: 4px; text-align: center; }
+  .pv-tf img { width: 56px; height: 56px; border-radius: 13px; margin-bottom: 4px; }
+  .pv-swap { position: relative; display: grid; margin-top: var(--s-3); }
+  .pv-swap > * { grid-area: 1 / 1; }
+  .pv-swap__b { opacity: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.motion-ok) .pv-swap__a { animation: swap-a 3.6s infinite; }
+    :global(html.motion-ok) .pv-swap__b { animation: swap-b 3.6s infinite; }
+  }
+  @keyframes swap-a { 0%, 40% { opacity: 1; transform: none; } 48% { opacity: 1; transform: scale(0.92); } 55%, 100% { opacity: 0; transform: scale(0.92); } }
+  @keyframes swap-b { 0%, 52% { opacity: 0; transform: scale(1.1); } 62%, 94% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  /* Sans animation : « Accepter » puis « Installer », côte à côte. */
+  :global(html:not(.motion-ok)) .pv-swap { display: flex; gap: var(--s-2); }
+  :global(html:not(.motion-ok)) .pv-swap__b { opacity: 1; }
+
+  .pv-login { display: grid; justify-items: center; gap: var(--s-3); }
+  .pv-login img { width: 96px; height: auto; margin: var(--s-2) 0; }
+  .pv-field { width: 100%; padding: 8px 12px; border-radius: 10px; background: var(--ink); box-shadow: inset 0 0 0 1px var(--outline); color: var(--muted); font-size: 0.85rem; }
+  .pv-login .pv-pill { width: 100%; }
+
+  .pv-notif { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--s-3); align-items: center; }
+  .pv-notif__icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2); font-weight: 700; }
+  .pv-notif__text { display: grid; }
+  .pv-progress { grid-column: 1 / -1; height: 4px; margin-top: var(--s-2); border-radius: 2px; background: var(--hairline); overflow: hidden; }
+  .pv-progress i { display: block; height: 100%; background: var(--lime); transform-origin: left; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.motion-ok) .pv-progress i { animation: dl 3s var(--ease-out) infinite; }
+  }
+  @keyframes dl { from { transform: scaleX(0); } 70%, to { transform: scaleX(1); } }
+
+  .pv-setting { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); }
+  .pv-setting__label { display: grid; }
+  .pv-toggle { position: relative; flex: none; width: 46px; height: 28px; border-radius: 14px; background: var(--lime); }
+  /* Fond « désactivé » posé par-dessus : seule son opacité change. */
+  .pv-toggle::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--outline); opacity: 0; }
+  .pv-toggle i { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transform: translateX(18px); }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.motion-ok) .pv-toggle::before { animation: tog-off 3s infinite; }
+    :global(html.motion-ok) .pv-toggle i { animation: tog 3s var(--ease-spring) infinite; }
+  }
+  @keyframes tog { 0%, 30% { transform: none; } 45%, 100% { transform: translateX(18px); } }
+  @keyframes tog-off { 0%, 30% { opacity: 1; } 45%, 100% { opacity: 0; } }
+
+  .pv-dialog { display: grid; gap: 4px; }
+  .pv-dialog__actions { display: flex; justify-content: flex-end; gap: var(--s-4); margin-top: var(--s-3); font-size: 0.8rem; color: var(--muted); }
+  .pv-dialog__go { color: #8AB4F8; font-weight: 600; }
+
+  @media (max-width: 899px) {
+    .steps { gap: var(--s-8); }
+    .step { grid-template-columns: 1fr; gap: var(--s-4); }
+    .step__num { font-size: 5rem; }
+    .preview { justify-self: start; max-width: 320px; }
+    .step__body .bbtn { width: 100%; }
+  }
+</style>

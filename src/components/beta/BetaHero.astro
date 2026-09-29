@@ -1,0 +1,290 @@
+---
+// Premier écran de /beta : pastille, titre, onglets iPhone / Android, bouton
+// d'installation et visuel (téléphone dont l'écran d'accueil reçoit l'icône
+// Braiz ; sur ordinateur, le QR code).
+//
+// Tout ce qui dépend de la plateforme est décidé par des classes posées sur
+// <html> avant le premier rendu (voir beta.astro) : aucun décalage.
+// Sans JavaScript ou en reduced-motion (pas de .motion-ok), les onglets
+// disparaissent et les deux plateformes sont proposées.
+import { APK_URL } from "../../lib/links";
+---
+<section class="bhero" aria-labelledby="bhero-title">
+  <div class="bhero__glow" aria-hidden="true"></div>
+  <div class="wrap bhero__grid">
+    <div class="bhero__text">
+      <p class="bhero__pill">Beta ouverte</p>
+      <h1 class="bhero__title" id="bhero-title">Rejoins les premiers testeurs.</h1>
+      <p class="bhero__sub">Gratuit, sans pub. Installation en 2&nbsp;minutes.</p>
+
+      <div class="tabs" role="tablist" aria-label="Ton téléphone" data-tabs>
+        <button class="tabs__tab" type="button" role="tab" id="tab-ios" data-tab="ios" aria-controls="steps-ios" aria-selected="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3.2" /><path d="M10.5 5h3" /></svg>
+          iPhone
+        </button>
+        <button class="tabs__tab" type="button" role="tab" id="tab-android" data-tab="android" aria-controls="block-android" aria-selected="false" tabindex="-1">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2" /><circle cx="12" cy="5.2" r="0.9" /></svg>
+          Android
+        </button>
+      </div>
+
+      <div class="bhero__cta">
+        <div class="bhero__action" data-platform="ios">
+          <a class="bbtn bbtn--main" href="#steps-ios" data-track="Installer sur iPhone" data-track-where="premier écran">Installer sur iPhone</a>
+          <p class="bhero__note">Avec TestFlight, l'app de test d'Apple.</p>
+        </div>
+        <div class="bhero__action" data-platform="android">
+          <a class="bbtn bbtn--main" href={APK_URL} data-track="Télécharger l'APK" data-track-where="premier écran">Télécharger pour Android</a>
+          <p class="bhero__note">Fichier d'environ 155&nbsp;Mo, une connexion wifi est conseillée.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bhero__visual">
+      <!-- Sur ordinateur, on n'installe rien : le QR code ouvre cette page
+           sur le téléphone. -->
+      <figure class="qr" data-qr>
+        <img src="/qr-beta.svg" alt="QR code vers getbraiz.com/beta" width="200" height="200" />
+        <figcaption>Tu es sur ordinateur&nbsp;? Scanne ce code avec ton téléphone : cette page s'ouvre directement.</figcaption>
+      </figure>
+
+      <!-- Écran d'accueil d'un téléphone : des applications neutres, et
+           l'icône Braiz qui atterrit à sa place. Décor. -->
+      <div class="home-phone" aria-hidden="true">
+        <div class="home-phone__screen">
+          <div class="home-phone__status"><span>9:41</span><span class="home-phone__dots"><i></i><i></i><i></i></span></div>
+          <div class="home-phone__grid">
+            {Array.from({ length: 11 }, (_, i) => <span class="app" style={`--h: ${[18, 200, 150, 260, 30, 330, 190, 90, 220, 120, 280][i]}`}></span>)}
+            <span class="app app--braiz">
+              <img src="/icon-512.png" alt="" width="120" height="120" />
+              <b>Braiz</b>
+            </span>
+          </div>
+          <div class="home-phone__dock">
+            {Array.from({ length: 4 }, (_, i) => <span class="app" style={`--h: ${[210, 140, 20, 300][i]}`}></span>)}
+          </div>
+          <span class="home-phone__bar"></span>
+        </div>
+        <span class="home-phone__cam"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bhero { position: relative; padding: var(--s-5) 0 var(--s-9); }
+  .bhero__glow {
+    position: absolute;
+    right: -15vw;
+    top: 0;
+    width: min(110vw, 860px);
+    aspect-ratio: 1;
+    background: var(--glow-ember);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .bhero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--s-7);
+    align-items: center;
+  }
+
+  .bhero__pill {
+    display: inline-block;
+    margin: 0 0 var(--s-5);
+    padding: 5px 14px 6px;
+    border-radius: var(--r-pill);
+    background: var(--lime);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    rotate: -3deg;
+  }
+  .bhero__title {
+    margin: 0;
+    max-width: 11ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3rem, 1.2rem + 6.4vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .bhero__sub {
+    margin: var(--s-5) 0 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.8rem);
+    line-height: 1.2;
+  }
+
+  /* ---------- Onglets ---------- */
+  .tabs {
+    display: none;
+    margin-top: var(--s-6);
+    padding: 5px;
+    width: max-content;
+    max-width: 100%;
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+  }
+  :global(html.motion-ok) .tabs { display: flex; }
+  .tabs__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    padding: 0 var(--s-5);
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--muted);
+    font: 600 1rem var(--font-text);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
+  }
+  .tabs__tab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .tabs__tab circle { fill: currentColor; stroke: none; }
+  /* Onglet actif : surface claire discrète, jamais d'aplat ember (charte). */
+  :global(html.show-ios) #tab-ios,
+  :global(html.show-android) #tab-android {
+    background: var(--surface-2);
+    color: var(--cream);
+    box-shadow: inset 0 0 0 1px rgba(250, 247, 244, 0.16);
+  }
+
+  /* ---------- Bouton et note ---------- */
+  .bhero__cta { margin-top: var(--s-5); }
+  :global(html:not(.motion-ok)) .bhero__cta { display: grid; gap: var(--s-5); margin-top: var(--s-6); }
+  .bhero__action { display: grid; justify-items: start; gap: var(--s-3); }
+  .bhero__note { margin: 0; color: var(--muted); font-size: var(--t-small); }
+
+  /* ---------- Visuel : QR code ou téléphone ---------- */
+  .bhero__visual { position: relative; display: grid; justify-items: center; }
+  .qr { display: none; margin: 0; max-width: 280px; text-align: center; }
+  .qr img {
+    width: 240px;
+    height: auto;
+    margin: 0 auto var(--s-4);
+    border-radius: var(--r-m);
+    rotate: -3deg;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.9), 0 0 0 6px rgba(255, 106, 26, 0.18);
+    image-rendering: pixelated;
+  }
+  .qr figcaption { color: var(--muted); font-size: var(--t-small); }
+  :global(html.is-desktop) .qr { display: block; }
+  :global(html.is-desktop) .home-phone { display: none; }
+
+  .home-phone {
+    --w: clamp(200px, 20vw, 270px);
+    position: relative;
+    width: var(--w);
+    aspect-ratio: 9 / 19.5;
+    padding: calc(var(--w) * 0.035);
+    border-radius: calc(var(--w) * 0.16);
+    background: linear-gradient(160deg, #2a262e, #0f0d12 40%, #1c1920);
+    box-shadow: var(--shadow-phone), inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+    rotate: 5deg;
+  }
+  .home-phone__screen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: calc(var(--w) * 0.13);
+    background:
+      radial-gradient(120% 70% at 20% 0%, rgba(255, 106, 26, 0.35), transparent 60%),
+      radial-gradient(90% 60% at 100% 100%, rgba(225, 29, 46, 0.3), transparent 60%),
+      #140f14;
+    container-type: inline-size;
+  }
+  .home-phone__cam {
+    position: absolute;
+    top: calc(var(--w) * 0.065);
+    left: 50%;
+    width: 32%;
+    height: calc(var(--w) * 0.085);
+    translate: -50% 0;
+    border-radius: 999px;
+    background: #000;
+  }
+  .home-phone__status { display: flex; justify-content: space-between; padding: 6cqw 9cqw 0; font-size: 4.4cqw; font-weight: 600; }
+  .home-phone__dots { display: flex; gap: 1.2cqw; }
+  .home-phone__dots i { width: 3cqw; height: 3cqw; border-radius: 1cqw; background: var(--cream); }
+  .home-phone__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7cqw 5cqw;
+    padding: 12cqw 7cqw 0;
+  }
+  .app {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 24%;
+    background: linear-gradient(145deg, hsl(var(--h) 22% 30%), hsl(var(--h) 20% 18%));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .app--braiz { background: none; box-shadow: none; }
+  .app--braiz img { width: 100%; height: 100%; border-radius: 24%; box-shadow: 0 0 0 0.6cqw rgba(255, 255, 255, 0.1), 0 3cqw 8cqw -2cqw rgba(255, 106, 26, 0.7); }
+  .app--braiz b { position: absolute; left: 50%; top: 104%; translate: -50% 0; font-size: 3.4cqw; font-weight: 600; }
+  .home-phone__dock {
+    position: absolute;
+    left: 5cqw;
+    right: 5cqw;
+    bottom: 7cqw;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5cqw;
+    padding: 3.5cqw;
+    border-radius: 9cqw;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .home-phone__bar { position: absolute; left: 50%; bottom: 2.4cqw; width: 34%; height: 1.2cqw; translate: -50% 0; border-radius: 1cqw; background: rgba(250, 247, 244, 0.7); }
+
+  /* Téléphone Android : coins moins ronds, caméra ronde, barre de
+     navigation. */
+  :global(html.show-android) .home-phone { border-radius: calc(var(--w) * 0.1); }
+  :global(html.show-android) .home-phone__screen { border-radius: calc(var(--w) * 0.075); }
+  :global(html.show-android) .home-phone__cam { width: calc(var(--w) * 0.05); height: calc(var(--w) * 0.05); top: calc(var(--w) * 0.07); }
+  :global(html.show-android) .home-phone__dock { border-radius: 5cqw; }
+
+  /* ---------- Entrées au chargement (CSS seul) ----------
+     Le titre ne fait que bouger : visible dès le premier rendu (LCP). */
+  @media (prefers-reduced-motion: no-preference) {
+    .bhero__title { animation: bh-title 1000ms var(--ease-spring) 60ms both; }
+    .bhero__pill { animation: bh-pop 700ms linear(0, 0.45 12%, 1.12 30%, 0.97 52%, 1.01 72%, 1) 250ms both; }
+    .bhero__sub, .tabs, .bhero__cta { animation: bh-up 700ms var(--ease-out) both; }
+    .bhero__sub { animation-delay: 200ms; }
+    .tabs { animation-delay: 300ms; }
+    .bhero__cta { animation-delay: 380ms; }
+    .home-phone { animation: bh-phone 1100ms var(--ease-spring) 150ms both; }
+    /* L'icône Braiz tombe du haut de l'écran et rebondit à sa place. */
+    .app--braiz { animation: bh-land 1300ms linear(0, 0.06 8%, 0.25 18%, 0.58 30%, 1 42%, 0.88 50%, 1 58%, 0.97 64%, 1 72%, 1) 900ms both; }
+    .app--braiz b { animation: bh-up 500ms var(--ease-out) 1900ms both; }
+    /* Sur mobile, le téléphone est sous le premier écran : l'icône attend
+       qu'il soit visible (beta.ts ajoute .in-view) pour atterrir. */
+    :global(html.motion-ok) .home-phone:not(.in-view) .app--braiz,
+    :global(html.motion-ok) .home-phone:not(.in-view) .app--braiz b { animation-play-state: paused; }
+    /* Au changement d'onglet, l'icône atterrit de nouveau. */
+    :global(html.show-android) .app--braiz { animation-name: bh-land-2; }
+  }
+  @keyframes bh-title { from { transform: translate3d(0, 24px, 0) rotate(-1.5deg); } to { transform: none; } }
+  @keyframes bh-pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+  @keyframes bh-up { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
+  @keyframes bh-phone { from { opacity: 0; transform: translate3d(0, 60px, 0) rotate(8deg); } to { opacity: 1; transform: none; } }
+  @keyframes bh-land { from { opacity: 0; transform: translate3d(0, -180%, 0) scale(1.25) rotate(-18deg); } 12% { opacity: 1; } to { opacity: 1; transform: none; } }
+  @keyframes bh-land-2 { from { opacity: 0; transform: translate3d(0, -180%, 0) scale(1.25) rotate(18deg); } 12% { opacity: 1; } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 899px) {
+    .bhero { padding: var(--s-3) 0 var(--s-8); }
+    .bhero__grid { grid-template-columns: 1fr; gap: var(--s-7); }
+    .bhero__glow { top: 35%; right: -45vw; }
+    .home-phone { --w: min(58vw, 240px); }
+    .tabs { width: 100%; }
+    .tabs__tab { flex: 1; justify-content: center; }
+    .bhero__action .bbtn--main { width: 100%; }
+  }
+</style>

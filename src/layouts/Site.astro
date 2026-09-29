@@ -61,6 +61,8 @@ const ogImageUrl = ogImage && new URL(ogImage, Astro.site).href;
 <script is:inline>
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("motion-ok");
 </script>
+<!-- Scripts propres à une page, à exécuter avant le premier rendu. -->
+<slot name="head" />
 </head>
 <body>
 
