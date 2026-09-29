@@ -13,6 +13,7 @@
 import Roller from "./Roller.astro";
 import ArrowsFigure from "./ArrowsFigure.astro";
 import Button from "../Button.astro";
+import BrandMark from "../BrandMark.astro";
 import {
   GROUP, PLACE, FRIENDS, EXPENSES, TOTAL, NAIVE, SETTLEMENTS, SETTLE_ARROWS,
   NAIVE_ARROWS, SEATS, TICKETS, AVATAR, euros, friend,
@@ -179,6 +180,12 @@ const chipTilt = [-5, 4, -3];
       </ol>
 
       <div class="outro" data-s="outro">
+        <!-- Le « B » en fond : le groupe démêlé devient Braiz. En retrait,
+             derrière le slogan et le bouton, qui reste l'accent ember. -->
+        <div class="outro__mark" data-s="mark" aria-hidden="true">
+          <div class="outro__halo"></div>
+          <BrandMark class="outro__b" id="settle-b" />
+        </div>
         <h2 class="outro__title">Règle tes comptes, garde tes potes.</h2>
         <p class="outro__text">Braiz calcule le moins de virements possible. Toi, tu profites du week-end.</p>
         <div class="outro__cta"><Button href="/beta" variant="ember">Rejoindre la beta</Button></div>
@@ -274,9 +281,56 @@ const chipTilt = [-5, 4, -3];
   .story__transfers { margin: var(--s-5) 0 0; padding-left: 1.2em; color: var(--muted); }
 
   .outro {
+    position: relative;
+    isolation: isolate;
+    /* Le « B » déborde, mais seulement de son bloc : il ne passe jamais
+       sous le texte des sections voisines. */
+    overflow: clip;
     max-width: var(--content);
     margin: 0 auto;
     padding: var(--section-y) var(--gutter);
+  }
+  .outro > :not(.outro__mark) { position: relative; z-index: 1; }
+  /* Version statique : le « B » se fond dans le noir en haut et en bas du
+     bloc, au lieu d'être coupé net. */
+  .outro::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(var(--ink), transparent 24%, transparent 76%, var(--ink));
+  }
+  :global(html.motion-ok) .outro::after { display: none; }
+
+  /* Le « B » : très grand, penché, il déborde (main coupe l'excédent en
+     overflow-x: clip, la scène en overflow: clip). Opacité basse et fond
+     assombri : il se lit comme un décor, pas comme un second accent. */
+  .outro__mark {
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: 50%;
+    height: 130%;
+    aspect-ratio: 677 / 840;
+    translate: -40% -50%;
+    rotate: -9deg;
+    pointer-events: none;
+  }
+  .outro__halo {
+    position: absolute;
+    inset: -20%;
+    background: var(--glow-ember);
+    opacity: 0.35;
+  }
+  /* Le SVG est rendu par BrandMark : style scopé de ce composant-ci, donc
+     :global sous le conteneur. */
+  .outro__mark :global(.outro__b) {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
   }
   .outro__title {
     font-family: var(--font-display);
@@ -288,13 +342,16 @@ const chipTilt = [-5, 4, -3];
     max-width: 12ch;
     text-wrap: balance;
   }
-  .outro__text { margin: var(--s-5) 0 0; max-width: 30rem; font-size: var(--t-lead); color: var(--muted); }
+  /* Plus clair que le gris secondaire habituel : il passe sur le « B »
+     et doit garder un contraste AA (au moins 4,5:1) sur sa partie la plus
+     claire. */
+  .outro__text { margin: var(--s-5) 0 0; max-width: 30rem; font-size: var(--t-lead); color: rgba(250, 247, 244, 0.82); }
   .outro__cta { margin-top: var(--s-6); }
 
   /* =========================================================
      Version animée (html.motion-ok)
      ========================================================= */
-  :global(html.motion-ok) .settle__track { height: 640svh; }
+  :global(html.motion-ok) .settle__track { height: 680svh; }
   :global(html.motion-ok) .settle__sticky {
     position: sticky;
     top: 0;
@@ -522,7 +579,7 @@ const chipTilt = [-5, 4, -3];
 
   .scene__progress {
     position: absolute;
-    z-index: 4;
+    z-index: 6;
     left: var(--gutter);
     bottom: 4.5svh;
     display: flex;
@@ -584,11 +641,17 @@ const chipTilt = [-5, 4, -3];
     pointer-events: none;
   }
   :global(html.motion-ok) .outro.is-live { pointer-events: auto; }
+  :global(html.motion-ok) .outro__mark {
+    height: 128svh;
+    translate: -50% -50%;
+    will-change: transform, opacity;
+  }
+  :global(html.motion-ok) .outro__mark :global(.outro__b) { will-change: transform; }
   :global(html.motion-ok) .outro__title { max-width: 11ch; }
 
   /* ---------- Téléphones : tout s'empile, plateau au centre ---------- */
   @media (max-width: 899px) {
-    :global(html.motion-ok) .settle__track { height: 480svh; }
+    :global(html.motion-ok) .settle__track { height: 510svh; }
     :global(html.motion-ok) .scene {
       --board: min(114vw, 60svh);
       --board-top: calc(58svh - var(--board) / 2);
@@ -604,5 +667,6 @@ const chipTilt = [-5, 4, -3];
     .big--count { font-size: calc(var(--big) * 1.7); }
     .scene__progress { left: 50%; translate: -50% 0; bottom: 3.5svh; }
     .scene__hint { bottom: 6svh; }
+    :global(html.motion-ok) .outro__mark { height: 100svh; }
   }
 </style>

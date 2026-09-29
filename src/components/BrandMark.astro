@@ -1,0 +1,22 @@
+---
+// Le « B » de Braiz, tracé officiel (~/Desktop/Braiz./SVG/B dégradé.svg,
+// copié tel quel), en dégradé ember. Décoratif : aria-hidden.
+// Dégradé en coordonnées du dessin, calculé pour un vrai 135° (comme
+// linear-gradient(135deg) en CSS) sur la boîte du viewBox, qui n'est pas
+// carrée ; celui du fichier source va d'un coin à l'autre.
+interface Props {
+  class?: string;
+  id?: string;
+}
+const { class: className, id = "brand-mark" } = Astro.props;
+const gid = `${id}-ember`;
+---
+<svg class:list={["brand-mark", className]} viewBox="-19 -20 677 840" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id={gid} gradientUnits="userSpaceOnUse" x1="-59.3" y1="20.7" x2="699.3" y2="779.3">
+      <stop offset="0" stop-color="#FF6A1A" />
+      <stop offset="1" stop-color="#E11D2E" />
+    </linearGradient>
+  </defs>
+  <path fill={`url(#${gid})`} d="m1 63.5v63.5l360 0.6 8 2.2c11.4 3.3 28.7 12.2 37 19 11.2 9.3 19.6 19.8 25.9 32.5 18.9 37.8 14 84.2-12.4 116-14.5 17.5-32.7 28.4-56.5 33.7-9.9 2.2-10.9 2.2-110 2.6-65.9 0.3-100 0-102-0.6l-2.7-1.1v-70c0-55.3-0.3-70-1.2-70-0.7 0-34-0.1-74.1-0.2l-72.7-0.3v207 207l148-0.5 0.3-79.6c0.2-74.8 0.3-79.7 2-80 0.9-0.2 55.3-0.1 121 0.2 129 0.6 120 0.2 139 5.9 9.1 2.8 24.1 10.8 33.3 17.8 21.9 16.6 37.4 42 42.3 69.2 1.8 10 1.5 31.1-0.5 41-4.9 23.5-14.7 42.7-30.1 58.8-15.8 16.7-42 29.6-67.2 33.2-4.6 0.6-75.5 1-197 1l-190 0.1 0.2 63.7 0.3 63.7 192 0.3c136 0.2 197 0 209-0.8 30.3-2.1 44.8-4.7 77.5-14.2 10.1-2.9 33.3-13 45-19.5 11.7-6.6 26.2-16.3 36-24.4 8.9-7.3 25.7-24.5 32.2-33 20.7-27 34.9-59.3 41.5-94.4 2.5-13.4 3.5-51.3 1.9-68.9-3-31.8-18.7-68.2-42.1-97.6-13.7-17.2-41-41.2-57-50-3-1.7-8.2-4.6-11.5-6.5s-11.5-5.8-18.2-8.7c-6.8-2.8-12.3-5.5-12.3-5.9 0-0.4 4.2-3 9.3-5.9 27.4-15.6 52.8-43.3 68.6-74.7 17.4-34.8 22.3-68.4 16.5-113-4.9-38-21-75.3-45.1-104-12.3-14.8-32.1-31.2-50.8-42.3-30-17.7-62-28.1-102-33.2-12.3-1.6-29.9-1.8-203-2l-189-0.3v63.5" />
+</svg>

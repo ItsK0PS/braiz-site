@@ -80,6 +80,15 @@ registerScene(({ gsap, conditions, plugins }) => {
   const splits = capTitles.map((title) => splitMasked(SplitText, title));
   const outroSplit = splitMasked(SplitText, outro.querySelector(".outro__title")!);
 
+  // Mots cachés sous leur masque dès le départ. Un fromTo avec stagger ne
+  // pose l'état de départ que sur le premier mot tant que la timeline ne l'a
+  // pas atteint : on le pose sur tous, explicitement.
+  gsap.set([...splits.slice(1).flatMap((sp) => sp.words), ...outroSplit.words], {
+    yPercent: MASK_TRAVEL,
+    rotation: 8,
+    opacity: 0,
+  });
+
   // Départ : compteurs à zéro, flèches non dessinées.
   setTotal(0);
   setCount(0);
@@ -105,7 +114,7 @@ registerScene(({ gsap, conditions, plugins }) => {
   const C3 = 4.8;
   const C4 = 6.9;
   const C5 = 9.6;
-  const END = 11.3;
+  const END = 12.3;
 
   // Changement de légende : les mots du titre sortent par le haut, ceux du
   // suivant arrivent par le bas avec un ressort.
@@ -221,31 +230,62 @@ registerScene(({ gsap, conditions, plugins }) => {
   tl.to(glow, { scale: 1.2, duration: 0.8, ease: "power2.out" }, C4 + 0.55);
 
   // ---------- 5. Règle tes comptes, garde tes potes ----------
+  // Le plateau se recentre, le groupe converge vers le centre et s'efface,
+  // et le « B » de Braiz en sort.
   swapCaption(3, null, C5);
   tl.to(count, { opacity: 0, y: 50, duration: 0.3, ease: "power2.in" }, C5);
   tl.to(place, { opacity: 0, duration: 0.3 }, C5);
-  // Le plateau recule au centre, derrière le slogan.
+  tl.to(names, { opacity: 0, duration: 0.2 }, C5);
+  tl.to(glow, { opacity: 0, duration: 0.6 }, C5 + 0.2);
   tl.to(board, {
     x: () => window.innerWidth / 2 - (board.offsetLeft + board.offsetWidth / 2),
-    scale: 0.78,
-    opacity: 0.18,
-    duration: 0.7,
+    y: () => window.innerHeight / 2 - (board.offsetTop + board.offsetHeight / 2),
+    duration: 0.6,
     ease: "power3.inOut",
   }, C5);
-  tl.to(glow, { scale: 1.45, opacity: 0.45, duration: 0.8, ease: "power2.out" }, C5 + 0.1);
-  tl.set(outro, { opacity: 1 }, C5 + 0.3);
+  const converge = { duration: 0.6, ease: "back.in(1.7)" };
+  tl.to(settle, { scale: 0.05, opacity: 0, svgOrigin: "500 500", ...converge }, C5 + 0.1);
+  tl.to(seats, { x: 500, y: 500, stagger: 0.04, ...converge }, C5 + 0.12);
+  tl.to(seats.map((seat) => seat.querySelector(".seat__pulse")), {
+    scale: 0.15,
+    opacity: 0,
+    transformOrigin: "50% 50%",
+    stagger: 0.04,
+    ...converge,
+  }, C5 + 0.12);
+  // Les montants (HTML, posés en %) rejoignent le centre du plateau.
+  tl.to(chips, {
+    x: (_i: number, el: HTMLElement) => (0.5 - parseFloat(el.style.left) / 100) * board.offsetWidth,
+    y: (_i: number, el: HTMLElement) => (0.5 - parseFloat(el.style.top) / 100) * board.offsetHeight,
+    scale: 0.2,
+    opacity: 0,
+    stagger: 0.04,
+    ...converge,
+  }, C5 + 0.1);
+
+  const mark = one("mark");
+  const markB = mark.querySelector("svg")!;
+  tl.set(outro, { opacity: 1 }, C5 + 0.6);
+  tl.fromTo(
+    mark,
+    { opacity: 0, scale: 0.08, rotation: -35 },
+    { opacity: 1, scale: 1, rotation: 0, duration: 0.85, ease: "back.out(1.5)" },
+    C5 + 0.62,
+  );
+  // Profondeur : le « B » continue de dériver doucement jusqu'à la fin.
+  tl.fromTo(markB, { yPercent: 4, rotation: -3 }, { yPercent: -4, rotation: 2, duration: END - (C5 + 0.62), ease: "none" }, C5 + 0.62);
   tl.fromTo(
     outroSplit.words,
     { yPercent: MASK_TRAVEL, rotation: 8, opacity: 0 },
     { yPercent: 0, rotation: 0, opacity: 1, duration: 0.55, stagger: 0.06, ease: "back.out(1.9)" },
-    C5 + 0.3,
+    C5 + 0.95,
   );
-  tl.fromTo(outro.querySelector(".outro__text"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C5 + 0.75);
+  tl.fromTo(outro.querySelector(".outro__text"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C5 + 1.4);
   tl.fromTo(
     outro.querySelector(".outro__cta"),
     { opacity: 0, scale: 0.6, y: 20 },
     { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(2.4)" },
-    C5 + 0.9,
+    C5 + 1.55,
   );
 
   // Barre de progression : un segment par chapitre.
