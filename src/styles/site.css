@@ -100,6 +100,17 @@ a { color: inherit; }
   font-size: var(--t-small);
 }
 
+/* ---------- Masques de SplitText (scripts/split.ts) ----------
+   Le masque déborde de sa ligne (haut : accents ; bas : jambages ; côtés :
+   légère rotation des mots), et la marge négative rend exactement l'espace
+   ajouté : même interligne, même espacement des mots. */
+.split-word-mask,
+.split-line-mask,
+.split-char-mask {
+  padding: 0.2em 0.08em 0.28em;
+  margin: -0.2em -0.08em -0.28em;
+}
+
 /* ---------- Apparitions au scroll ----------
    Par défaut tout est visible. Deux façons de faire apparaître :
    1. CSS animation-timeline: view() quand le navigateur le gère ;

@@ -10,6 +10,7 @@
 // Uniquement transform, opacity et stroke-dashoffset (DrawSVG). Le HTML
 // contient déjà l'état de départ : ce script ne fait que l'animer.
 import { registerScene } from "./motion";
+import { splitMasked, MASK_TRAVEL } from "./split";
 
 // Compteur à rouleaux (Roller.astro). Chaque colonne défile comme un
 // compteur mécanique : les unités tournent en continu, les colonnes
@@ -76,8 +77,8 @@ registerScene(({ gsap, conditions, plugins }) => {
 
   const capTitles = caps.map((cap) => cap.querySelector(".cap__title")!);
   const capTexts = caps.map((cap) => cap.querySelector(".cap__text")!);
-  const splits = capTitles.map((title) => new SplitText(title, { type: "words", mask: "words" }));
-  const outroSplit = new SplitText(outro.querySelector(".outro__title")!, { type: "words", mask: "words" });
+  const splits = capTitles.map((title) => splitMasked(SplitText, title));
+  const outroSplit = splitMasked(SplitText, outro.querySelector(".outro__title")!);
 
   // Départ : compteurs à zéro, flèches non dessinées.
   setTotal(0);
@@ -101,21 +102,21 @@ registerScene(({ gsap, conditions, plugins }) => {
   // un temps de lecture entre deux chapitres.
   const C1 = 0;
   const C2 = 1.7;
-  const C3 = 4.4;
-  const C4 = 6.5;
-  const C5 = 9.2;
-  const END = 10.9;
+  const C3 = 4.8;
+  const C4 = 6.9;
+  const C5 = 9.6;
+  const END = 11.3;
 
   // Changement de légende : les mots du titre sortent par le haut, ceux du
   // suivant arrivent par le bas avec un ressort.
   const swapCaption = (from: number, to: number | null, at: number) => {
-    tl.to(splits[from].words, { yPercent: -120, rotation: -5, opacity: 0, duration: 0.25, stagger: 0.02, ease: "power2.in" }, at);
+    tl.to(splits[from].words, { yPercent: -MASK_TRAVEL, rotation: -5, opacity: 0, duration: 0.25, stagger: 0.02, ease: "power2.in" }, at);
     tl.to(capTexts[from], { opacity: 0, y: -14, duration: 0.2, ease: "power1.in" }, at);
     if (to === null) return;
     tl.set(caps[to], { opacity: 1 }, at + 0.2);
     tl.fromTo(
       splits[to].words,
-      { yPercent: 115, rotation: 7, opacity: 0 },
+      { yPercent: MASK_TRAVEL, rotation: 7, opacity: 0 },
       { yPercent: 0, rotation: 0, opacity: 1, duration: 0.5, stagger: 0.045, ease: "back.out(2)" },
       at + 0.22,
     );
@@ -235,8 +236,8 @@ registerScene(({ gsap, conditions, plugins }) => {
   tl.set(outro, { opacity: 1 }, C5 + 0.3);
   tl.fromTo(
     outroSplit.words,
-    { yPercent: 115, rotation: 8 },
-    { yPercent: 0, rotation: 0, duration: 0.55, stagger: 0.06, ease: "back.out(1.9)" },
+    { yPercent: MASK_TRAVEL, rotation: 8, opacity: 0 },
+    { yPercent: 0, rotation: 0, opacity: 1, duration: 0.55, stagger: 0.06, ease: "back.out(1.9)" },
     C5 + 0.3,
   );
   tl.fromTo(outro.querySelector(".outro__text"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C5 + 0.75);

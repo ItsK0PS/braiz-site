@@ -46,10 +46,15 @@ const cells = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
     line-height: 1;
     white-space: nowrap;
   }
+  /* Fenêtre et cases de 1,4em : chaque chiffre a de la marge au-dessus et
+     au-dessous, rien n'est rogné et le chiffre voisin reste hors champ
+     pendant le défilement. La marge négative garde la hauteur de ligne
+     à 1em. */
   .roll__col {
     position: relative;
     display: inline-block;
-    height: 1em;
+    height: 1.4em;
+    margin-block: -0.2em;
     /* Colonne de largeur fixe : les chiffres ne font pas bouger la ligne. */
     width: 0.62em;
     overflow: clip;
@@ -62,6 +67,6 @@ const cells = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
     flex-direction: column;
     will-change: transform;
   }
-  .roll__strip > span { display: block; height: 1em; }
+  .roll__strip > span { display: block; height: 1.4em; line-height: 1.4em; }
   .roll__sep { display: inline-block; height: 1em; }
 </style>
