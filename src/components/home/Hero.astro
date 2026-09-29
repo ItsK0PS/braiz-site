@@ -9,9 +9,11 @@ import Button from "../Button.astro";
 import PhoneFrame from "../PhoneFrame.astro";
 import AppScreen from "./AppScreen.astro";
 import { BETA_PATH } from "../../lib/links";
-import { deletionDisparu, formatEur } from "../../lib/systemMessages";
+import { trophyPompier, formatEur } from "../../lib/systemMessages";
 
-const chambrage = deletionDisparu("Chloé", "Glaces", 12.4);
+// Annonce de trophée, texte exact de l'app. Le message de suppression
+// (chambrage) est dans la section Ambiance.
+const annonce = trophyPompier("Inès");
 ---
 <section class="hero" data-hero>
   <div class="hero__glow" data-depth="-12" aria-hidden="true"></div>
@@ -47,8 +49,8 @@ const chambrage = deletionDisparu("Chloé", "Glaces", 12.4);
       </div>
       <div class="bubble bubble--sys" data-depth="10" aria-hidden="true" style="--d: 1">
         <div class="bubble__in">
-          <span class="bubble__emoji">{chambrage.emoji}</span>
-          <p>{chambrage.text}</p>
+          <span class="bubble__emoji">{annonce.emoji}</span>
+          <p>{annonce.text}</p>
         </div>
       </div>
       <div class="bubble bubble--paid" data-depth="26" aria-hidden="true" style="--d: 2">
@@ -56,9 +58,6 @@ const chambrage = deletionDisparu("Chloé", "Glaces", 12.4);
           <span class="bubble__check"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg></span>
           <span class="bubble__main"><b>Sami a remboursé Hugo</b><small>{formatEur(19)}</small></span>
         </div>
-      </div>
-      <div class="bubble bubble--trophy" data-depth="14" aria-hidden="true" style="--d: 3">
-        <div class="bubble__in"><span>🚒</span><b>Le Pompier</b></div>
       </div>
     </div>
   </div>
@@ -169,13 +168,10 @@ const chambrage = deletionDisparu("Chloé", "Glaces", 12.4);
   .bubble__emoji { font-size: 1.35rem; line-height: 1.1; }
   .bubble__check { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--lime); }
   .bubble__check svg { width: 18px; fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-  .bubble--trophy .bubble__in { gap: var(--s-2); padding: var(--s-2) var(--s-4) var(--s-2) var(--s-3); border-radius: var(--r-pill); font-family: var(--font-display); }
-  .bubble--trophy b { font-weight: 600; }
 
   .bubble--add { left: -12%; top: 14%; rotate: -6deg; }
   .bubble--sys { right: -16%; top: 42%; rotate: 4deg; }
   .bubble--paid { left: -6%; bottom: 12%; rotate: 3deg; }
-  .bubble--trophy { right: 2%; top: 4%; rotate: -8deg; }
 
   /* Au chargement, les bulles éclosent l'une après l'autre (ressort en
      linear()), puis flottent. Deux éléments différents : .bubble porte la
@@ -209,6 +205,5 @@ const chambrage = deletionDisparu("Chloé", "Glaces", 12.4);
     .bubble--sys { right: 0; top: 46%; }
     .bubble--sys .bubble__in { max-width: 13.5rem; }
     .bubble--paid { left: 2%; bottom: 12%; }
-    .bubble--trophy { display: none; }
   }
 </style>

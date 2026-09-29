@@ -1,13 +1,13 @@
 ---
-// Appel final : le slogan en très grand, et le bouton ember (le seul de
-// l'écran). home.ts fait monter les mots un à un ; sans script, tout est là.
+// Appel final : une promesse en très grand, et le bouton ember (le seul de
+// l'écran). Le slogan, lui, clôt la scène des virements (avec le « B »). home.ts fait monter les mots un à un ; sans script, tout est là.
 import Button from "../Button.astro";
 import { BETA_PATH } from "../../lib/links";
 ---
 <section class="final" aria-labelledby="final-title">
   <div class="final__glow" data-depth="-10" aria-hidden="true"></div>
   <div class="wrap">
-    <h2 class="final__title" id="final-title" data-split-title>Règle tes comptes, garde tes potes.</h2>
+    <h2 class="final__title" id="final-title" data-split-title>Ton prochain week-end, sans les comptes de&nbsp;fin.</h2>
     <div class="final__cta">
       <Button href={BETA_PATH} variant="ember">Rejoindre la beta</Button>
       <p>Gratuite, sans pub. Sur iPhone et Android.</p>
@@ -32,10 +32,10 @@ import { BETA_PATH } from "../../lib/links";
   .final .wrap { position: relative; }
   .final__title {
     margin: 0;
-    max-width: 11ch;
+    max-width: 15ch;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(3.2rem, 0.8rem + 11vw, 11rem);
+    font-size: clamp(3.2rem, 0.8rem + 7.6vw, 8.5rem);
     line-height: 1;
     letter-spacing: -0.045em;
   }
