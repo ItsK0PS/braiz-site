@@ -86,6 +86,11 @@ a { color: inherit; }
   z-index: 2;
   padding: var(--s-5) 0;
 }
+.site-top--overlay {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 10;
+}
 .site-top .logo { width: 104px; height: auto; view-transition-name: logo; }
 
 .site-bottom {

@@ -1,0 +1,57 @@
+---
+// Plateau figé (version statique de la scène) : les cinq amis en cercle et
+// les flèches, soit toutes les dettes sans calcul, soit les virements de
+// Braiz. Un SVG à viewBox : il suit la largeur de sa colonne.
+import { FRIENDS, SEATS, AVATAR, NAIVE_ARROWS, SETTLE_ARROWS, euros } from "../../lib/weekend";
+
+interface Props {
+  kind: "naive" | "settle";
+  label: string;
+}
+const { kind, label } = Astro.props;
+const arrows = kind === "naive" ? NAIVE_ARROWS : SETTLE_ARROWS;
+const gradId = `fig-ember-${kind}`;
+---
+<svg class:list={["fig", `fig--${kind}`]} viewBox="0 0 1000 1000" role="img" aria-label={label}>
+  <defs>
+    <linearGradient id={gradId} gradientUnits="userSpaceOnUse" x1="150" y1="150" x2="850" y2="850">
+      <stop offset="0" stop-color="#FF6A1A" />
+      <stop offset="1" stop-color="#E11D2E" />
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round"
+     stroke={kind === "naive" ? "#F2415F" : `url(#${gradId})`}
+     stroke-width={kind === "naive" ? 5 : 12}
+     stroke-opacity={kind === "naive" ? 0.8 : 1}>
+    {arrows.map((a) => <path d={a.d} />)}
+  </g>
+  {FRIENDS.map((f) => (
+    <g transform={`translate(${SEATS[f.id].x} ${SEATS[f.id].y})`}>
+      <circle r={AVATAR} fill={f.color} stroke="rgba(250,247,244,0.16)" stroke-width="3" />
+      <text class="fig__initial" text-anchor="middle" dominant-baseline="central">{f.initial}</text>
+    </g>
+  ))}
+  {kind === "settle" && SETTLE_ARROWS.map((a) => (
+    <text class="fig__amount" x={a.label.x} y={a.label.y} text-anchor="middle" dominant-baseline="central">{euros(a.montant)}</text>
+  ))}
+</svg>
+
+<style>
+  .fig { width: 100%; height: auto; overflow: visible; }
+  .fig__initial {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 64px;
+    fill: var(--cream);
+  }
+  .fig__amount {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 58px;
+    fill: var(--cream);
+    paint-order: stroke;
+    stroke: var(--ink);
+    stroke-width: 14px;
+    stroke-linejoin: round;
+  }
+</style>

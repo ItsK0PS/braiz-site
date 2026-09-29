@@ -1,0 +1,67 @@
+---
+// Compteur à rouleaux : chaque chiffre est une colonne 0→9→0 qu'on fait
+// défiler en translateY (transform seulement). Le HTML affiche déjà la
+// valeur finale : sans JavaScript, le nombre est juste et lisible.
+// La valeur est l'entier formé par tous les chiffres du texte
+// (« 1 187,50 € » → 118750) ; settle.ts la fait varier avec setRoller().
+interface Props {
+  text: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { text, class: className, ...rest } = Astro.props;
+const digitCount = [...text].filter((ch) => /\d/.test(ch)).length;
+let k = digitCount;
+const parts = [...text].map((ch) => {
+  if (!/\d/.test(ch)) return { ch };
+  k -= 1;
+  return { ch, power: k, digit: Number(ch) };
+});
+const value = Number([...text].filter((ch) => /\d/.test(ch)).join(""));
+// Chiffres après la virgule : ils restent affichés même à zéro (« 0,50 »).
+const decimals = text.includes(",") ? [...text.split(",")[1]].filter((ch) => /\d/.test(ch)).length : 0;
+const cells = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+---
+<span class:list={["roll", className]} data-roller={value} data-decimals={decimals} aria-label={text} role="img" {...rest}>
+  {parts.map((p) =>
+    p.power === undefined ? (
+      <span class="roll__sep" aria-hidden="true">{p.ch}</span>
+    ) : (
+      <span class="roll__col" data-power={p.power} aria-hidden="true">
+        <span class="roll__strip" style={`transform: translate3d(0, ${(-p.digit! * 100) / 11}%, 0)`}>
+          {cells.map((c) => <span>{c}</span>)}
+        </span>
+      </span>
+    ),
+  )}
+</span>
+
+<style>
+  .roll {
+    display: inline-flex;
+    align-items: flex-start;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .roll__col {
+    position: relative;
+    display: inline-block;
+    height: 1em;
+    /* Colonne de largeur fixe : les chiffres ne font pas bouger la ligne. */
+    width: 0.62em;
+    overflow: clip;
+    text-align: center;
+  }
+  .roll__strip {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+  }
+  .roll__strip > span { display: block; height: 1em; }
+  .roll__sep { display: inline-block; height: 1em; }
+</style>

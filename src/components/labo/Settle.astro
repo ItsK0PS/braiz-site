@@ -1,0 +1,608 @@
+---
+// La scène des virements : un week-end, cinq amis, six dépenses, et Braiz
+// qui ramène 18 virements à 3. Séquence épinglée (position: sticky) que
+// settle.ts fait avancer et reculer avec le défilement.
+//
+// Deux mises en page dans le même HTML :
+// - html.motion-ok (posée avant le premier rendu, hors reduced-motion) :
+//   la scène plein écran, décorative (aria-hidden), et le récit en texte
+//   gardé pour les lecteurs d'écran ;
+// - sinon : le récit en texte, lisible tel quel, avec l'avant/après des
+//   flèches côte à côte.
+// Le bouton final est le même élément dans les deux cas.
+import Roller from "./Roller.astro";
+import ArrowsFigure from "./ArrowsFigure.astro";
+import Button from "../Button.astro";
+import {
+  GROUP, PLACE, FRIENDS, EXPENSES, TOTAL, NAIVE, SETTLEMENTS, SETTLE_ARROWS,
+  NAIVE_ARROWS, SEATS, TICKETS, AVATAR, euros, friend,
+} from "../../lib/weekend";
+
+const names = FRIENDS.map((f) => f.name);
+const namesText = `${names.slice(0, -1).join(", ")} et ${names.at(-1)}`;
+const payers = new Set(EXPENSES.map((e) => e.by)).size;
+
+const chapters = [
+  { title: "Un week-end, cinq amis.", text: `${namesText} partent deux jours à ${PLACE}.` },
+  { title: "Chacun paie sa part.", text: `La maison, les courses, le restaurant, la route, le surf : ${EXPENSES.length} dépenses, avancées par ${payers} personnes.` },
+  { title: "Qui doit combien à qui ?", text: `Rembourser chaque dépense à chaque personne qui l'a avancée, c'est ${NAIVE.length} virements.` },
+  { title: "Braiz démêle tout.", text: `Braiz compense les dettes entre elles. Il ne reste que ${SETTLEMENTS.length} virements, et les comptes tombent juste.` },
+];
+
+// Pile de départ (chapitre 1) : les pastilles côte à côte, qui se
+// chevauchent comme dans l'app.
+const row = (i: number) => ({ x: 500 + (i - 2) * 118, y: 520 + [-14, 12, -6, 16, -10][i] });
+const pct = (n: number) => `${n / 10}%`;
+const chipTilt = [-5, 4, -3];
+---
+<section class="settle" data-settle data-gsap="split draw path" aria-labelledby="settle-title">
+  <div class="settle__track">
+    <div class="settle__sticky">
+
+      <div class="scene" aria-hidden="true">
+        <div class="scene__glow" data-s="glow"></div>
+        <p class="scene__place" data-s="place"><span>{PLACE}</span></p>
+
+        <div class="scene__board" data-s="board">
+          <svg class="board" viewBox="0 0 1000 1000">
+            <defs>
+              <linearGradient id="settle-ember" gradientUnits="userSpaceOnUse" x1="150" y1="150" x2="850" y2="850">
+                <stop offset="0" stop-color="#FF6A1A" />
+                <stop offset="1" stop-color="#E11D2E" />
+              </linearGradient>
+            </defs>
+
+            <g class="board__naive" data-s="naive" fill="none" stroke="#F2415F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+              {NAIVE_ARROWS.map((a) => <path d={a.d} />)}
+            </g>
+
+            <g class="board__settle" data-s="settle" fill="none" stroke="url(#settle-ember)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+              {SETTLE_ARROWS.map((a) => <path d={a.d} />)}
+            </g>
+
+
+            <g class="board__seats">
+              {FRIENDS.map((f, i) => (
+                <g class="seat" data-seat={f.id} data-x={SEATS[f.id].x} data-y={SEATS[f.id].y} transform={`translate(${row(i).x} ${row(i).y})`}>
+                  <g class="seat__pulse">
+                    <g class="seat__pop" style={`--i: ${i}`}>
+                      <circle r={AVATAR} fill={f.color} />
+                      <text text-anchor="middle" dominant-baseline="central">{f.initial}</text>
+                    </g>
+                  </g>
+                </g>
+              ))}
+            </g>
+
+            <g class="board__tickets" data-s="tickets">
+              {TICKETS.map((t) => (
+                <g class="ticket" data-path={t.path} data-rot={t.rot} data-by={t.by} data-cents={Math.round(t.amount * 100)} transform={`translate(${t.from.x} ${t.from.y})`}>
+                  <g class="ticket__body">
+                    <rect x="-128" y="-42" width="256" height="84" rx="20" />
+                    <text class="ticket__emoji" x="-92" y="2" text-anchor="middle" dominant-baseline="central">{t.emoji}</text>
+                    <text class="ticket__amount" x="-54" y="2" dominant-baseline="central">{euros(t.amount)}</text>
+                  </g>
+                </g>
+              ))}
+            </g>
+          </svg>
+
+          {FRIENDS.map((f) => (
+            <span class="board__name" data-s="name" style={`left: ${pct(SEATS[f.id].x)}; top: ${pct(SEATS[f.id].y + AVATAR + 14)}`}>{f.name}</span>
+          ))}
+
+          {SETTLE_ARROWS.map((a, i) => (
+            <span class="board__chip" data-s="chip" style={`left: ${pct(a.label.x)}; top: ${pct(a.label.y)}; --tilt: ${chipTilt[i]}deg`}>
+              <Roller text={euros(a.montant)} />
+            </span>
+          ))}
+        </div>
+
+        <div class="scene__captions">
+          {chapters.map((c, i) => (
+            <div class="cap" data-cap={i}>
+              <p class="cap__title">{c.title}</p>
+              <p class="cap__text">{c.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="scene__big">
+          <p class="big big--total" data-s="total">
+            <Roller text={euros(TOTAL)} />
+            <span class="big__label">pour tout le week-end</span>
+          </p>
+          <p class="big big--count" data-s="count">
+            <span class="big__row" data-s="countrow">
+              <span class="big__num" data-s="countnum"><Roller text={String(NAIVE.length)} /></span>
+              <svg class="big__check" data-s="check" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" /><path d="M14 24.5l6.5 6.5L34 17.5" /></svg>
+            </span>
+            <span class="big__label">virements</span>
+          </p>
+        </div>
+
+        <div class="scene__progress">
+          {[0, 1, 2, 3, 4].map(() => <span><i data-s="step"></i></span>)}
+        </div>
+        <p class="scene__hint" data-s="hint">Fais défiler</p>
+      </div>
+
+      <!-- Le récit en texte : version statique, et source pour les lecteurs
+           d'écran quand la scène est animée. -->
+      <ol class="story">
+        <li class="story__ch">
+          <h1 class="story__title" id="settle-title">{chapters[0].title}</h1>
+          <p class="story__text">{chapters[0].text}</p>
+          <ul class="story__friends" aria-label={`Les membres du groupe ${GROUP}`}>
+            {FRIENDS.map((f) => (
+              <li><span class="story__avatar" style={`background: ${f.color}`} aria-hidden="true">{f.initial}</span>{f.name}</li>
+            ))}
+          </ul>
+        </li>
+        <li class="story__ch">
+          <h2 class="story__title">{chapters[1].title}</h2>
+          <p class="story__text">{chapters[1].text}</p>
+          <ul class="story__expenses">
+            {EXPENSES.map((e) => (
+              <li>
+                <span class="story__emoji" aria-hidden="true">{e.emoji}</span>
+                <span class="story__what">{e.title}<small>payé par {friend(e.by).name}</small></span>
+                <span class="story__amount">{euros(e.amount)}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="story__big">{euros(TOTAL)} <span>pour tout le week-end</span></p>
+        </li>
+        <li class="story__ch">
+          <h2 class="story__title">{chapters[2].title}</h2>
+          <p class="story__text">{chapters[2].text}</p>
+        </li>
+        <li class="story__ch">
+          <h2 class="story__title">{chapters[3].title}</h2>
+          <p class="story__text">{chapters[3].text}</p>
+          <div class="story__compare">
+            <figure>
+              <ArrowsFigure kind="naive" label={`Sans calcul : ${NAIVE.length} virements entre les cinq amis, dans tous les sens.`} />
+              <figcaption><strong>{NAIVE.length}</strong> virements sans calcul</figcaption>
+            </figure>
+            <figure>
+              <ArrowsFigure kind="settle" label={`Avec Braiz : ${SETTLEMENTS.length} virements.`} />
+              <figcaption><strong>{SETTLEMENTS.length}</strong> virements avec Braiz</figcaption>
+            </figure>
+          </div>
+          <ul class="story__transfers">
+            {SETTLEMENTS.map((s) => (
+              <li>{friend(s.de).name} rembourse {euros(s.montant)} à {friend(s.vers).name}</li>
+            ))}
+          </ul>
+        </li>
+      </ol>
+
+      <div class="outro" data-s="outro">
+        <h2 class="outro__title">Règle tes comptes, garde tes potes.</h2>
+        <p class="outro__text">Braiz calcule le moins de virements possible. Toi, tu profites du week-end.</p>
+        <div class="outro__cta"><Button href="/beta" variant="ember">Rejoindre la beta</Button></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* =========================================================
+     Version statique (par défaut : sans JavaScript, reduced-motion)
+     ========================================================= */
+  .settle { position: relative; }
+  .scene { display: none; }
+
+  .story {
+    list-style: none;
+    margin: 0 auto;
+    padding: calc(var(--s-9) + var(--s-6)) var(--gutter) 0;
+    max-width: var(--content);
+    display: grid;
+    gap: var(--section-y);
+  }
+  .story__ch { max-width: 44rem; }
+  .story__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--t-h2);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--s-3);
+    text-wrap: balance;
+  }
+  .story__text { margin: 0; color: var(--muted); font-size: var(--t-lead); max-width: 36rem; }
+
+  .story__friends {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4) var(--s-5);
+    margin: var(--s-6) 0 0;
+    padding: 0;
+  }
+  .story__friends li { display: grid; justify-items: center; gap: var(--s-2); font-size: var(--t-small); color: var(--muted); }
+  .story__avatar {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(250, 247, 244, 0.16);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--cream);
+  }
+
+  .story__expenses { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-2); }
+  .story__expenses li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    background: var(--surface);
+    border-radius: var(--r-m);
+  }
+  .story__emoji { font-size: 1.4rem; }
+  .story__what { display: grid; line-height: 1.3; }
+  .story__what small { color: var(--muted); font-size: var(--t-small); }
+  .story__amount { font-family: var(--font-display); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .story__big {
+    margin: var(--s-6) 0 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3rem, 2rem + 6vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .story__big span { display: block; margin-top: var(--s-2); font-family: var(--font-text); font-weight: 400; font-size: var(--t-body); letter-spacing: 0; color: var(--muted); }
+
+  .story__compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-4);
+    margin: var(--s-6) 0 0;
+  }
+  .story__compare figure { margin: 0; display: grid; gap: var(--s-3); padding: var(--s-4); background: var(--surface); border-radius: var(--r-l); }
+  .story__compare figcaption { font-size: var(--t-small); color: var(--muted); text-align: center; }
+  .story__compare strong { display: block; font-family: var(--font-display); font-size: clamp(2rem, 1.4rem + 3vw, 3.5rem); line-height: 1; color: var(--cream); }
+  .story__transfers { margin: var(--s-5) 0 0; padding-left: 1.2em; color: var(--muted); }
+
+  .outro {
+    max-width: var(--content);
+    margin: 0 auto;
+    padding: var(--section-y) var(--gutter);
+  }
+  .outro__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 1.2rem + 5.5vw, 6.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin: 0;
+    max-width: 12ch;
+    text-wrap: balance;
+  }
+  .outro__text { margin: var(--s-5) 0 0; max-width: 30rem; font-size: var(--t-lead); color: var(--muted); }
+  .outro__cta { margin-top: var(--s-6); }
+
+  /* =========================================================
+     Version animée (html.motion-ok)
+     ========================================================= */
+  :global(html.motion-ok) .settle__track { height: 640svh; }
+  :global(html.motion-ok) .settle__sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: clip;
+    isolation: isolate;
+  }
+  /* Grain : une texture de bruit fixe, jamais animée. */
+  :global(html.motion-ok) .settle__sticky::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0.09;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Récit en texte : gardé pour les lecteurs d'écran seulement. */
+  :global(html.motion-ok) .story {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :global(html.motion-ok) .scene {
+    display: block;
+    position: absolute;
+    inset: 0;
+    --board: min(86svh, 56vw);
+    --board-top: calc(50svh - var(--board) / 2);
+    --board-left: calc(96vw - var(--board));
+  }
+
+  .scene__glow {
+    position: absolute;
+    left: calc(var(--board-left) + var(--board) / 2);
+    top: 50%;
+    width: calc(var(--board) * 1.5);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: var(--glow-ember);
+    opacity: 0.32;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  /* Le nom du groupe en très grand, penché, qui déborde de l'écran. */
+  .scene__place {
+    position: absolute;
+    left: -2vw;
+    top: 60%;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(7rem, 2rem + 24vw, 26rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    translate: 0 -55%;
+    rotate: -7deg;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .scene__place span {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .scene__board {
+    position: absolute;
+    z-index: 2;
+    left: var(--board-left);
+    top: var(--board-top);
+    width: var(--board);
+    aspect-ratio: 1;
+    will-change: transform;
+  }
+  .board { width: 100%; height: 100%; overflow: visible; }
+
+  .board__naive,
+  .board__settle,
+  .board__tickets { opacity: 0; }
+  .board__naive { stroke-opacity: 0.85; }
+
+  .ticket__body rect { fill: var(--surface-2); stroke: rgba(250, 247, 244, 0.14); stroke-width: 2; }
+  .ticket__emoji { font-size: 38px; }
+  .ticket__amount {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 40px;
+    fill: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .seat circle { stroke: rgba(250, 247, 244, 0.18); stroke-width: 3; }
+  .seat text {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 64px;
+    fill: var(--cream);
+  }
+  /* Entrée des pastilles au chargement, en CSS pur (ressort en linear()),
+     avant même que GSAP arrive. GSAP ne touche jamais .seat__pop. */
+  .seat__pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: seat-pop 1100ms both;
+    animation-delay: calc(250ms + var(--i) * 110ms);
+    animation-timing-function: linear(0, 0.36 8%, 1.08 22%, 1.16 27%, 1.12 32%, 0.97 45%, 0.95 50%, 1.01 64%, 1.005 72%, 1);
+  }
+  @keyframes seat-pop {
+    from { transform: scale(0) rotate(-25deg); }
+    to   { transform: scale(1) rotate(0deg); }
+  }
+  .seat__pulse { transform-box: fill-box; transform-origin: center; }
+
+  .board__name {
+    position: absolute;
+    translate: -50% 0;
+    font-size: clamp(0.75rem, 0.6rem + 0.5vw, 0.95rem);
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  .board__chip {
+    position: absolute;
+    translate: -50% -50%;
+    padding: 0.28em 0.55em 0.32em;
+    border-radius: var(--r-pill);
+    background: var(--ink);
+    box-shadow: 0 0 0 2px rgba(255, 106, 26, 0.55), 0 10px 30px -8px rgba(0, 0, 0, 0.8);
+    font-size: clamp(1rem, 0.5rem + 2vw, 2.1rem);
+    color: var(--cream);
+    rotate: var(--tilt);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  .scene__captions {
+    position: absolute;
+    z-index: 4;
+    left: var(--gutter);
+    top: 17svh;
+    width: min(38vw, 30rem);
+  }
+  .cap { position: absolute; inset: 0 0 auto; }
+  .cap:not(:first-child) { opacity: 0; }
+  /* Premier titre : entrée au chargement, en CSS, avant GSAP. */
+  .cap:first-child { animation: cap-in 900ms var(--ease-spring) 150ms both; }
+  @keyframes cap-in {
+    from { opacity: 0; transform: translate3d(0, 40px, 0) rotate(2deg); }
+    to   { opacity: 1; transform: none; }
+  }
+  .cap__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 1rem + 2.8vw, 3.9rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .cap__text {
+    margin: var(--s-4) 0 0;
+    max-width: 26rem;
+    color: var(--muted);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .scene__big {
+    position: absolute;
+    z-index: 3;
+    left: var(--gutter);
+    bottom: 11svh;
+  }
+  .big {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-2);
+    font-size: var(--big);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .big__label {
+    font-family: var(--font-text);
+    font-size: clamp(0.95rem, 0.8rem + 0.5vw, 1.25rem);
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+  .scene__big { --big: clamp(4.5rem, 1.5rem + 8.5vw, 11rem); }
+  /* Le nombre de virements, seul, peut être encore plus grand. */
+  .big--count { font-size: calc(var(--big) * 1.45); }
+  .big--count .big__label { margin-top: -0.1em; }
+  .big__row { display: flex; align-items: flex-start; }
+  .big__num { display: flex; }
+  .big__check {
+    flex: none;
+    width: 0.4em;
+    height: 0.4em;
+    margin: 0.02em 0 0 0.06em;
+    opacity: 0;
+  }
+  .big__check circle { fill: var(--lime); }
+  .big__check path { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .scene__progress {
+    position: absolute;
+    z-index: 4;
+    left: var(--gutter);
+    bottom: 4.5svh;
+    display: flex;
+    gap: 6px;
+  }
+  .scene__progress span {
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--hairline);
+    overflow: hidden;
+  }
+  .scene__progress i {
+    display: block;
+    height: 100%;
+    background: var(--cream);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .scene__hint {
+    position: absolute;
+    z-index: 4;
+    left: 50%;
+    bottom: 4svh;
+    translate: -50% 0;
+    margin: 0;
+    font-size: var(--t-small);
+    color: var(--muted);
+  }
+  .scene__hint::after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 28px;
+    margin: var(--s-2) auto 0;
+    background: linear-gradient(var(--muted), transparent);
+    transform-origin: top;
+    animation: hint 1.8s var(--ease-out) infinite;
+  }
+  @keyframes hint {
+    0%   { transform: scaleY(0); opacity: 1; }
+    70%  { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 0; }
+  }
+
+  :global(html.motion-ok) .outro {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    margin: 0;
+    max-width: none;
+    padding: 0 var(--gutter);
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+  }
+  :global(html.motion-ok) .outro.is-live { pointer-events: auto; }
+  :global(html.motion-ok) .outro__title { max-width: 11ch; }
+
+  /* ---------- Téléphones : tout s'empile, plateau au centre ---------- */
+  @media (max-width: 899px) {
+    :global(html.motion-ok) .settle__track { height: 480svh; }
+    :global(html.motion-ok) .scene {
+      --board: min(114vw, 60svh);
+      --board-top: calc(58svh - var(--board) / 2);
+      --board-left: calc(50vw - var(--board) / 2);
+    }
+    .scene__glow { top: 58%; }
+    .scene__place { top: 46%; font-size: 34vw; left: -4vw; }
+    .scene__captions { top: 11svh; right: var(--gutter); width: auto; }
+    .cap__title { font-size: clamp(1.75rem, 1rem + 4vw, 2.6rem); }
+    .cap__text { font-size: 1rem; margin-top: var(--s-2); }
+    .scene__big { bottom: 8.5svh; }
+    .scene__big { --big: clamp(3rem, 13vw, 5.5rem); }
+    .big--count { font-size: calc(var(--big) * 1.7); }
+    .scene__progress { left: 50%; translate: -50% 0; bottom: 3.5svh; }
+    .scene__hint { bottom: 6svh; }
+  }
+</style>
