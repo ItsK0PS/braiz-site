@@ -57,6 +57,9 @@
              d'installation est affiché, choisi selon la plateforme :
              TestFlight sur iPhone, l'APK sur Android, /beta sur ordinateur. -->
         <div class="join__cta">
+          <!-- TestFlight d'abord : sans lui, le lien d'installation ne mène
+               nulle part. En contour, le geste principal reste Installer Braiz. -->
+          <a class="btn btn--outline" id="install-testflight" href="https://apps.apple.com/app/testflight/id899247664" hidden>Installer TestFlight</a>
           <a class="btn" id="install-link" href="#" hidden>Installer Braiz</a>
 
           <!-- L'APK directement, sans détour par /beta : le visiteur garde
@@ -206,6 +209,7 @@
         var install = document.getElementById("install-link");
         install.href = TESTFLIGHT_URL;
         install.hidden = false;
+        document.getElementById("install-testflight").hidden = false;
         soon.hidden = true;
       }
     } else if (isAndroid) {

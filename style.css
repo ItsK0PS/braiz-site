@@ -319,6 +319,12 @@ a:focus-visible {
 
 .btn--outline:hover { border-bottom-color: var(--ember-start); }
 
+.btn + .btn { margin-top: 0.75rem; }
+
+/* Une étape qui porte son bouton : le bouton sous le texte, et de l'air
+   avant l'étape suivante. */
+.steps .btn { margin: 0.75rem 0 1.25rem; }
+
 .join__soon {
   padding: 1rem 1.25rem;
   background: var(--ink-raised);

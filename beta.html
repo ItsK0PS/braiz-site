@@ -56,23 +56,26 @@
 
       <section class="beta__block" id="block-ios">
         <h2 class="join__h2">Sur iPhone</h2>
-        <p class="join__lede">
-          Installe d'abord
-          <a href="https://apps.apple.com/app/testflight/id899247664">TestFlight</a>,
-          l'application d'Apple pour les versions beta, puis rejoins Braiz.
-        </p>
 
-        <div class="join__cta">
-          <a class="btn btn--outline" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
+        <!-- Le bouton TestFlight reste en contour partout : le geste
+             principal est la seconde étape, rejoindre la beta. -->
+        <ol class="steps">
+          <li><strong>Installe TestFlight</strong>, l'application d'Apple pour
+            les versions beta.
+            <a class="btn btn--outline" href="https://apps.apple.com/app/testflight/id899247664">Installer TestFlight</a>
+          </li>
+          <li><strong>Rejoins la beta</strong> de Braiz depuis TestFlight.
+            <a class="btn btn--outline" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
 
-          <div id="ios-soon">
-            <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt disponible sur iPhone</button>
-            <p class="join__alt">
-              Apple vérifie l'application avant de l'ouvrir aux testeurs.
-              Reviens dans quelques jours : ce lien restera le même.
-            </p>
-          </div>
-        </div>
+            <div id="ios-soon">
+              <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt disponible sur iPhone</button>
+              <p class="join__alt">
+                Apple vérifie l'application avant de l'ouvrir aux testeurs.
+                Reviens dans quelques jours : ce lien restera le même.
+              </p>
+            </div>
+          </li>
+        </ol>
       </section>
 
       <section class="beta__block" id="block-android">
