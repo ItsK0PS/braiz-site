@@ -16,6 +16,23 @@ import Base from "../layouts/Base.astro";
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/style.css">
+<!-- Plateforme détectée AVANT le premier rendu : une classe sur <html>
+     (is-ios, is-android ou is-desktop, et has-testflight si le lien public
+     existe). Le CSS ordonne les blocs et choisit le bouton ember : plus
+     rien ne bouge après l'affichage (CLS nul). Sans JavaScript, aucune
+     classe : iPhone d'abord, « Bientôt disponible », comme avant.
+     testflight.js reste la source unique de TESTFLIGHT_URL. -->
+<script is:inline src="/testflight.js"></script>
+<script is:inline>
+  (function () {
+    var ua = navigator.userAgent;
+    // iPadOS se présente comme un Mac : on le reconnaît à l'écran tactile.
+    var ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var c = document.documentElement.classList;
+    c.add(ios ? "is-ios" : /Android/i.test(ua) ? "is-android" : "is-desktop");
+    if (typeof TESTFLIGHT_URL === "string" && TESTFLIGHT_URL) c.add("has-testflight");
+  })();
+</script>
 </Fragment>
 
 <main>
@@ -35,11 +52,12 @@ import Base from "../layouts/Base.astro";
          (et sans JavaScript), Android d'abord sur Android. Sur ordinateur,
          le QR code passe en tête : on n'installe rien depuis un ordi.
          Un seul aplat ember par écran : tous les boutons sont en contour
-         dans le HTML, le script remplit celui de la plateforme détectée.
+         dans le HTML, le CSS remplit celui de la plateforme détectée
+         (classes posées dans le <head>, voir public/style.css).
          Sur ordinateur, l'action principale est le QR code, aucun ne l'est. -->
     <div id="platforms">
 
-      <section class="beta__block" id="block-qr" hidden>
+      <section class="beta__block" id="block-qr">
         <h2 class="join__h2">Tu es sur ordinateur ?</h2>
         <p class="join__lede">
           Scanne ce code avec ton téléphone pour ouvrir cette page directement.
@@ -58,7 +76,7 @@ import Base from "../layouts/Base.astro";
             <a class="btn btn--outline" href="https://apps.apple.com/app/testflight/id899247664">Installer TestFlight</a>
           </li>
           <li><strong>Rejoins la beta</strong> de Braiz depuis TestFlight.
-            <a class="btn btn--outline" id="ios-link" href="#" hidden>Rejoindre la beta sur iPhone</a>
+            <a class="btn btn--outline" id="ios-link" href="#">Rejoindre la beta sur iPhone</a>
 
             <div id="ios-soon">
               <button class="btn btn--outline" id="ios-soon-btn" type="button" disabled>Bientôt disponible sur iPhone</button>
@@ -126,46 +144,12 @@ import Base from "../layouts/Base.astro";
 </main>
 
 <Fragment slot="after">
-<script is:inline src="/testflight.js"></script>
 <script is:inline>
-(function () {
-  "use strict";
-
-  // Même détection que /join. iPadOS se présente comme un Mac : on le
-  // reconnaît à l'écran tactile.
-  var ua = navigator.userAgent;
-  var isIOS =
-    /iPad|iPhone|iPod/.test(ua) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  var isAndroid = /Android/i.test(ua);
-
-  var platforms = document.getElementById("platforms");
-  var ios = document.getElementById("block-ios");
-  var android = document.getElementById("block-android");
-  var qr = document.getElementById("block-qr");
-
-  if (TESTFLIGHT_URL) {
-    var link = document.getElementById("ios-link");
-    link.href = TESTFLIGHT_URL;
-    link.hidden = false;
-    document.getElementById("ios-soon").hidden = true;
+  // La mise en page est déjà décidée par les classes posées dans le <head> :
+  // ici, seulement le lien TestFlight (aucun effet sur la mise en page).
+  if (typeof TESTFLIGHT_URL === "string" && TESTFLIGHT_URL) {
+    document.getElementById("ios-link").href = TESTFLIGHT_URL;
   }
-
-  function promote(id) {
-    document.getElementById(id).classList.remove("btn--outline");
-  }
-
-  if (isIOS) {
-    promote("ios-link");
-    promote("ios-soon-btn");
-  } else if (isAndroid) {
-    platforms.insertBefore(android, ios);
-    promote("android-link");
-  } else {
-    // Le QR code est déjà en tête dans le HTML, il suffit de l'afficher.
-    qr.hidden = false;
-  }
-})();
 </script>
 </Fragment>
 </Base>

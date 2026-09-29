@@ -14,6 +14,27 @@ import Base from "../layouts/Base.astro";
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/style.css">
+<!-- Avant le premier rendu (CLS nul), comme sur /beta : plateforme
+     (is-ios, is-android, is-desktop, has-testflight) et état de la page.
+     - jeton mal formé : join-invalid tout de suite, sans requête ;
+     - jeton bien formé : join-pending, le temps de la vérification. Le pied
+       de page est alors invisible (visibility, sans effet sur la mise en
+       page) : il ne bouge jamais sous les yeux quand le résultat arrive.
+     Sans JavaScript, aucune classe : « Vérification de l'invitation… »,
+     comme avant. Chemin absolu : la page est servie sous /join/<token>. -->
+<script is:inline src="/testflight.js"></script>
+<script is:inline>
+  (function () {
+    var ua = navigator.userAgent;
+    var ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var c = document.documentElement.classList;
+    c.add(ios ? "is-ios" : /Android/i.test(ua) ? "is-android" : "is-desktop");
+    if (typeof TESTFLIGHT_URL === "string" && TESTFLIGHT_URL) c.add("has-testflight");
+    var token = (location.pathname.split("/").filter(Boolean).pop() || "").toLowerCase();
+    var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    c.add(uuid.test(token) ? "join-pending" : "join-invalid");
+  })();
+</script>
 </Fragment>
 
 <main>
@@ -28,7 +49,7 @@ import Base from "../layouts/Base.astro";
         <p class="join__wait">Vérification de l'invitation…</p>
       </div>
 
-      <div id="state-invalid" hidden>
+      <div id="state-invalid">
         <h1 class="join__title">Ce lien n'est plus valide.</h1>
         <p class="join__lede">
           Une invitation peut expirer ou avoir déjà été utilisée. Demande un
@@ -38,7 +59,7 @@ import Base from "../layouts/Base.astro";
         <p class="join__back"><a href="/">Retour à l'accueil</a></p>
       </div>
 
-      <div id="state-ready" hidden>
+      <div id="state-ready">
         <h1 class="join__title">Rejoins <span id="group-name"></span> sur Braiz.</h1>
         <p class="join__lede">
           Braiz suit les dépenses d'un groupe d'amis et calcule qui doit
@@ -52,14 +73,14 @@ import Base from "../layouts/Base.astro";
         <div class="join__cta">
           <!-- TestFlight d'abord : sans lui, le lien d'installation ne mène
                nulle part. En contour, le geste principal reste Installer Braiz. -->
-          <a class="btn btn--outline" id="install-testflight" href="https://apps.apple.com/app/testflight/id899247664" hidden>Installer TestFlight</a>
-          <a class="btn" id="install-link" href="#" hidden>Installer Braiz</a>
+          <a class="btn btn--outline" id="install-testflight" href="https://apps.apple.com/app/testflight/id899247664">Installer TestFlight</a>
+          <a class="btn" id="install-link" href="#">Installer Braiz</a>
 
           <!-- L'APK directement, sans détour par /beta : le visiteur garde
                cette page ouverte et y revient pour son code une fois
                l'application installée. Les étapes et l'avertissement Play
                Protect restent sur /beta, pour ne pas les écrire deux fois. -->
-          <div id="install-android" hidden>
+          <div id="install-android">
             <a class="btn" href="https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk">Installer Braiz pour Android</a>
             <p class="join__alt">
               Fichier d'environ 155 Mo, une connexion wifi est conseillée.
@@ -69,7 +90,7 @@ import Base from "../layouts/Base.astro";
             </p>
           </div>
 
-          <a class="btn" id="install-desktop" href="/beta" hidden>Installer Braiz sur ton téléphone</a>
+          <a class="btn" id="install-desktop" href="/beta">Installer Braiz sur ton téléphone</a>
 
           <div class="join__soon" id="install-soon">
             <strong>Bientôt disponible sur iPhone.</strong>
@@ -109,7 +130,7 @@ import Base from "../layouts/Base.astro";
           cette page une fois ton compte créé.
         </div>
 
-        <p class="join__desktop" id="desktop-note" hidden>
+        <p class="join__desktop" id="desktop-note">
           Braiz s'installe sur iPhone et Android. Ouvre ce lien
           depuis ton téléphone, ou note ton code pour le saisir dans
           l'application une fois installée.
@@ -121,9 +142,6 @@ import Base from "../layouts/Base.astro";
 </main>
 
 <Fragment slot="after">
-<!-- TESTFLIGHT_URL, partagé avec /beta. Chemin absolu : cette page est
-     servie sous /join/<token>. -->
-<script is:inline src="/testflight.js"></script>
 <script is:inline>
 (function () {
   "use strict";
@@ -137,10 +155,12 @@ import Base from "../layouts/Base.astro";
 
   var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+  // L'état visible est une classe sur <html> (voir le <head> et
+  // public/style.css) : join-pending, puis join-ready ou join-invalid.
   function show(id) {
-    ["state-loading", "state-invalid", "state-ready"].forEach(function (s) {
-      document.getElementById(s).hidden = s !== id;
-    });
+    var c = document.documentElement.classList;
+    c.remove("join-pending");
+    c.add(id === "state-ready" ? "join-ready" : "join-invalid");
   }
 
   // Le jeton est le dernier segment du chemin : la réécriture Vercel sert
@@ -151,11 +171,6 @@ import Base from "../layouts/Base.astro";
     show("state-invalid");
     return;
   }
-
-  var isIOS =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  var isAndroid = /Android/i.test(navigator.userAgent);
 
   // PostgREST directement, sans supabase-js : c'est un POST avec deux
   // en-têtes, charger une bibliothèque pour ça sur un site sans bundler
@@ -183,29 +198,9 @@ import Base from "../layouts/Base.astro";
     document.getElementById("code-value").textContent = token;
     document.getElementById("open-app").href = "braiz://join/" + token;
 
-    // Par défaut, le bloc « L'installation ouvre bientôt » : c'est le cas
-    // de l'iPhone tant que TestFlight n'est pas ouvert.
-    var soon = document.getElementById("install-soon");
-
-    if (isIOS) {
-      if (TESTFLIGHT_URL) {
-        var install = document.getElementById("install-link");
-        install.href = TESTFLIGHT_URL;
-        install.hidden = false;
-        document.getElementById("install-testflight").hidden = false;
-        soon.hidden = true;
-      }
-    } else if (isAndroid) {
-      document.getElementById("install-android").hidden = false;
-      soon.hidden = true;
-    } else {
-      document.getElementById("install-desktop").hidden = false;
-      soon.hidden = true;
-      document.getElementById("desktop-note").hidden = false;
-      // Sur ordinateur, braiz:// ne mène nulle part : proposer le lien
-      // donnerait une erreur de navigateur au lieu d'une explication.
-      document.getElementById("has-app-line").hidden = true;
-    }
+    // Les blocs d'installation affichés selon la plateforme sont choisis
+    // par le CSS (classes du <head>) ; ici, seulement le lien TestFlight.
+    if (TESTFLIGHT_URL) document.getElementById("install-link").href = TESTFLIGHT_URL;
 
     show("state-ready");
   }
