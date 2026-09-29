@@ -4,3 +4,5 @@ node_modules/
 dist/
 .astro/
 _p0-polices/
+# Documents internes (stratégie) : jamais dans ce dépôt public.
+BRAIZ-*.md
