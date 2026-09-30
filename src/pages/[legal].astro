@@ -20,6 +20,14 @@ export async function getStaticPaths() {
   return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
 }
 
+// Descriptions pour les moteurs de recherche (balise meta, non affichée) :
+// ce n'est pas du texte juridique.
+const DESCRIPTIONS: Record<string, string> = {
+  confidentialite: "Quelles données Braiz collecte, pourquoi, qui y a accès et combien de temps elles sont conservées.",
+  cgu: "Les conditions d'utilisation de Braiz, l'application qui partage les dépenses entre amis.",
+  "mentions-legales": "Éditeur, hébergement et contact du site getbraiz.com et de l'application Braiz.",
+};
+
 const { page } = Astro.props;
 const titre = TITRES[page.id];
 
@@ -66,7 +74,7 @@ html = html.replace(/<table>([\s\S]*?)<\/table>/g, (_, inner: string) => {
 // Markdown.
 const sommaire = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m) => ({ id: m[1], label: decode(m[2]) }));
 ---
-<Site title={`${titre} - Braiz`} smoothScroll={false} analytics={false}>
+<Site title={`${titre} - Braiz`} description={DESCRIPTIONS[page.id]} smoothScroll={false} analytics={false}>
   <div class="read-progress" aria-hidden="true"><i data-progress></i></div>
 
   <div class="legal wrap" id="haut">
