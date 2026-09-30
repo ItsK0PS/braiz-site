@@ -1,8 +1,13 @@
 ---
-// Pages légales, générées depuis src/content/legal/*.md. Remplace build.py :
-// même gabarit, mêmes titres d'onglet, mêmes URLs.
+// Pages légales, générées depuis src/content/legal/*.md, dans la DA du site.
+//
+// ⚠️ RÈGLE : le texte juridique ne change jamais ici. Ce gabarit ne touche
+// qu'à la présentation : attributs ajoutés au HTML rendu (classe de la date,
+// rôles et libellés des tableaux) et sommaire extrait des titres. Les
+// fichiers .md restent la seule source du texte ; smartypants reste
+// désactivé (astro.config.mjs) ; les URLs ne changent pas.
 import { getCollection } from "astro:content";
-import Base from "../layouts/Base.astro";
+import Site from "../layouts/Site.astro";
 
 const TITRES: Record<string, string> = {
   confidentialite: "Politique de confidentialité",
@@ -18,31 +23,329 @@ export async function getStaticPaths() {
 const { page } = Astro.props;
 const titre = TITRES[page.id];
 
-// Le Markdown d'Astro transforme « www.cnil.fr » en lien, ce que build.py
-// ne faisait pas : on remet le texte brut pour que les pages légales restent
-// identiques. Les e-mails, eux, deviennent des liens comme avant.
-const contenu = (page.rendered?.html ?? "").replace(
-  /<a href="http:\/\/(www\.[^"]+)">\1<\/a>/g,
-  "$1",
-);
----
-<Base>
-<Fragment slot="head">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{titre} - Braiz</title>
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#08070A">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/style.css">
-</Fragment>
+const decode = (s: string) =>
+  s
+    .replace(/<[^>]+>/g, "")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
 
-<main>
-  <div class="wrap">
-    <article class="doc">
-<Fragment set:html={contenu} />
+let html = page.rendered?.html ?? "";
+
+// Le Markdown d'Astro transforme « www.cnil.fr » en lien, ce que l'ancien
+// build ne faisait pas : on garde le texte brut, comme en production.
+html = html.replace(/<a href="http:\/\/(www\.[^"]+)">\1<\/a>/g, "$1");
+
+// Date de mise à jour : c'est le paragraphe du document lui-même, mis en
+// valeur en haut de page (aucune date recopiée à la main).
+html = html.replace(/<p>(<strong>Dernière mise à jour :[^<]*<\/strong>)<\/p>/, '<p class="doc-date">$1</p>');
+
+// Tableaux : rôles ARIA explicites (sur mobile, ils s'affichent en fiches,
+// ce qui ferait perdre la sémantique de tableau à certains navigateurs) et
+// libellé de colonne sur chaque cellule, affiché par le CSS en fiche.
+html = html.replace(/<table>([\s\S]*?)<\/table>/g, (_, inner: string) => {
+  // <th> ou <th …>, jamais <thead>.
+  const heads = [...inner.matchAll(/<th(?:\s[^>]*)?>([\s\S]*?)<\/th>/g)].map((m) => decode(m[1]).trim().replace(/"/g, "&quot;"));
+  const body = inner
+    .replace(/<thead>/g, '<thead role="rowgroup">')
+    .replace(/<tbody>/g, '<tbody role="rowgroup">')
+    .replace(/<tr>/g, '<tr role="row">')
+    .replace(/<th(\s[^>]*)?>/g, (_m: string, attrs = "") => `<th role="columnheader"${attrs}>`)
+    .replace(/<tr role="row">([\s\S]*?)<\/tr>/g, (row: string, cells: string) => {
+      if (/<th[\s>]/.test(cells)) return row;
+      let i = 0;
+      return row.replace(/<td([^>]*)>/g, (_m: string, attrs: string) => `<td role="cell" data-label="${heads[i++] ?? ""}"${attrs}>`);
+    });
+  return `<div class="doc-table"><table role="table">${body}</table></div>`;
+});
+
+// Sommaire : les titres de niveau 2, avec les id déjà produits par le
+// Markdown.
+const sommaire = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m) => ({ id: m[1], label: decode(m[2]) }));
+---
+<Site title={`${titre} - Braiz`} smoothScroll={false} analytics={false}>
+  <div class="read-progress" aria-hidden="true"><i data-progress></i></div>
+
+  <div class="legal wrap" id="haut">
+    {sommaire.length > 0 && (
+      <>
+        <!-- Mobile : sommaire repliable, au-dessus du document. -->
+        <details class="toc-mobile">
+          <summary>Sommaire</summary>
+          <nav aria-label="Sommaire">
+            <ol>{sommaire.map((s) => <li><a href={`#${s.id}`} data-toc={s.id}>{s.label}</a></li>)}</ol>
+          </nav>
+        </details>
+        <!-- Ordinateur : sommaire fixe sur le côté. -->
+        <aside class="toc-side">
+          <nav aria-label="Sommaire">
+            <p class="toc-side__title">Sommaire</p>
+            <ol>{sommaire.map((s) => <li><a href={`#${s.id}`} data-toc={s.id}>{s.label}</a></li>)}</ol>
+          </nav>
+        </aside>
+      </>
+    )}
+
+    <article class="doc" data-doc>
+      <Fragment set:html={html} />
     </article>
+
+    <p class="back-top"><a href="#haut">Revenir en haut</a></p>
   </div>
-</main>
-</Base>
+</Site>
+
+<script>
+  // Section en cours (sommaire) et barre de progression de lecture.
+  // Sans ce script : sommaire et document complets, seule la mise en
+  // évidence manque.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-toc]"));
+  const heads = Array.from(document.querySelectorAll<HTMLElement>("[data-doc] h2[id]"));
+
+  let ticking = false;
+  const bar = document.querySelector<HTMLElement>("[data-progress]");
+  const nativeProgress = CSS.supports?.("animation-timeline: scroll()");
+
+  function update() {
+    ticking = false;
+    // Section en cours : le dernier titre passé au-dessus du quart de
+    // l'écran.
+    const line = window.innerHeight * 0.25;
+    let current = heads[0]?.id;
+    for (const h of heads) if (h.getBoundingClientRect().top <= line) current = h.id;
+    // Tout en bas, la dernière section (souvent courte) est la section en
+    // cours, même si son titre n'a pas pu remonter jusqu'au repère.
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    if (atBottom && heads.length) current = heads[heads.length - 1].id;
+    for (const a of links) {
+      if (a.dataset.toc === current) a.setAttribute("aria-current", "location");
+      else a.removeAttribute("aria-current");
+    }
+    // Barre de progression : en CSS (animation-timeline) quand le
+    // navigateur le gère, sinon ici (transform seulement).
+    if (bar && !nativeProgress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    }
+  }
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }, { passive: true });
+  update();
+
+  // Sur mobile, choisir une section referme le sommaire.
+  document.querySelectorAll<HTMLAnchorElement>(".toc-mobile a").forEach((a) =>
+    a.addEventListener("click", () => a.closest("details")?.removeAttribute("open")),
+  );
+</script>
+
+<style>
+  /* ---------- Mise en page ---------- */
+  .legal {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 42rem);
+    justify-content: center;
+    column-gap: clamp(var(--s-7), 6vw, var(--s-9));
+    padding-top: var(--s-6);
+    padding-bottom: var(--s-8);
+  }
+  .toc-mobile { display: none; }
+  .toc-side { grid-column: 1; grid-row: 1 / span 2; }
+  .doc { grid-column: 2; min-width: 0; }
+  .back-top { grid-column: 2; margin: var(--s-7) 0 0; }
+
+  /* ---------- Sommaire ---------- */
+  .toc-side nav {
+    position: sticky;
+    top: var(--s-6);
+    max-height: calc(100vh - 2 * var(--s-6));
+    overflow-y: auto;
+    padding-right: var(--s-2);
+  }
+  .toc-side__title,
+  .toc-mobile summary {
+    margin: 0 0 var(--s-3);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--cream);
+  }
+  .toc-side ol,
+  .toc-mobile ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .toc-side a,
+  .toc-mobile a {
+    display: block;
+    padding: 6px 10px;
+    border-left: 2px solid var(--hairline);
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+  .toc-side a:hover,
+  .toc-mobile a:hover { color: var(--cream); }
+  /* Section en cours : trait ember, texte blanc chaud. */
+  .toc-side a[aria-current],
+  .toc-mobile a[aria-current] { border-left-color: var(--ember-start); color: var(--cream); }
+
+  /* ---------- Document ---------- */
+  .doc { color: #D8D3D9; font-size: 1.0625rem; line-height: 1.7; }
+  .doc :global(h1) {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 1.3rem + 3.6vw, 3.8rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--cream);
+    text-wrap: balance;
+  }
+  /* La date du document, mise en valeur sous le titre. */
+  .doc :global(.doc-date) {
+    display: inline-block;
+    margin: var(--s-4) 0 var(--s-5);
+    padding: 4px 14px;
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    font-size: 0.9rem;
+  }
+  .doc :global(.doc-date strong) { font-weight: 600; color: var(--cream); }
+  .doc :global(h2) {
+    margin: var(--s-8) 0 var(--s-4);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--hairline);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.45rem, 1.2rem + 0.9vw, 1.9rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    scroll-margin-top: var(--s-5);
+  }
+  .doc :global(h3) {
+    margin: var(--s-6) 0 var(--s-2);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    color: var(--cream);
+    scroll-margin-top: var(--s-5);
+  }
+  .doc :global(p),
+  .doc :global(ul) { margin: 0 0 var(--s-4); }
+  .doc :global(ul) { padding-left: 1.25rem; }
+  .doc :global(li) { margin: 0.35rem 0; }
+  .doc :global(li::marker) { color: var(--ember-start); }
+  .doc :global(strong) { color: var(--cream); font-weight: 600; }
+  .doc :global(code) { font-size: 0.9em; padding: 1px 6px; border-radius: 6px; background: var(--surface); color: var(--cream); }
+  .doc :global(hr) { display: none; }
+  /* Liens bien visibles : blanc chaud, soulignés en ember. */
+  .doc :global(a),
+  .back-top a {
+    color: var(--cream);
+    text-decoration: underline;
+    text-decoration-color: var(--ember-start);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+  .doc :global(a:hover),
+  .back-top a:hover { text-decoration-color: var(--cream); }
+  .back-top a { color: var(--muted); font-size: var(--t-small); text-decoration-color: var(--outline); }
+
+  /* ---------- Tableaux ---------- */
+  .doc :global(.doc-table) { margin: var(--s-5) 0 var(--s-6); }
+  .doc :global(table) { width: 100%; border-collapse: collapse; font-size: 0.95rem; line-height: 1.5; }
+  .doc :global(th),
+  .doc :global(td) { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--hairline); }
+  .doc :global(th) { color: var(--cream); font-family: var(--font-display); font-weight: 600; border-bottom-color: var(--outline); }
+
+  /* ---------- Barre de progression de lecture ---------- */
+  .read-progress { position: fixed; z-index: 30; inset: 0 0 auto; height: 3px; pointer-events: none; }
+  .read-progress i { display: block; height: 100%; background: var(--gradient-brand); transform: scaleX(0); transform-origin: left; }
+  @supports (animation-timeline: scroll()) {
+    .read-progress i { animation: read linear both; animation-timeline: scroll(root); }
+  }
+  @keyframes read { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 899px) {
+    .legal { grid-template-columns: minmax(0, 1fr); padding-top: var(--s-4); }
+    .toc-side { display: none; }
+    .doc, .back-top { grid-column: 1; }
+    .toc-mobile {
+      display: block;
+      margin-bottom: var(--s-6);
+      border-radius: var(--r-m);
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--hairline);
+    }
+    .toc-mobile summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 48px;
+      margin: 0;
+      padding: 0 var(--s-4);
+      cursor: pointer;
+      list-style: none;
+    }
+    .toc-mobile summary::-webkit-details-marker { display: none; }
+    .toc-mobile summary::after { content: "+"; font-size: 1.3rem; color: var(--muted); }
+    .toc-mobile[open] summary::after { content: "−"; }
+    .toc-mobile nav { padding: 0 var(--s-3) var(--s-4); }
+    .doc { font-size: 1rem; }
+
+    /* Tableaux en fiches : chaque ligne devient une carte, chaque cellule
+       porte le libellé de sa colonne. Aucun défilement horizontal. */
+    .doc :global(table),
+    .doc :global(tbody),
+    .doc :global(tr),
+    .doc :global(td) { display: block; width: 100%; }
+    .doc :global(thead) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .doc :global(tr) {
+      margin: 0 0 var(--s-3);
+      padding: var(--s-3) var(--s-4);
+      border-radius: var(--r-m);
+      background: var(--surface);
+    }
+    .doc :global(td) { padding: 4px 0; border: 0; }
+    .doc :global(td::before) {
+      content: attr(data-label);
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+  }
+
+  /* ---------- Impression : texte noir sur blanc, sans navigation ---------- */
+  @media print {
+    :global(body) { background: #fff !important; color: #000 !important; }
+    :global(.site-top),
+    :global(.site-bottom),
+    .toc-side,
+    .toc-mobile,
+    .read-progress,
+    .back-top { display: none !important; }
+    .legal { display: block; padding: 0; }
+    .doc, .doc :global(*) { color: #000 !important; background: none !important; box-shadow: none !important; }
+    .doc :global(h2) { border-top-color: #999; break-after: avoid; }
+    .doc :global(h3) { break-after: avoid; }
+    .doc :global(th), .doc :global(td) { border-bottom-color: #999; }
+    .doc :global(tr) { break-inside: avoid; }
+    .doc :global(a) { text-decoration-color: #000; }
+    .doc :global(.doc-date) { padding: 0; }
+  }
+</style>

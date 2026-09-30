@@ -17,8 +17,16 @@ interface Props {
   // Partage (Open Graph) : image de 1200 × 630 dans public/.
   ogImage?: string;
   ogTitle?: string;
+  // Défilement doux (Lenis, ordinateur seulement). false : défilement
+  // natif, pour les pages de lecture (liens vers une section, Ctrl+F).
+  smoothScroll?: boolean;
+  // Mesure d'audience (Vercel Web Analytics) : accueil et /beta seulement.
+  analytics?: boolean;
 }
-const { title, description, noindex = false, preloadFont = true, overlayHeader = false, ogImage, ogTitle } = Astro.props;
+const {
+  title, description, noindex = false, preloadFont = true, overlayHeader = false, ogImage, ogTitle,
+  smoothScroll = true, analytics = true,
+} = Astro.props;
 // Avec build.format "file", Astro voit « /index.html » ou « /beta.html » :
 // l'adresse publique est « / » ou « /beta » (cleanUrls sur Vercel).
 const publicPath = Astro.url.pathname.replace(/\.html$/, "").replace(/(^|\/)index$/, "/") || "/";
@@ -26,7 +34,7 @@ const canonical = new URL(publicPath, Astro.site);
 const ogImageUrl = ogImage && new URL(ogImage, Astro.site).href;
 ---
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-smooth-scroll={smoothScroll ? undefined : "off"} data-analytics={analytics ? undefined : "off"}>
 <head>
 <meta charset="utf-8">
 <!-- viewport-fit=cover : sans lui, env(safe-area-inset-*) vaut 0 sur

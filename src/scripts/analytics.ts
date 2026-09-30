@@ -20,7 +20,9 @@ declare global {
   }
 }
 
-const PRODUCTION = /(^|\.)getbraiz\.com$/.test(location.hostname);
+// Pages sans mesure : data-analytics="off" sur <html> (pages légales).
+const PRODUCTION =
+  /(^|\.)getbraiz\.com$/.test(location.hostname) && document.documentElement.dataset.analytics !== "off";
 
 // ⚠️ ÉVÉNEMENTS PERSONNALISÉS DÉSACTIVÉS. Offre Vercel Hobby : seules les
 // pages vues sont comptées (les événements personnalisés demandent l'offre

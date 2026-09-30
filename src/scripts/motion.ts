@@ -52,7 +52,8 @@ async function start() {
 
   const gsapNodes = Array.from(document.querySelectorAll<HTMLElement>("[data-gsap]"));
   const wantsGsap = gsapNodes.length > 0;
-  const wantsLenis = finePointer;
+  // Pas de Lenis sur les pages qui le refusent (data-smooth-scroll="off").
+  const wantsLenis = finePointer && document.documentElement.dataset.smoothScroll !== "off";
   const pluginNames = new Set(
     gsapNodes.flatMap((el) => (el.dataset.gsap || "").split(/\s+/)).filter((n): n is PluginName => n in PLUGINS),
   );
