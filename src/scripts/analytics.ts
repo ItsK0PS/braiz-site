@@ -9,9 +9,8 @@
 // Événements : un clic sur un élément [data-track] (nom de l'événement, et
 // data-track-where pour l'emplacement), ou un événement « braiz:track »
 // émis par un script de page (changement d'onglet sur /beta).
-// ⚠️ Chez Vercel, les événements personnalisés ne sont comptés que sur les
-// offres Pro et Enterprise ; sur l'offre gratuite, seules les pages vues le
-// sont. Pour passer à Plausible, seul ce fichier change (script et track()).
+// Pour passer à un autre outil (Plausible, Umami), seul ce fichier change
+// (script et track()).
 
 type Data = Record<string, string>;
 declare global {
@@ -22,6 +21,14 @@ declare global {
 }
 
 const PRODUCTION = /(^|\.)getbraiz\.com$/.test(location.hostname);
+
+// ⚠️ ÉVÉNEMENTS PERSONNALISÉS DÉSACTIVÉS. Offre Vercel Hobby : seules les
+// pages vues sont comptées (les événements personnalisés demandent l'offre
+// Pro). Les attributs data-track restent dans le HTML et beta.ts émet
+// toujours « braiz:track » : ils ne coûtent rien. Passer à true au passage
+// en Pro suffit à tout réactiver (et mettre à jour la politique de
+// confidentialité : la phrase sur les clics de la page de la beta).
+const CUSTOM_EVENTS = false;
 
 if (PRODUCTION) {
   // File d'attente : les événements émis avant l'arrivée du script sont
@@ -34,7 +41,7 @@ if (PRODUCTION) {
 }
 
 export function track(name: string, data: Data = {}) {
-  if (!PRODUCTION) return;
+  if (!PRODUCTION || !CUSTOM_EVENTS) return;
   window.va?.("event", { name, data: { page: location.pathname, ...data } });
 }
 

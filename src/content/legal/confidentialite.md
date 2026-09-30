@@ -1,6 +1,6 @@
 # Politique de confidentialité - Braiz
 
-**Dernière mise à jour : 6 septembre 2026**
+**Dernière mise à jour : 30 septembre 2026**
 
 Braiz est une application mobile qui permet de partager des dépenses entre amis et de suivre qui doit quoi à qui. Cette politique explique quelles données sont collectées, pourquoi, qui y a accès et combien de temps elles sont conservées.
 
@@ -53,9 +53,17 @@ Si tu choisis **« Masquer mon adresse e-mail »**, Apple ne communique pas ton 
 
 ### Données techniques
 
-Braiz n'embarque **aucun outil de mesure d'audience, de traçage ou de rapport d'erreurs**. Pendant la phase de test, Apple met à disposition de l'éditeur les rapports de plantage collectés par TestFlight ; cette collecte est celle d'Apple, pas celle de l'application.
+L'application Braiz n'embarque **aucun outil de mesure d'audience, de traçage ou de rapport d'erreurs**. Pendant la phase de test, Apple met à disposition de l'éditeur les rapports de plantage collectés par TestFlight ; cette collecte est celle d'Apple, pas celle de l'application.
 
 Braiz n'utilise **aucun outil de publicité, de traçage publicitaire ou de profilage commercial**.
+
+### Le site getbraiz.com
+
+Le site utilise **Vercel Web Analytics** pour compter ses visites. Cet outil ne dépose **aucun cookie** et n'enregistre rien sur ton appareil : aucun bandeau de consentement n'est nécessaire.
+
+Sont mesurés : la page visitée, le site d'où tu viens, ta localisation approximative (pays, région, ville), le type d'appareil, le système et le navigateur.
+
+Les visites d'une même journée sont distinguées par une empreinte calculée à partir de la requête, et non par un cookie ; elle est effacée au bout de 24 heures. Les statistiques sont anonymes et ne permettent pas de t'identifier. La page d'invitation n'est pas mesurée.
 
 ---
 
@@ -70,6 +78,7 @@ Braiz n'utilise **aucun outil de publicité, de traçage publicitaire ou de prof
 | Attribuer les trophées | Dépenses, règlements, messages | Exécution du contrat |
 | T'envoyer des notifications | Compte, activité de tes groupes | Exécution du contrat |
 | Corriger les bugs et sécuriser le service | Journaux d'erreurs | Intérêt légitime |
+| Mesurer la fréquentation du site et l'usage de la page d'installation | Statistiques de visite anonymes | Intérêt légitime |
 
 ---
 
@@ -95,6 +104,9 @@ Braiz s'appuie sur des prestataires techniques, appelés sous-traitants. Ils tra
 | **Resend** | Envoi des e-mails (codes de connexion, invitations) | Adresse e-mail |
 | **Apple** | Connexion avec Apple, distribution de l'application, rapports de plantage | Identifiant de compte, adresse e-mail (réelle ou relais), nom à la première connexion, données techniques |
 | **Expo** | Compilation de l'application et mises à jour | Données techniques |
+| **Vercel** | Hébergement du site getbraiz.com et mesure de sa fréquentation | Données techniques de visite (pages vues, localisation approximative, type d'appareil) |
+
+Vercel est établi aux États-Unis ; les transferts de données sont encadrés par les clauses contractuelles types de la Commission européenne.
 
 Tes données ne sont **ni vendues, ni louées, ni transmises à des tiers à des fins commerciales**.
 
@@ -121,6 +133,8 @@ Il y a une exception qu'il faut expliquer honnêtement : **les dépenses et les 
 **Les messages du chat** que tu as envoyés restent visibles par les membres du groupe, dissociés de ton identité.
 
 **Les journaux techniques** sont conservés au maximum trente jours.
+
+**Les statistiques de fréquentation du site** sont consultables pendant 1 mois ; Vercel peut les conserver plus longtemps, sous forme agrégée et anonyme.
 
 ---
 
