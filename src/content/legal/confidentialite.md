@@ -22,16 +22,16 @@ Braiz est actuellement en phase de test fermée. L'application est distribuée �
 
 ### Ton compte
 
-- **Adresse email** - nécessaire pour créer le compte et t'y connecter
+- **Adresse e-mail** - nécessaire pour créer le compte et t'y connecter
 - **Nom d'affichage** - celui que voient les autres membres de tes groupes
 - **Photo de profil** - si tu en ajoutes une, elle est facultative
 - **Date de création du compte**
 
-La connexion se fait par **code à usage unique envoyé par email**, ou avec **Sign in with Apple**. Braiz ne stocke aucun mot de passe.
+La connexion se fait par **code à usage unique envoyé par e-mail**, ou avec **Sign in with Apple**. Braiz ne stocke aucun mot de passe.
 
-Quand tu te connectes avec Apple, Apple transmet à Braiz un **identifiant de compte propre à cette application**, ton **adresse email** et, **à la première connexion uniquement**, ton **prénom et ton nom**. Apple ne transmet ton nom qu'une seule fois : Braiz l'enregistre alors comme nom d'affichage, et ne le redemande jamais.
+Quand tu te connectes avec Apple, Apple transmet à Braiz un **identifiant de compte propre à cette application**, ton **adresse e-mail** et, **à la première connexion uniquement**, ton **prénom et ton nom**. Apple ne transmet ton nom qu'une seule fois : Braiz l'enregistre alors comme nom d'affichage, et ne le redemande jamais.
 
-Si tu choisis **« Masquer mon adresse email »**, Apple ne communique pas ton adresse réelle. Braiz reçoit à la place une adresse relais en `@privaterelay.appleid.com`, qui transfère les messages vers ta vraie boîte sans que Braiz la connaisse. C'est la seule adresse que Braiz détient, et elle est traitée comme n'importe quelle autre adresse email.
+Si tu choisis **« Masquer mon adresse e-mail »**, Apple ne communique pas ton adresse réelle. Braiz reçoit à la place une adresse relais en `@privaterelay.appleid.com`, qui transfère les messages vers ta vraie boîte sans que Braiz la connaisse. C'est la seule adresse que Braiz détient, et elle est traitée comme n'importe quelle autre adresse e-mail.
 
 ### Tes groupes et tes dépenses
 
@@ -63,8 +63,8 @@ Braiz n'utilise **aucun outil de publicité, de traçage publicitaire ou de prof
 
 | Finalité | Données concernées | Base légale |
 |---|---|---|
-| Créer et gérer ton compte | Email, nom, photo | Exécution du contrat |
-| Te permettre de te connecter | Email, code à usage unique | Exécution du contrat |
+| Créer et gérer ton compte | E-mail, nom, photo | Exécution du contrat |
+| Te permettre de te connecter | E-mail, code à usage unique | Exécution du contrat |
 | Calculer les soldes et les remboursements | Dépenses, répartitions, règlements | Exécution du contrat |
 | Faire fonctionner le chat de groupe | Messages, réactions | Exécution du contrat |
 | Attribuer les trophées | Dépenses, règlements, messages | Exécution du contrat |
@@ -79,7 +79,7 @@ C'est un point important dans une application de groupe.
 
 **Les membres de tes groupes voient :** ton nom d'affichage, ta photo de profil, les dépenses que tu as payées, les parts qui te sont attribuées, tes remboursements, ton solde, tes messages dans le chat du groupe, et les trophées que tu détiens dans ce groupe.
 
-**Personne ne voit :** ton adresse email, tes autres groupes, tes dépenses dans d'autres groupes, ni le total cumulé de tes trophées.
+**Personne ne voit :** ton adresse e-mail, tes autres groupes, tes dépenses dans d'autres groupes, ni le total cumulé de tes trophées.
 
 Quand un trophée change de main, un message automatique est publié dans le chat du groupe concerné. Il mentionne le nom de la personne qui vient de l'obtenir.
 
@@ -92,8 +92,8 @@ Braiz s'appuie sur des prestataires techniques, appelés sous-traitants. Ils tra
 | Prestataire | Rôle | Données concernées |
 |---|---|---|
 | **Supabase** | Hébergement de la base de données, stockage des fichiers, authentification | Toutes les données de l'application |
-| **Resend** | Envoi des emails (codes de connexion, invitations) | Adresse email |
-| **Apple** | Connexion avec Apple, distribution de l'application, rapports de plantage | Identifiant de compte, adresse email (réelle ou relais), nom à la première connexion, données techniques |
+| **Resend** | Envoi des e-mails (codes de connexion, invitations) | Adresse e-mail |
+| **Apple** | Connexion avec Apple, distribution de l'application, rapports de plantage | Identifiant de compte, adresse e-mail (réelle ou relais), nom à la première connexion, données techniques |
 | **Expo** | Compilation de l'application et mises à jour | Données techniques |
 
 Tes données ne sont **ni vendues, ni louées, ni transmises à des tiers à des fins commerciales**.
@@ -114,7 +114,7 @@ Le Royaume-Uni ne fait plus partie de l'Union européenne, mais la Commission eu
 
 **Tant que ton compte existe**, tes données sont conservées pour faire fonctionner le service.
 
-**Quand tu supprimes ton compte**, tes informations personnelles - nom, email, photo - sont effacées ou anonymisées.
+**Quand tu supprimes ton compte**, tes informations personnelles - nom, e-mail, photo - sont effacées ou anonymisées.
 
 Il y a une exception qu'il faut expliquer honnêtement : **les dépenses et les remboursements que tu as saisis dans un groupe ne peuvent pas être supprimés**. Ils font partie du calcul des soldes des autres membres. Les effacer fausserait les comptes de personnes qui n'ont rien demandé. Ces lignes sont donc conservées, mais elles ne sont plus rattachées à ton identité : ton nom est remplacé par une mention générique.
 
@@ -156,7 +156,7 @@ Braiz est destinée aux personnes de **18 ans et plus**. L'application manipule 
 
 ## 11. Modifications de cette politique
 
-Cette politique peut évoluer, notamment quand de nouvelles fonctionnalités arrivent. En cas de changement significatif, les utilisateurs seront informés dans l'application ou par email.
+Cette politique peut évoluer, notamment quand de nouvelles fonctionnalités arrivent. En cas de changement significatif, les utilisateurs seront informés dans l'application ou par e-mail.
 
 La date de dernière mise à jour figure en haut de ce document.
 
