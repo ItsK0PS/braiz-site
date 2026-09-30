@@ -41,6 +41,15 @@ Si tu choisis **« Masquer mon adresse e-mail »**, Apple ne communique pas ton 
 - **Répartitions** - la part de chaque personne sur chaque dépense
 - **Remboursements** - qui a remboursé qui, quel montant, quand
 
+### Tes coordonnées bancaires
+
+- **IBAN** - facultatif, saisi par toi dans l'application
+- **Nom du titulaire du compte** - facultatif lui aussi, saisi avec l'IBAN
+
+Le nom demandé est celui qui figure exactement sur ton compte bancaire, et non ton nom d'affichage : depuis le 9 octobre 2025, les banques de la zone euro vérifient que le nom saisi par la personne qui fait un virement correspond bien à celui du compte. Avec un autre nom, elle recevrait une alerte au moment de te rembourser.
+
+Si tu n'as pas encore ajouté d'IBAN, un membre d'un groupe que tu partages peut te le demander depuis l'application : tu reçois alors une notification dans l'application, qui indique son nom et le groupe concerné. Une même personne ne peut te le demander qu'une fois tous les trois jours.
+
 ### Tes échanges
 
 - **Messages** envoyés dans le chat de tes groupes
@@ -74,6 +83,7 @@ Les visites d'une même journée sont distinguées par une empreinte calculée �
 | Créer et gérer ton compte | E-mail, nom, photo | Exécution du contrat |
 | Te permettre de te connecter | E-mail, code à usage unique | Exécution du contrat |
 | Calculer les soldes et les remboursements | Dépenses, répartitions, règlements | Exécution du contrat |
+| Permettre aux membres qui te doivent de l'argent de te rembourser par virement depuis leur banque (l'argent ne passe jamais par Braiz) | IBAN, nom du titulaire | Exécution du contrat |
 | Faire fonctionner le chat de groupe | Messages, réactions | Exécution du contrat |
 | Attribuer les trophées | Dépenses, règlements, messages | Exécution du contrat |
 | T'envoyer des notifications | Compte, activité de tes groupes | Exécution du contrat |
@@ -86,7 +96,9 @@ Les visites d'une même journée sont distinguées par une empreinte calculée �
 
 C'est un point important dans une application de groupe.
 
-**Les membres de tes groupes voient :** ton nom d'affichage, ta photo de profil, les dépenses que tu as payées, les parts qui te sont attribuées, tes remboursements, ton solde, tes messages dans le chat du groupe, et les trophées que tu détiens dans ce groupe.
+**Les membres de tes groupes voient :** ton nom d'affichage, ta photo de profil, les dépenses que tu as payées, les parts qui te sont attribuées, tes remboursements, ton solde, tes messages dans le chat du groupe, et les trophées que tu détiens dans ce groupe, **ainsi que ton IBAN et le nom de son titulaire, si tu les as ajoutés**.
+
+Ton IBAN est visible par **tous les membres des groupes que tu partages**, pas seulement par ceux qui te doivent de l'argent : qui doit quoi à qui change à chaque nouvelle dépense, et la personne qui te rembourse doit toujours pouvoir le trouver. Les personnes avec qui tu ne partages aucun groupe ne le voient jamais.
 
 **Personne ne voit :** ton adresse e-mail, tes autres groupes, tes dépenses dans d'autres groupes, ni le total cumulé de tes trophées.
 
@@ -128,6 +140,8 @@ Le Royaume-Uni ne fait plus partie de l'Union européenne, mais la Commission eu
 
 **Quand tu supprimes ton compte**, tes informations personnelles - nom, e-mail, photo - sont effacées ou anonymisées.
 
+**Tes coordonnées bancaires** sont conservées tant que tu ne les retires pas. Tu peux les supprimer à tout moment depuis l'application, sans supprimer ton compte, et elles sont effacées quand tu supprimes ton compte.
+
 Il y a une exception qu'il faut expliquer honnêtement : **les dépenses et les remboursements que tu as saisis dans un groupe ne peuvent pas être supprimés**. Ils font partie du calcul des soldes des autres membres. Les effacer fausserait les comptes de personnes qui n'ont rien demandé. Ces lignes sont donc conservées, mais elles ne sont plus rattachées à ton identité : ton nom est remplacé par une mention générique.
 
 **Les messages du chat** que tu as envoyés restent visibles par les membres du groupe, dissociés de ton identité.
@@ -143,8 +157,8 @@ Il y a une exception qu'il faut expliquer honnêtement : **les dépenses et les 
 Le règlement général sur la protection des données te donne les droits suivants :
 
 - **Accéder à tes données** - l'application propose un export complet depuis ton profil
-- **Les corriger** - tu peux modifier ton nom et ta photo à tout moment
-- **Les faire effacer** - la suppression de compte est disponible depuis l'application, sous réserve de l'exception expliquée au point 7
+- **Les corriger** - tu peux modifier ton nom et ta photo à tout moment, **ainsi que ton IBAN et le nom de son titulaire**
+- **Les faire effacer** - la suppression de compte est disponible depuis l'application, sous réserve de l'exception expliquée au point 7. **Tes coordonnées bancaires peuvent aussi être supprimées seules, depuis l'application.**
 - **Les récupérer dans un format lisible** - c'est l'objet de l'export
 - **T'opposer à un traitement** ou en demander la limitation
 
