@@ -70,6 +70,25 @@ html = html.replace(/<table>([\s\S]*?)<\/table>/g, (_, inner: string) => {
   return `<div class="doc-table"><table role="table">${body}</table></div>`;
 });
 
+// « L'essentiel » (politique de confidentialité seulement) : résumé non
+// contractuel, placé après la date. Chaque phrase s'appuie sur un passage
+// précis de la politique (voir le rapport de la refonte des pages légales).
+// Encadré à part (aside) : il n'entre pas dans le texte du document.
+const ESSENTIEL: Record<string, string[]> = {
+  confidentialite: [
+    "Braiz collecte ce qui fait fonctionner l'application : ton adresse e-mail, ton nom d'affichage, ta photo si tu en ajoutes une, tes coordonnées bancaires (IBAN et nom du titulaire) si tu les renseignes, et le contenu de tes groupes (dépenses, justificatifs, messages, trophées).",
+    "Tes données ne sont ni vendues, ni louées, ni transmises à des tiers à des fins commerciales, et l'application n'embarque aucun outil de publicité, de mesure d'audience ou de traçage.",
+    "Les membres de tes groupes voient ton nom, ta photo, tes dépenses, ton solde et tes messages dans ces groupes, ainsi que ton IBAN et le nom de son titulaire si tu les as ajoutés ; personne ne voit ton adresse e-mail.",
+    "Tes données sont hébergées à Londres par Supabase, et le site getbraiz.com compte ses visites sans cookie.",
+    "Depuis l'application, tu peux exporter tes données, les corriger ou supprimer ton compte ; les dépenses et remboursements saisis dans un groupe restent alors, sans ton nom, pour ne pas fausser les comptes des autres.",
+  ],
+};
+const essentiel = ESSENTIEL[page.id];
+// Le document est coupé juste après la date pour y glisser l'encadré.
+const cut = essentiel ? html.indexOf("</p>", html.indexOf('class="doc-date"')) + 4 : -1;
+const docHead = cut > 3 ? html.slice(0, cut) : html;
+const docBody = cut > 3 ? html.slice(cut) : "";
+
 // Sommaire : les titres de niveau 2, avec les id déjà produits par le
 // Markdown.
 const sommaire = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m) => ({ id: m[1], label: decode(m[2]) }));
@@ -98,7 +117,15 @@ const sommaire = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m
     )}
 
     <article class="doc" data-doc>
-      <Fragment set:html={html} />
+      <Fragment set:html={docHead} />
+      {essentiel && (
+        <aside class="essentiel" aria-labelledby="essentiel-titre" data-essentiel>
+          <h2 class="essentiel__titre" id="essentiel-titre">L'essentiel</h2>
+          <ul>{essentiel.map((phrase) => <li>{phrase}</li>)}</ul>
+          <p class="essentiel__note">Résumé non contractuel : seul le texte complet fait foi.</p>
+        </aside>
+      )}
+      <Fragment set:html={docBody} />
     </article>
 
     <p class="back-top"><a href="#haut">Revenir en haut</a></p>
@@ -110,7 +137,7 @@ const sommaire = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m
   // Sans ce script : sommaire et document complets, seule la mise en
   // évidence manque.
   const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-toc]"));
-  const heads = Array.from(document.querySelectorAll<HTMLElement>("[data-doc] h2[id]"));
+  const heads = Array.from(document.querySelectorAll<HTMLElement>("[data-doc] h2[id]:not(.essentiel__titre)"));
 
   let ticking = false;
   const bar = document.querySelector<HTMLElement>("[data-progress]");
@@ -265,6 +292,24 @@ const sommaire = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m
   .doc :global(a:hover),
   .back-top a:hover { text-decoration-color: var(--cream); }
   .back-top a { color: var(--muted); font-size: var(--t-small); text-decoration-color: var(--outline); }
+
+  /* ---------- « L'essentiel » (résumé non contractuel) ---------- */
+  .essentiel {
+    margin: var(--s-2) 0 var(--s-6);
+    padding: var(--s-5) var(--s-5) var(--s-4);
+    border-radius: var(--r-l);
+    background: linear-gradient(135deg, rgba(255, 106, 26, 0.1), rgba(225, 29, 46, 0.05)), var(--surface);
+    box-shadow: inset 0 0 0 1px rgba(255, 106, 26, 0.25);
+  }
+  .doc .essentiel__titre {
+    margin: 0 0 var(--s-3);
+    padding: 0;
+    border: 0;
+    font-size: 1.3rem;
+  }
+  .essentiel ul { margin: 0; padding-left: 1.25rem; }
+  .essentiel li { margin: 0 0 var(--s-2); color: var(--cream); }
+  .doc .essentiel__note { margin: var(--s-3) 0 0; color: var(--muted); font-size: var(--t-small); }
 
   /* ---------- Tableaux ---------- */
   .doc :global(.doc-table) { margin: var(--s-5) 0 var(--s-6); }
