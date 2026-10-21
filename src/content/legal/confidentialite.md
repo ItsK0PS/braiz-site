@@ -1,6 +1,6 @@
 # Politique de confidentialité - Braiz
 
-**Dernière mise à jour : 18 octobre 2026**
+**Dernière mise à jour : 21 octobre 2026**
 
 Braiz est une application mobile qui permet de partager des dépenses entre amis et de suivre qui doit quoi à qui. Cette politique explique quelles données sont collectées, pourquoi, qui y a accès et combien de temps elles sont conservées.
 
@@ -102,7 +102,7 @@ Ton IBAN est visible par **tous les membres des groupes que tu partages**, pas s
 
 **Personne ne voit :** ton adresse e-mail, tes autres groupes, tes dépenses dans d'autres groupes, ni le total cumulé de tes trophées.
 
-Quand un trophée change de main, un message automatique est publié dans le chat du groupe concerné. Il mentionne le nom de la personne qui vient de l'obtenir.
+Certaines actions publient un message automatique dans le chat du groupe concerné : un trophée qui change de main, une dépense supprimée, un membre retiré du groupe par son créateur. Ce message mentionne le nom des personnes concernées.
 
 ---
 
