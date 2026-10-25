@@ -1,6 +1,6 @@
 # Politique de confidentialité - Braiz
 
-**Dernière mise à jour : 21 octobre 2026**
+**Dernière mise à jour : 25 octobre 2026**
 
 Braiz est une application mobile qui permet de partager des dépenses entre amis et de suivre qui doit quoi à qui. Cette politique explique quelles données sont collectées, pourquoi, qui y a accès et combien de temps elles sont conservées.
 
@@ -60,6 +60,14 @@ Si tu n'as pas encore ajouté d'IBAN, un membre d'un groupe que tu partages peut
 - **Trophées détenus** dans chacun de tes groupes
 - **Historique des trophées** obtenus, y compris dans des groupes supprimés depuis
 
+### Tes notifications
+
+Si tu acceptes les notifications, Braiz enregistre un **identifiant technique de ton téléphone** (un jeton de notification), qui permet de te prévenir quand un nouveau message arrive dans le chat d'un de tes groupes.
+
+Une notification contient le **nom du groupe**, le **nom de l'auteur** et un **extrait du message**. Pour arriver jusqu'à ton téléphone, elle passe par le service de notifications d'**Expo**, puis par celui d'**Apple** sur iPhone ou de **Google** sur Android.
+
+Le jeton est supprimé quand tu te déconnectes de l'application sur ce téléphone, ou quand tu supprimes ton compte. Tu peux aussi désactiver les notifications à tout moment dans les réglages de ton téléphone.
+
 ### Données techniques
 
 L'application Braiz n'embarque **aucun outil de mesure d'audience, de traçage ou de rapport d'erreurs**. Pendant la phase de test, Apple met à disposition de l'éditeur les rapports de plantage collectés par TestFlight ; cette collecte est celle d'Apple, pas celle de l'application.
@@ -86,7 +94,7 @@ Les visites d'une même journée sont distinguées par une empreinte calculée �
 | Permettre aux membres qui te doivent de l'argent de te rembourser par virement depuis leur banque (l'argent ne passe jamais par Braiz) | IBAN, nom du titulaire | Exécution du contrat |
 | Faire fonctionner le chat de groupe | Messages, réactions | Exécution du contrat |
 | Attribuer les trophées | Dépenses, règlements, messages | Exécution du contrat |
-| T'envoyer des notifications | Compte, activité de tes groupes | Exécution du contrat |
+| T'envoyer des notifications | Jeton de notification, nom du groupe, nom de l'auteur et extrait du message | Exécution du contrat |
 | Corriger les bugs et sécuriser le service | Journaux d'erreurs | Intérêt légitime |
 | Mesurer la fréquentation du site et l'usage de la page d'installation | Statistiques de visite anonymes | Intérêt légitime |
 
@@ -113,12 +121,13 @@ Braiz s'appuie sur des prestataires techniques, appelés sous-traitants. Ils tra
 | Prestataire | Rôle | Données concernées |
 |---|---|---|
 | **Supabase** | Hébergement de la base de données, stockage des fichiers, authentification | Toutes les données de l'application |
-| **Resend** | Envoi des e-mails (codes de connexion, invitations) | Adresse e-mail |
-| **Apple** | Connexion avec Apple, distribution de l'application, rapports de plantage | Identifiant de compte, adresse e-mail (réelle ou relais), nom à la première connexion, données techniques |
-| **Expo** | Compilation de l'application et mises à jour | Données techniques |
+| **Resend**   | Envoi des e-mails de connexion (codes de connexion, confirmation d'un changement d'adresse) | Adresse e-mail |
+| **Apple**    | Connexion avec Apple, distribution de l'application, rapports de plantage, notifications sur iPhone | Identifiant de compte, adresse e-mail (réelle ou relais), nom à la première connexion, jeton et contenu des notifications, données techniques |
+| **Expo**     | Compilation de l'application, mises à jour, acheminement des notifications | Jeton et contenu des notifications, données techniques |
+| **Google**   | Notifications sur Android, messagerie de l'adresse contact@getbraiz.com | Jeton et contenu des notifications ; messages que tu nous envoies |
 | **Vercel** | Hébergement du site getbraiz.com et mesure de sa fréquentation | Données techniques de visite (pages vues, localisation approximative, type d'appareil) |
 
-Vercel est établi aux États-Unis ; les transferts de données sont encadrés par les clauses contractuelles types de la Commission européenne.
+Resend, Apple, Expo, Google et Vercel sont établis aux États-Unis. Resend envoie les e-mails depuis l'Irlande, mais conserve ses données aux États-Unis. Ces transferts sont encadrés par les clauses contractuelles types de la Commission européenne ou, pour les entreprises qui y ont adhéré, par le cadre de protection des données entre l'Union européenne et les États-Unis (Data Privacy Framework).
 
 Tes données ne sont **ni vendues, ni louées, ni transmises à des tiers à des fins commerciales**.
 
@@ -145,6 +154,12 @@ Le Royaume-Uni ne fait plus partie de l'Union européenne, mais la Commission eu
 Il y a une exception qu'il faut expliquer honnêtement : **les dépenses et les remboursements que tu as saisis dans un groupe ne peuvent pas être supprimés**. Ils font partie du calcul des soldes des autres membres. Les effacer fausserait les comptes de personnes qui n'ont rien demandé. Ces lignes sont donc conservées, mais elles ne sont plus rattachées à ton identité : ton nom est remplacé par une mention générique.
 
 **Les messages du chat** que tu as envoyés restent visibles par les membres du groupe, dissociés de ton identité.
+
+**Le jeton de notification** est supprimé quand tu te déconnectes de l'application sur ton téléphone, ou quand tu supprimes ton compte.
+
+**Les e-mails de connexion** (codes, confirmations) sont conservés trente jours par notre prestataire d'envoi, puis supprimés.
+
+**Des sauvegardes de la base de données** sont réalisées chaque jour, pour pouvoir restaurer le service en cas d'incident. Elles sont stockées sur un support chiffré, conservées trente jours, puis supprimées automatiquement ; seule la plus récente est toujours gardée, pour ne jamais se retrouver sans sauvegarde. En fonctionnement normal, une donnée effacée de l'application disparaît donc des sauvegardes dans les trente jours.
 
 **Les journaux techniques** sont conservés au maximum trente jours.
 
