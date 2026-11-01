@@ -1,6 +1,6 @@
 # Politique de confidentialité - Braiz
 
-**Dernière mise à jour : 25 octobre 2026**
+**Dernière mise à jour : 1er novembre 2026**
 
 Braiz est une application mobile qui permet de partager des dépenses entre amis et de suivre qui doit quoi à qui. Cette politique explique quelles données sont collectées, pourquoi, qui y a accès et combien de temps elles sont conservées.
 
