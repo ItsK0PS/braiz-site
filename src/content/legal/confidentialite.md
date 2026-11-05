@@ -1,6 +1,6 @@
 # Politique de confidentialité - Braiz
 
-**Dernière mise à jour : 1er novembre 2026**
+**Dernière mise à jour : 5 novembre 2026**
 
 Braiz est une application mobile qui permet de partager des dépenses entre amis et de suivre qui doit quoi à qui. Cette politique explique quelles données sont collectées, pourquoi, qui y a accès et combien de temps elles sont conservées.
 
@@ -171,10 +171,10 @@ Il y a une exception qu'il faut expliquer honnêtement : **les dépenses et les 
 
 Le règlement général sur la protection des données te donne les droits suivants :
 
-- **Accéder à tes données** - l'application propose un export complet depuis ton profil
+- **Accéder à tes données** - l'application propose, depuis ton profil, un export de ton profil, de tes groupes, de tes dépenses, de tes remboursements, de tes coordonnées bancaires et de tes appareils de notification. Le reste (notamment messages et réactions du chat, trophées, notifications reçues dans l'application, notes et photos de justificatifs des dépenses) t'est envoyé sur simple demande à **contact@getbraiz.com**
 - **Les corriger** - tu peux modifier ton nom et ta photo à tout moment, **ainsi que ton IBAN et le nom de son titulaire**
 - **Les faire effacer** - la suppression de compte est disponible depuis l'application, sous réserve de l'exception expliquée au point 7. **Tes coordonnées bancaires peuvent aussi être supprimées seules, depuis l'application.**
-- **Les récupérer dans un format lisible** - c'est l'objet de l'export
+- **Les récupérer dans un format lisible** - c'est l'objet de l'export, et de l'envoi sur demande pour le reste
 - **T'opposer à un traitement** ou en demander la limitation
 
 Pour exercer ces droits : **contact@getbraiz.com**. Une réponse te sera apportée dans un délai d'un mois.
