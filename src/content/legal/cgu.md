@@ -1,6 +1,6 @@
 # Conditions générales d'utilisation - Braiz
 
-**Dernière mise à jour : 6 septembre 2026**
+**Dernière mise à jour : 6 novembre 2026**
 
 ---
 
@@ -10,7 +10,7 @@ Braiz est une application mobile qui permet à un groupe d'amis de suivre des d�
 
 Ces conditions définissent les règles d'utilisation du service. En créant un compte, tu les acceptes.
 
-L'éditeur de l'application est **Maël MERCIER**, joignable à **contact@getbraiz.com**.
+L'éditeur de l'application est la société **BRAIZ**, société par actions simplifiée au capital de 1 000 euros, immatriculée au registre du commerce et des sociétés de Paris sous le numéro 132 272 956, dont le siège est situé 6 rue d'Armaillé, 75017 Paris, représentée par son président, Maël Mercier. Elle est joignable à **contact@getbraiz.com**.
 
 ---
 

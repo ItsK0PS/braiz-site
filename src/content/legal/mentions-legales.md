@@ -1,14 +1,16 @@
 # Mentions légales
 
-**Dernière mise à jour : 10 septembre 2026**
+**Dernière mise à jour : 6 novembre 2026**
 
 ## Éditeur du site et de l'application
 
-Le site getbraiz.com et l'application mobile Braiz sont édités par **Maël MERCIER**, éditeur non professionnel.
+Le site getbraiz.com et l'application mobile Braiz sont édités par la société **BRAIZ**, société par actions simplifiée à associé unique au capital de 1 000 euros.
 
-Contact : **contact@getbraiz.com**
+- Siège social : 6 rue d'Armaillé, 75017 Paris
+- RCS Paris 132 272 956
+- Contact : **contact@getbraiz.com**
 
-Directeur de la publication : Maël MERCIER
+Directeur de la publication : Maël Mercier, président
 
 ## Hébergement du site
 

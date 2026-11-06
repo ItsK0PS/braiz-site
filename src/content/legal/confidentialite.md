@@ -1,6 +1,6 @@
 # Politique de confidentialité - Braiz
 
-**Dernière mise à jour : 5 novembre 2026**
+**Dernière mise à jour : 6 novembre 2026**
 
 Braiz est une application mobile qui permet de partager des dépenses entre amis et de suivre qui doit quoi à qui. Cette politique explique quelles données sont collectées, pourquoi, qui y a accès et combien de temps elles sont conservées.
 
@@ -10,7 +10,7 @@ Elle est écrite pour être lue. Si un point n'est pas clair, écris à contact@
 
 ## 1. Qui est responsable de tes données
 
-Le responsable du traitement est **Maël MERCIER**, éditeur de l'application Braiz.
+Le responsable du traitement est la société **BRAIZ**, société par actions simplifiée au capital de 1 000 euros, immatriculée au registre du commerce et des sociétés de Paris sous le numéro 132 272 956, dont le siège est situé 6 rue d'Armaillé, 75017 Paris, éditrice de l'application Braiz. Elle est représentée par son président, Maël Mercier.
 
 Contact : **contact@getbraiz.com**
 
