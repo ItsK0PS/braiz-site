@@ -14,7 +14,7 @@ export const BETA_PATH = "/beta";
 export const CONTACT_EMAIL = "contact@getbraiz.com";
 
 // Android : le fichier de l'application, Release GitHub (lien stable, la
-// dernière version). Environ 155 Mo.
+// dernière version). Environ 65 Mo.
 export const APK_URL = "https://github.com/ItsK0PS/braiz-site/releases/latest/download/braiz.apk";
 
 // iPhone : TestFlight sur l'App Store. Le lien de la beta elle-même,
