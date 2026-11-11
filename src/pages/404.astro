@@ -1,0 +1,70 @@
+---
+// Page 404, dans la charte du site. Astro l'écrit dans dist/404.html, que
+// Vercel sert avec le code 404 pour tout chemin inconnu, à n'importe quelle
+// profondeur (/a/b/c) : liens et fichiers sont donc tous en chemins absolus.
+//
+// - noindex : rien à référencer ici, et la page n'est pas dans le sitemap ;
+// - sans mesure d'audience : l'adresse demandée peut être un lien
+//   d'invitation abîmé (/join/<jeton>/ avec un slash final arrive ici), et
+//   les invitations ne sont jamais mesurées (voir scripts/analytics.ts) ;
+// - un seul bouton ember : le retour à l'accueil.
+import Site from "../layouts/Site.astro";
+import Button from "../components/Button.astro";
+---
+<Site title="Page introuvable - Braiz" noindex smoothScroll={false} analytics={false}>
+  <section class="lost" aria-labelledby="lost-title">
+    <div class="lost__glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="eyebrow" data-intro style="--i: 0">Erreur 404</p>
+      <h1 class="lost__title" id="lost-title" data-intro style="--i: 1">Cette page n'existe pas.</h1>
+      <p class="lost__lead" data-intro style="--i: 2">
+        Le lien que tu as suivi est peut-être incomplet, ou la page a été déplacée.
+      </p>
+      <div class="lost__cta" data-intro style="--i: 3">
+        <Button href="/" variant="ember">Retour à l'accueil</Button>
+      </div>
+    </div>
+  </section>
+</Site>
+
+<style>
+  .lost {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: 62vh;
+    padding: var(--section-y) 0;
+    overflow: clip;
+  }
+  .lost__glow {
+    position: absolute;
+    left: 70%;
+    top: 45%;
+    width: min(120vw, 900px);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: var(--glow-ember);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .lost .wrap { position: relative; }
+  .lost__title {
+    margin: 0;
+    max-width: 14ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--t-hero);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .lost__lead {
+    margin: var(--s-5) 0 0;
+    max-width: var(--measure);
+    font-size: var(--t-lead);
+    line-height: 1.55;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+  .lost__cta { margin-top: var(--s-6); }
+</style>
