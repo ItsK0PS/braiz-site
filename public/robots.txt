@@ -1,0 +1,11 @@
+# getbraiz.com
+#
+# Tout le site est ouvert aux robots. Les pages d'invitation (/join) ne sont
+# pas bloquées ici, exprès : elles portent une balise noindex, qu'un robot ne
+# peut lire que s'il a le droit de charger la page. Les bloquer ici ferait
+# perdre le noindex.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://getbraiz.com/sitemap.xml
