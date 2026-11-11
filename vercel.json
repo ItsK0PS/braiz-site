@@ -14,6 +14,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/join/:token/",
+      "destination": "/join/:token",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/join/:token",
